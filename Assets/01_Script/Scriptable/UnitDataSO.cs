@@ -1,3 +1,4 @@
+using _01_Script.Enum;
 using UnityEngine;
 
 namespace _01_Scripts.CoreGame.Unit
@@ -9,8 +10,8 @@ namespace _01_Scripts.CoreGame.Unit
         [Tooltip("Sesuai konvensi: CHR_Player_Village_Guardian / ENM_Goblin_Melee_Normal")]
         public string unitID;
         public string unitName;
-        // public FactionType faction;
-        // public ThreatTier threatTier;
+        public FactionType faction;
+        public ThreatTier threatTier;
 
         [Header("Base Stats")]
         public float maxHP = 100f;
