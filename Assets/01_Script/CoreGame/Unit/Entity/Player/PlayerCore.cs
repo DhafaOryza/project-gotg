@@ -1,10 +1,15 @@
+using UnityEngine;
+
 namespace _01_Script.CoreGame.Unit.Entity.Player
 {
     public class PlayerCore : UnitCore
     {
-        public override void TakeDamage(float amount)
+        protected override void Start() => base.Start();
+        public override void Die()
         {
-            throw new System.NotImplementedException();
+            base.Die();
+            Debug.Log("Kalah");
         }
+        
     }
 }

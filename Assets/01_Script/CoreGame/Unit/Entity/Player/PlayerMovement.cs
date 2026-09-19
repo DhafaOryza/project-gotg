@@ -6,12 +6,13 @@ namespace _01_Script.CoreGame.Unit.Entity.Player
     public class PlayerMovement : MonoBehaviour
     {
         [Header ("Movement Setting")]
-        [SerializeField] private float MoveSpeed = 10f;
-        private Rigidbody2D rb;
+        private PlayerCore _playerCore;
+        private Rigidbody2D _rb;
         private Vector2 movementInput;
         void Start()
         {
-            rb = GetComponent<Rigidbody2D>();
+            _playerCore = GetComponent<PlayerCore>();
+            _rb = GetComponent<Rigidbody2D>();
         }
 
         public void OnMove(InputValue value)
@@ -22,8 +23,8 @@ namespace _01_Script.CoreGame.Unit.Entity.Player
 
         private void FixedUpdate()
         {
-            Vector2 newPosition = rb.position + movementInput * MoveSpeed * Time.fixedDeltaTime;
-            rb.MovePosition(newPosition);
+            Vector2 newPosition = _rb.position + movementInput * _playerCore.MoveSpeed * Time.fixedDeltaTime;
+            _rb.MovePosition(newPosition);
         }
     }
 }
