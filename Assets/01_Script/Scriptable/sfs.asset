@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f523b819740704e82eeefa6ee4f632, type: 3}
   m_Name: sfs
   m_EditorClassIdentifier: Assembly-CSharp::_01_Scripts.CoreGame.Unit.UnitDataSO
-  unitID: test_001
-  unitName: player_test
-  maxHP: 100
-  moveSpeed: 14
-  attackDamage: 10
-  attackCooldown: 1.5
-  knockbackResistance: 0
+  _unitID: Player_001
+  _unitName: Player
+  _faction: 2
+  _threatTier: 0
+  _maxHP: 100
+  _moveSpeed: 4
+  _attackDamage: 50
+  _attackCooldown: 1.5
+  _knockbackResistance: 0

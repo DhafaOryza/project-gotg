@@ -15,9 +15,9 @@ namespace _01_Script.CoreGame.Unit.Entity.Player
             _rb = GetComponent<Rigidbody2D>();
         }
 
-        public void OnMove(InputValue value)
+        public void OnMove(InputAction.CallbackContext ctx)
         {
-            float MoveX = value.Get<float>();
+            float MoveX = ctx.ReadValue<float>();
             movementInput = new Vector2(MoveX, 0f);
         }
 

@@ -14,6 +14,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "TestInputTakeDamage",
+                    "type": "Button",
+                    "id": "27059f49-2eaf-4a24-8411-25fe95b37b33",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -49,6 +58,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "a6ce9a3e-e110-4104-9d46-87e8f7c5b549",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TestInputTakeDamage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

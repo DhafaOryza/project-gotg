@@ -4,6 +4,7 @@ namespace _01_Script.Enum
     {
         ALLY,
         ENEMY,
-        NEUTRAL
+        NEUTRAL,
+        BUILDING
     }
 }
