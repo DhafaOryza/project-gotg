@@ -69,9 +69,6 @@ public class PlayerBaseEntity : BaseEntity
 
         if (MoveInput.sqrMagnitude > 0.0001f)
             AimDirection = MoveInput; // fallback aim kalau belum ada mouse-aim terpisah
-
-        Vector3 delta = new Vector3(MoveInput.x, MoveInput.y, 0f) * entityData.moveSpeed * Time.deltaTime;
-        transform.position += delta; // ganti dengan Rigidbody2D/CharacterController sesuai kebutuhan movement kamu
     }
 
     public void SetAimDirection(Vector2 direction)

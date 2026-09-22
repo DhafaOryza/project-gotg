@@ -1,55 +1,54 @@
 using UnityEngine;
-
-namespace _01_Script.CoreGame.Unit.Entity.Enemy
+public class EnemyMovement : MonoBehaviour
 {
-    public class EnemyMovement : MonoBehaviour
+    private EnemyCore _enemyCore;
+    private Rigidbody2D _rb;
+    private Transform _target;
+    private bool _canMove = true;
+
+    private void Awake()
     {
-        private EnemyCore _enemyCore;
-        private Rigidbody2D _rb;
-        private SpriteRenderer _sr;
-        private Transform _target;
-        private bool _canMove = true;
+        _enemyCore = GetComponent<EnemyCore>();
+        _rb = GetComponent<Rigidbody2D>();
+    }
 
-        private void Awake()
+    private void FixedUpdate()
+    {
+        if (!_canMove || _target == null)
         {
-            _enemyCore = GetComponent<EnemyCore>();
-            _rb = GetComponent<Rigidbody2D>();
-            _sr = GetComponentInChildren<SpriteRenderer>();
+            _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+            return;
         }
 
-        private void FixedUpdate()
+        // Hitung arah horizontal (+1 kanan, -1 kiri)
+        float directionX = Mathf.Sign(_target.position.x - transform.position.x);
+
+        // Ambil moveSpeed dari EntityDataSO milik BaseEntity
+        float speed = _enemyCore.entityData != null ? _enemyCore.entityData.moveSpeed : 2f;
+        _rb.linearVelocity = new Vector2(directionX * speed, _rb.linearVelocity.y);
+
+        // Flip seluruh objek (termasuk child/eye) via localScale
+        if (directionX > 0)
         {
-            if (!_canMove || _target == null)
-            {
-                _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
-                return;
-            }
-
-            float directionX = Mathf.Sign(_target.position.x - transform.position.x);
-            _rb.linearVelocity = new Vector2(directionX * _enemyCore.MoveSpeed, _rb.linearVelocity.y);
-
-            if (directionX > 0)
-            {
-                _sr.transform.localScale = new Vector3(1,1,1);
-            }
-            else if (directionX < 0)
-            {
-                _sr.transform.localScale = new Vector3(-1,1,1);
-            }
+            transform.localScale = new Vector3(1, 1, 1);
         }
-
-        public void SetTarget(Transform newTarget)
+        else if (directionX < 0)
         {
-            _target = newTarget;
+            transform.localScale = new Vector3(-1, 1, 1);
         }
+    }
 
-        public void SetCanMove(bool state)
+    public void SetTarget(Transform newTarget)
+    {
+        _target = newTarget;
+    }
+
+    public void SetCanMove(bool state)
+    {
+        _canMove = state;
+        if (!state)
         {
-            _canMove = state;
-            if (!state)
-            {
-                _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
-            }
+            _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
         }
     }
 }
