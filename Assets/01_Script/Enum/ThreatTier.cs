@@ -1,10 +1,7 @@
-namespace _01_Script.Enum
+public enum ThreatTier
 {
-    public enum ThreatTier
-    {
-        LOW,
-        MEDIUM,
-        HIGH,
-        ELITE
-    }
+    LOW,
+    MEDIUM,
+    HIGH,
+    ELITE
 }

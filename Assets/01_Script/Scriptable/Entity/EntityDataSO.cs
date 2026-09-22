@@ -1,8 +1,10 @@
 using UnityEngine;
-
-[CreateAssetMenu(fileName = "NewEntityData", menuName = "Data/Entity/Entity Data")]
 public class EntityDataSO : ScriptableObject
 {
+    [Header ("Faction")]
+    [SerializeField] protected FactionType _faction;
+    public FactionType Faction => _faction;
+
     public int baseVitality = 10;
 
     [Header("Stat Scaling")]
