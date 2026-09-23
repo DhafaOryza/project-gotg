@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1365a4ec2648ab479de0a24dbfaa65b, type: 3}
-  m_Name: PlayerPool_001Data
+  m_Name: EnemyPool_001Data
   m_EditorClassIdentifier: Assembly-CSharp::PoolDataSO
-  poolId: {fileID: 11400000, guid: b300f120ed88abc438426b5ea497e3d5, type: 2}
-  prefab: {fileID: 992265127889532007, guid: 089f6f79785127e429e4054d26655ca3, type: 3}
-  initialSize: 3
+  poolId: {fileID: 11400000, guid: d2ce71cf22993914f824808e04b42c16, type: 2}
+  prefab: {fileID: 2977259333405695452, guid: a86df694257b8494199cc1f563abdc20, type: 3}
+  initialSize: 10
   isExpandable: 1

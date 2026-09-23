@@ -1,14 +1,14 @@
 using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
-    private EnemyCore _enemyCore;
+    private EnemyBaseEntity _enemyCore;
     private Rigidbody2D _rb;
     private Transform _target;
     private bool _canMove = true;
 
     private void Awake()
     {
-        _enemyCore = GetComponent<EnemyCore>();
+        _enemyCore = GetComponent<EnemyBaseEntity>();
         _rb = GetComponent<Rigidbody2D>();
     }
 
