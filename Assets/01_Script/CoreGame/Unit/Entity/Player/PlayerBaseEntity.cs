@@ -111,7 +111,7 @@ public class PlayerBaseEntity : BaseEntity
     public SkillDataSO GetDataData(int slotIndex)
     {
         if (slotIndex >= 0 && slotIndex < skillRuntime.Count)
-            return skillRuntime.[slotIndex].skilldata;
+            return skillRuntime[slotIndex].skilldata;
 
         return null;
     }
