@@ -244,4 +244,14 @@ public class PlayerBaseEntity : BaseEntity
         public ConsumableDataSO data;
         public int quantity;
     }
+
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+        Gizmos.color = Color.yellow;
+        Vector3 origin = transform.position;
+        Vector3 target = origin + (Vector3)AimDirection * 1.5f;
+        Gizmos.DrawLine(origin,target);
+        Gizmos.DrawWireSphere(target, 0.2f);
+    }
 }
