@@ -48,10 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ecbfb6eab087d7468c1c7bc728d921f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBaseEntity
-  entityData: {fileID: 11400000, guid: d5093a727122c6f4f846740f27ad0cc7, type: 2}
+  entityData: {fileID: 11400000, guid: 468e4a9d550e6ec4593539b0d6c22a0e, type: 2}
   bonusMaxHP: 0
   currentHealth: 0
-  equippedSkills: []
+  equippedSkills:
+  - {fileID: 11400000, guid: 41fcf815ed56c7740aac3347a832cd23, type: 2}
   equippedConsumables: []
   defaultConsumableQuantity: 2
 --- !u!114 &8357042368030558729

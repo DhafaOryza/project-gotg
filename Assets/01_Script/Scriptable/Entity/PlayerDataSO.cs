@@ -5,6 +5,6 @@ public class PlayerDataSO : EntityDataSO
 {
     private void OnEnable()
     {
-       _faction = FactionType.PLAYER;
+       _faction = FactionType.ALLY;
     }
 }

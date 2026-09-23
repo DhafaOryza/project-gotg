@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SkillTesting
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: skill_01
-  displayName: Fireball
+  displayName: testing
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   description: hot hot hot hot hot!
   cooldown: 3

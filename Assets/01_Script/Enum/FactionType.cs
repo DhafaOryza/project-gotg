@@ -1,7 +1,6 @@
 public enum FactionType
 {
     NEUTRAL,
-    PLAYER,
-    ENEMY,
-    BUILDING
+    ALLY,
+    ENEMY
 }

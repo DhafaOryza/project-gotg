@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ffbccfb820091f4b94603b26075af94, type: 3}
+  m_Name: Fireball
+  m_EditorClassIdentifier: Assembly-CSharp::FireballSkillSO
+  skillId: fireball_00q
+  displayName: Fireball
+  icon: {fileID: 0}
+  description: hohtohtohtohtoh
+  cooldown: 3
+  skillColor: {r: 0.99565566, g: 1, b: 0.33018857, a: 1}
+  aoeRadius: 3
+  VfxID: {fileID: 11400000, guid: 0893609aaa6dbd545b1949ac7d064b25, type: 2}
+  damage: 40

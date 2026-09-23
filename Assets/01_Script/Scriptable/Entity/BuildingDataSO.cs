@@ -4,6 +4,6 @@ public class BuildingDataSO : EntityDataSO
 {
     private void OnEnable()
     {
-        _faction = FactionType.BUILDING;
+        _faction = FactionType.ALLY;
     }
 }

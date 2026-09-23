@@ -15,3 +15,4 @@ MonoBehaviour:
   categoryName: Entity Category
   pools:
   - {fileID: 11400000, guid: 44194630620f43b4a8f5d8dd00cd3876, type: 2}
+  - {fileID: 11400000, guid: 8b24f817e0b3d1541806ce76c0517a6b, type: 2}
