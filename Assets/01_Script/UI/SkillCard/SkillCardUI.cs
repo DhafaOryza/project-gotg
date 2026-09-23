@@ -40,15 +40,15 @@ public class SkillCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         if (owner == null || cooldownOverlay == null) return;
 
-        float remaining = owner.GetSkillCooldownRemaining(slotIndex);
-        var data = owner.GetSkillData(slotIndex);
-        if (data == null || data.cooldown <= 0f)
-        {
-            cooldownOverlay.fillAmount = 0f;
-            return;
-        }
+        // float remaining = owner.GetSkillCooldownRemaining(slotIndex);
+        // var data = owner.GetSkillData(slotIndex);
+        // if (data == null || data.cooldown <= 0f)
+        // {
+        //     cooldownOverlay.fillAmount = 0f;
+        //     return;
+        // }
 
-        cooldownOverlay.fillAmount = Mathf.Clamp01(remaining / data.cooldown);
+        // cooldownOverlay.fillAmount = Mathf.Clamp01(remaining / data.cooldown);
     }
 
     /// <summary>Dipanggil oleh Skill Container saat mengisi/refresh slot kartu.</summary>
@@ -64,15 +64,15 @@ public class SkillCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (skillData == null || owner == null) return;
-        if (!owner.CanAct || owner.GetSkillCooldownRemaining(slotIndex) > 0f) return;
+        // if (skillData == null || owner == null) return;
+        // if (!owner.CanAct || owner.GetSkillCooldownRemaining(slotIndex) > 0f) return;
 
-        originalParent = transform.parent;
-        originalAnchoredPos = rectTransform.anchoredPosition;
+        // originalParent = transform.parent;
+        // originalAnchoredPos = rectTransform.anchoredPosition;
 
-        // Pindah ke root canvas supaya kartu render di atas UI lain selama drag
-        if (rootCanvas != null) transform.SetParent(rootCanvas.transform, true);
-        canvasGroup.blocksRaycasts = false;
+        // // Pindah ke root canvas supaya kartu render di atas UI lain selama drag
+        // if (rootCanvas != null) transform.SetParent(rootCanvas.transform, true);
+        // canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -93,10 +93,10 @@ public class SkillCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
         if (skillData == null || owner == null) return;
 
-        if (target != null)
-            owner.TryUseSkill(slotIndex, target);
-        else
-            owner.NotifySkillDropMissed(slotIndex);
+        // if (target != null)
+        //     owner.TryUseSkill(slotIndex, target);
+        // else
+        //     owner.NotifySkillDropMissed(slotIndex);
     }
 
     private BaseEntity ResolveWorldTarget(PointerEventData eventData)

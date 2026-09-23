@@ -4,7 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewRegistryData", menuName = "System/Registry/New Registry")]
 public class Registry : ScriptableObject
 {
-    public EntityDataSO playerData;
+    public PlayerDataSO defaultPlayerData;
 
-    public List<SkillDataSO> SkillCard = new List<SkillDataSO>();
+    public List<SkillDataSO> defaultSkills = new List<SkillDataSO>();
+
+    public List<ConsumableDataSO> defaultConsumables = new List<ConsumableDataSO>();
 }

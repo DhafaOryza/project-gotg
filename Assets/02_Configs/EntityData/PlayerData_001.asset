@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fae84b63eeaa3142ba27fc6065d1066, type: 3}
-  m_Name: EntityDataPlayer_001
-  m_EditorClassIdentifier: Assembly-CSharp::EntityDataSO
+  m_Script: {fileID: 11500000, guid: 21606cd3bbcae9744a4d3b1563f6df23, type: 3}
+  m_Name: PlayerData_001
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDataSO
+  _faction: 1
   baseVitality: 3
   hpPerVitality: 170
   skillCooldownMultiplier: 1

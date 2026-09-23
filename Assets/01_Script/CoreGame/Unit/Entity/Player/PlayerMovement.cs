@@ -14,11 +14,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!_playerEntity.CanAct)
-        {
-            _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
-            return;
-        }
+        // if (!_playerEntity.CanAct)
+        // {
+        //     _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+        //     return;
+        // }
 
         Move();
     }
