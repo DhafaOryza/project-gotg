@@ -15,9 +15,8 @@ public class PlayerBaseEntity : BaseEntity
     [SerializeField] private int defaultConsumableQuantity = 2;
     private ConsumableSlotRuntime[] consumableSlots;
 
-    // ---------- Movement (WASD) ----------
-    [Header("Runtime Movement State")]
-    public Vector2 MoveInput { get; private set; }
+    // ---------- Aim (movement sepenuhnya dipindah ke PlayerMovement) ----------
+    [Header("Aim State")]
     public Vector2 AimDirection { get; private set; } = Vector2.down;
 
     // ---------- State ----------
@@ -52,23 +51,9 @@ public class PlayerBaseEntity : BaseEntity
 
         if (!CanAct) return; // KO -> tidak bisa gerak/skill/consumable
 
-        ReadMovementInput();
-        ReadSkillInput();
+        // Skill sekarang dipicu lewat drag & drop dari SkillCardUI (lihat TryUseSkill),
+        // jadi tidak ada lagi input keyboard Alpha1-5 di sini.
         ReadConsumableInput();
-    }
-
-    // ============================================================
-    // MOVEMENT (Controls: WASD Move, Mouse Aim/Direction)
-    // ============================================================
-
-    private void ReadMovementInput()
-    {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        MoveInput = new Vector2(h, v).normalized;
-
-        if (MoveInput.sqrMagnitude > 0.0001f)
-            AimDirection = MoveInput; // fallback aim kalau belum ada mouse-aim terpisah
     }
 
     public void SetAimDirection(Vector2 direction)
@@ -78,7 +63,7 @@ public class PlayerBaseEntity : BaseEntity
     }
 
     // ============================================================
-    // SKILL SYSTEM (No Normal Attack — semua kombat berbasis skill cooldown)
+    // SKILL SYSTEM (No Normal Attack — dipicu drag & drop SkillCardUI ke target)
     // ============================================================
 
     private void BuildSkillSlots()
@@ -87,15 +72,6 @@ public class PlayerBaseEntity : BaseEntity
         for (int i = 0; i < equippedSkills.Count; i++)
         {
             skillSlots[i] = new SkillSlotRuntime { data = equippedSkills[i], cooldownRemaining = 0f };
-        }
-    }
-
-    private void ReadSkillInput()
-    {
-        for (int i = 0; i < skillSlots.Length && i < 5; i++)
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
-                TryUseSkill(i);
         }
     }
 
@@ -118,7 +94,12 @@ public class PlayerBaseEntity : BaseEntity
         }
     }
 
-    public bool TryUseSkill(int slotIndex)
+    /// <summary>
+    /// Dipanggil oleh SkillCardUI saat kartu skill di-drop ke sebuah target di world.
+    /// target == enemy  -> SkillDataSO.targetType harus Enemy/Any -> efek serangan.
+    /// target == diri sendiri -> targetType harus Self/Any -> efek buff.
+    /// </summary>
+    public bool TryUseSkill(int slotIndex, BaseEntity target)
     {
         if (!CanAct) { OnSkillUseFailed?.Invoke(slotIndex, "Player KO"); return false; }
         if (skillSlots == null || slotIndex < 0 || slotIndex >= skillSlots.Length) return false;
@@ -126,12 +107,20 @@ public class PlayerBaseEntity : BaseEntity
         var slot = skillSlots[slotIndex];
         if (slot.data == null) { OnSkillUseFailed?.Invoke(slotIndex, "Slot kosong"); return false; }
         if (slot.cooldownRemaining > 0f) { OnSkillUseFailed?.Invoke(slotIndex, "Cooldown"); return false; }
+        if (!slot.data.IsValidTarget(this, target)) { OnSkillUseFailed?.Invoke(slotIndex, "Target tidak valid untuk skill ini"); return false; }
+        if (!slot.data.IsInRange(this, target)) { OnSkillUseFailed?.Invoke(slotIndex, "Target diluar range"); return false; }
 
-        slot.data.Activate(this);
+        slot.data.Activate(this, target);
         slot.cooldownRemaining = slot.data.cooldown * Mathf.Max(0.01f, entityData.skillCooldownMultiplier);
 
         OnSkillUsed?.Invoke(slotIndex);
         return true;
+    }
+
+    /// <summary>Dipanggil SkillCardUI saat drop tidak mengenai target valid apapun (mis. dilepas di area kosong).</summary>
+    public void NotifySkillDropMissed(int slotIndex)
+    {
+        OnSkillUseFailed?.Invoke(slotIndex, "Drop tidak mengenai target");
     }
 
     // Dipanggil dari Preparation Screen (pilih skill & urutan slot sebelum malam)
@@ -145,6 +134,13 @@ public class PlayerBaseEntity : BaseEntity
 
         equippedSkills = new List<SkillDataSO>(skills);
         BuildSkillSlots();
+    }
+
+    /// <summary>Dipakai SkillCardUI untuk baca data skill di slot tertentu (icon, cooldown, dll).</summary>
+    public SkillDataSO GetSkillData(int slotIndex)
+    {
+        if (skillSlots == null || slotIndex < 0 || slotIndex >= skillSlots.Length) return null;
+        return skillSlots[slotIndex].data;
     }
 
     public float GetSkillCooldownRemaining(int slotIndex)
@@ -215,9 +211,9 @@ public class PlayerBaseEntity : BaseEntity
 
     private void HandlePlayerKO()
     {
-        MoveInput = Vector2.zero;
         OnPlayerKO?.Invoke();
         // TODO: trigger animasi KO, disable collider serangan, dsb sesuai kebutuhanmu
+        // Movement otomatis berhenti karena PlayerMovement mengecek CanAct sendiri di FixedUpdate.
     }
 
     // Dipanggil oleh sistem Morning Phase / Day-Night Manager
