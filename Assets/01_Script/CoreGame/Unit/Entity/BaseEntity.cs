@@ -61,6 +61,14 @@ public class BaseEntity : MonoBehaviour
 
     private int CalcMaxHP()
     {
+        // entityData bisa null kalau GameSessionData/Registry ternyata tidak menyediakan PlayerDataSO
+        // sama sekali (mis. lupa isi Registry asset) -> jangan crash, fallback ke 1 HP dan kasih tau lewat log.
+        if (entityData == null)
+        {
+            Debug.LogError($"[{name}] entityData belum ter-set (GameSessionData/Registry tidak menyediakan PlayerDataSO). MaxHP di-default ke 1.");
+            return 1;
+        }
+
         int baseHp = Mathf.Max(1, Mathf.RoundToInt(entityData.baseVitality * entityData.hpPerVitality) + bonusMaxHP);
         return baseHp;
     }
