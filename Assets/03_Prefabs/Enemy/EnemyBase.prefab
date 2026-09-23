@@ -26,12 +26,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 563187445462837543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.2558, y: 0.274, z: 0}
   m_LocalScale: {x: 0.4884726, y: 0.27892712, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3033933179832952179}
+  m_Father: {fileID: 1233489119263264802}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8400935400995757336
 SpriteRenderer:
@@ -170,7 +170,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1233489119263264802}
-  - {fileID: 1669077778424156227}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3713379564978150042
@@ -188,6 +187,8 @@ MonoBehaviour:
   entityData: {fileID: 11400000, guid: c03285a6b8d07be49a99fd70027b3d0e, type: 2}
   bonusMaxHP: 0
   currentHealth: 0
+  _sr: {fileID: 5622377073578391651}
+  _hitcolor: {r: 0, g: 1, b: 0.95430183, a: 1}
 --- !u!50 &8319340279156386857
 Rigidbody2D:
   serializedVersion: 5
@@ -245,7 +246,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1669077778424156227}
   m_Father: {fileID: 3033933179832952179}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5622377073578391651

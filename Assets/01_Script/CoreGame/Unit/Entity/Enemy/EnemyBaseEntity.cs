@@ -1,14 +1,19 @@
+using System.Collections;
 using UnityEngine;
 public class EnemyBaseEntity : BaseEntity, IPoolable
 {
+    [Header ("Visual FeedBack")]
+    [SerializeField] private SpriteRenderer _sr;
+    [SerializeField] private Color _hitcolor = Color.red;
+    private Color originalColor;
+    private Coroutine flashCoroutine;
+
     protected override void Awake()
     {
         base.Awake();
+        if (_sr == null) _sr = GetComponentInChildren<SpriteRenderer>();
+        if (_sr != null) originalColor = _sr.color;
 
-        // if (entityData != null)
-        // {
-        //     entityData.Faction = FactionType.ENEMY;
-        // }
         OnDied += HandleEnemyDefeat;
     }
     protected virtual void HandleEnemyDefeat()
@@ -34,5 +39,24 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     public void OnDestroy()
     {
         OnDied -= HandleEnemyDefeat;
+    }
+
+    public override void TakeDamage(int amount)
+    {
+        base.TakeDamage(amount);
+        Debug.Log($"<color=orange>[Enemy Damage Log]</color> {gameObject.name} menerima damage: {amount}");
+        if (_sr != null)
+        {
+            if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+            flashCoroutine = StartCoroutine(FlashRedRoutine());
+        }
+    }
+    private IEnumerator FlashRedRoutine()
+    {
+        Debug.Log("<color=red>[Flash] Mengubah warna ke MERAH</color>");
+        _sr.color = _hitcolor;
+        yield return new WaitForSeconds(0.5f); // Bikin durasi lebih lama dulu buat dipastikan
+        _sr.color = originalColor;
+        Debug.Log("<color=white>[Flash] Mengembalikan warna ke Normal</color>");
     }
 }
