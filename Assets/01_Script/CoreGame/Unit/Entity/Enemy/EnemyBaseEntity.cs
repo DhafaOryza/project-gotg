@@ -44,7 +44,6 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     public override void TakeDamage(int amount)
     {
         base.TakeDamage(amount);
-        Debug.Log($"<color=orange>[Enemy Damage Log]</color> {gameObject.name} menerima damage: {amount}");
         if (_sr != null)
         {
             if (flashCoroutine != null) StopCoroutine(flashCoroutine);
@@ -53,10 +52,8 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     }
     private IEnumerator FlashRedRoutine()
     {
-        Debug.Log("<color=red>[Flash] Mengubah warna ke MERAH</color>");
         _sr.color = _hitcolor;
         yield return new WaitForSeconds(0.5f); // Bikin durasi lebih lama dulu buat dipastikan
         _sr.color = originalColor;
-        Debug.Log("<color=white>[Flash] Mengembalikan warna ke Normal</color>");
     }
 }

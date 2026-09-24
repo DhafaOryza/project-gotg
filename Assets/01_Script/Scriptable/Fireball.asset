@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FireballSkillSO
   skillId: fireball_00q
   displayName: Fireball
-  icon: {fileID: 0}
+  icon: {fileID: -3321300037484930216, guid: 6d582f98f91e3bd40be724be527e2bd0, type: 3}
   description: hohtohtohtohtoh
+  targetType: 0
   cooldown: 3
   skillColor: {r: 0.99565566, g: 1, b: 0.33018857, a: 1}
   aoeRadius: 3
   VfxID: {fileID: 11400000, guid: 0893609aaa6dbd545b1949ac7d064b25, type: 2}
-  damage: 40
+  damage: 10000

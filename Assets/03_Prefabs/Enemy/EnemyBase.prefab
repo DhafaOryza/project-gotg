@@ -149,6 +149,8 @@ GameObject:
   - component: {fileID: 3033933179832952179}
   - component: {fileID: 3713379564978150042}
   - component: {fileID: 8319340279156386857}
+  - component: {fileID: 2255912767630850982}
+  - component: {fileID: 5686578992543251515}
   m_Layer: 11
   m_Name: EnemyBase
   m_TagString: Untagged
@@ -188,7 +190,7 @@ MonoBehaviour:
   bonusMaxHP: 0
   currentHealth: 0
   _sr: {fileID: 5622377073578391651}
-  _hitcolor: {r: 0, g: 1, b: 0.95430183, a: 1}
+  _hitcolor: {r: 1, g: 0.1588737, b: 0, a: 1}
 --- !u!50 &8319340279156386857
 Rigidbody2D:
   serializedVersion: 5
@@ -216,6 +218,35 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &2255912767630850982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2977259333405695452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa741b2730b00294c950b450132dbe0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+--- !u!114 &5686578992543251515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2977259333405695452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51a28bd652497fb4f9ece16488cf2c18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeter
+  detectionRadius: 10
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 5120
+  searchInterval: 0.3
 --- !u!1 &4738803724824732887
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,7 +331,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.90943396, g: 0.18360269, b: 0.18360269, a: 1}
+  m_Color: {r: 0.45548588, g: 0.97735846, b: 0.4908766, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

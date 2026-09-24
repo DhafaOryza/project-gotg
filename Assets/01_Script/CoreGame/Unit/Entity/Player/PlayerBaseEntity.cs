@@ -53,6 +53,9 @@ public class PlayerBaseEntity : BaseEntity
         }
     }
 
+    /// <summary>
+    /// Method untuk memanggil Skill yang dipunyai player.
+    /// </summary>
     public bool TryUseSkill(int slotIndex, BaseEntity target)
     {
         if (!CanAct)

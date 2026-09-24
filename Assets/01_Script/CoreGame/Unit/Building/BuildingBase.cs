@@ -1,5 +1,4 @@
 // using System;
-// using _01_Script.Scriptable;
 // using UnityEngine;
 
 // namespace _01_Script.CoreGame.Unit
