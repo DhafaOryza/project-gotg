@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d1f779e4c3df7e488967fda88c8e89b, type: 3}
   m_Name: NewBuildingData
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDataSO
-  _faction: 3
+  _faction: 1
   baseVitality: 10
   hpPerVitality: 170
   skillCooldownMultiplier: 1
-  moveSpeed: 5
+  moveSpeed: 0

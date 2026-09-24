@@ -1,56 +1,37 @@
-// using System;
-// using UnityEngine;
+using System;
+using UnityEngine;
 
-// namespace _01_Script.CoreGame.Unit
-// {
-//     public abstract class BuildingCore : MonoBehaviour
-//     {
-//         [Header ("Building Blueprint")]
-//         [SerializeField] protected BuildingDataSO buildingDataSO;
-//         [Header ("Runtime")]
-//         [SerializeField] protected float _currentHealth;
-//         protected bool isDestroyed = false;
-//         protected SpriteRenderer _sr;
+namespace _01_Script.CoreGame.Unit
+{
+    public abstract class BuildingBase : BaseEntity
+    {
+        [Header ("Building Blueprint")]
+        public BuildingDataSO buildingDataSO => entityData as BuildingDataSO;
+        public string BuildingName => buildingDataSO != null ? buildingDataSO.name : "Unknown";
 
-//         public string BuildingName => buildingDataSO != null ? buildingDataSO.BuildingName : "Unknown";
-//         public float MaxHP => buildingDataSO != null ? buildingDataSO.MaxHP : 100f;
+        protected override void Awake()
+        {
+            base.Awake();
+            if (buildingDataSO != null)
+            {
+                entityData = buildingDataSO;
+            }
+        }
 
-//         public event Action OnDestroy;
+        public override void TakeDamage(int amount)
+        {
+            if (IsDead) return;
 
-//         protected void Awake()
-//         {
-//             _sr = GetComponentInChildren<SpriteRenderer>();
-//         }
+            base.TakeDamage(amount);
+            Debug.Log($"[{BuildingName}] Terkena {amount} damage. Sisa HP: {currentHealth}");
+        }
 
-//         protected virtual void Start()
-//         {
-//             if (buildingDataSO != null) _currentHealth = MaxHP;
-//         }
+        protected override void Die()
+        {
+            base.Die();
 
-//         public virtual void TakeDamage(float amount)
-//         {
-//             if (isDestroyed) return;
+        }
 
-//             _currentHealth -= amount;
-//             Debug.Log($"[{BuildingName}] Terkena {amount} damage. Sisa HP: {_currentHealth}");
 
-//             if (_currentHealth <= 0)
-//             {
-//                 _currentHealth = 0;
-//                 Die();
-//             }
-//         }
-
-//         protected virtual void Die()
-//         {
-//             isDestroyed = true;
-//             OnDestroy?.Invoke();
-
-//             if (_sr != null)
-//             {
-//                 _sr.enabled = false;
-//             }
-//         }
-
-//     }
-// }
+    }
+}

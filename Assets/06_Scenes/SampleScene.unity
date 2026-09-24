@@ -556,7 +556,7 @@ GameObject:
   - component: {fileID: 927151385}
   - component: {fileID: 927151386}
   m_Layer: 10
-  m_Name: Triangle
+  m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -666,7 +666,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -863,7 +863,7 @@ GameObject:
   - component: {fileID: 1470846180}
   - component: {fileID: 1470846181}
   m_Layer: 10
-  m_Name: test Subject Building
+  m_Name: Granary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -897,6 +897,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a084aac0a3719a8489df2210dabf54f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_01_Script.CoreGame.Unit.Building.GranaryCore
+  entityData: {fileID: 11400000, guid: bcf820216535eeb4cb33ea1a239bf395, type: 2}
+  bonusMaxHP: 0
+  currentHealth: 0
 --- !u!1 &1733172303
 GameObject:
   m_ObjectHideFlags: 0

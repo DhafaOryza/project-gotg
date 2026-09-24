@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BaseEntity : MonoBehaviour
 {
+    [Header ("Blueprint Entity")]
     public EntityDataSO entityData;
 
     // Bonus Stats
