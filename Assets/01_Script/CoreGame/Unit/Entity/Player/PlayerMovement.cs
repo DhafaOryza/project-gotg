@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D _rb;
@@ -12,20 +11,22 @@ public class PlayerMovement : MonoBehaviour
         _playerEntity = GetComponent<PlayerBaseEntity>();
     }
 
+    private void Update()
+    {
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveY = Input.GetAxisRaw("Vertical");
+
+        _moveInput = new Vector2(moveX, moveY);
+    }
     private void FixedUpdate()
     {
-        // if (!_playerEntity.CanAct)
-        // {
-        //     _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
-        //     return;
-        // }
-
+        if (!_playerEntity.CanAct)
+        {
+            _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+            return;
+        }
+        
         Move();
-    }
-
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        _moveInput = context.ReadValue<Vector2>();
     }
 
     private void Move()
