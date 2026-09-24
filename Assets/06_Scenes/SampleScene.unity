@@ -237,12 +237,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 385954131}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -4.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1461107456}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
@@ -822,9 +822,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a974f5c7ada7b428ff58716aa84b8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnerHelper
-  enemyPoolId: {fileID: 11400000, guid: d2ce71cf22993914f824808e04b42c16, type: 2}
+  enemyPoolId:
+  - {fileID: 11400000, guid: d2ce71cf22993914f824808e04b42c16, type: 2}
+  - {fileID: 11400000, guid: dcab1568c187547428576da8eaec722d, type: 2}
+  - {fileID: 11400000, guid: 74f8a8ad4c5776441ba7c38c3a39e2f6, type: 2}
   spawnPoint: {fileID: 385954132}
-  randomOffset: {x: 1, y: 1}
+  randomOffset: {x: 4, y: 1}
 --- !u!4 &1461107456
 Transform:
   m_ObjectHideFlags: 0
@@ -837,7 +840,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 385954132}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1461107457
@@ -1211,5 +1215,4 @@ SceneRoots:
   - {fileID: 1470846180}
   - {fileID: 1429392309}
   - {fileID: 1461107456}
-  - {fileID: 385954132}
   - {fileID: 891514461}
