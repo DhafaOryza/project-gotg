@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1669077778424156227}
   - component: {fileID: 8400935400995757336}
   - component: {fileID: 7502495782465509578}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: visual (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 3033933179832952179}
   - component: {fileID: 3713379564978150042}
   - component: {fileID: 8319340279156386857}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: EnemyBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,7 +227,7 @@ GameObject:
   - component: {fileID: 1233489119263264802}
   - component: {fileID: 5622377073578391651}
   - component: {fileID: 7612556398205038262}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

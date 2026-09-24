@@ -53,7 +53,7 @@ public class PlayerBaseEntity : BaseEntity
         }
     }
 
-    private bool TryUseSkill(int slotIndex, BaseEntity target)
+    public bool TryUseSkill(int slotIndex, BaseEntity target)
     {
         if (!CanAct)
         {
