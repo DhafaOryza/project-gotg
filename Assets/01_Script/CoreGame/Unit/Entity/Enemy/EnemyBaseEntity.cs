@@ -33,7 +33,11 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     public void OnSpawn()
     {
         RecoverForMorning();
-        Debug.Log($"[{gameObject.name}] Di-spawn dari Pool! HP Reset ke: {currentHealth}");
+        if (TryGetComponent<EnemyStateMachine>(out var stateMachine))
+        {
+            stateMachine.ResetFSM();
+            Debug.Log($"[{gameObject.name}] Di-spawn dari Pool! HP Reset ke: {currentHealth}");
+        }
     }
 
     public void OnDestroy()

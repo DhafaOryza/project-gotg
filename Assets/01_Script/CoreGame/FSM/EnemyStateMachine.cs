@@ -7,6 +7,8 @@ public class EnemyStateMachine : MonoBehaviour
     private EnemyTargeter _targeter;
     private EnemyMovement _movement;
     private float _executeCooldownTimer;
+    private float _executeDurationTimer;
+    private bool _hasPerformedAction = false;
 
     private void Awake()
     {
@@ -76,16 +78,28 @@ public class EnemyStateMachine : MonoBehaviour
     private void HandleExecuteState()
     {
         _movement.SetCanMove(false);
-        if (_targeter.currentTarget != null)
+        if (!_hasPerformedAction)
         {
-            _entity.PerformAction(_targeter.currentTarget);
+            if (_targeter.currentTarget != null)
+            {
+                _entity.PerformAction(_targeter.currentTarget);
+                Debug.Log("Musuh Menyerang !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+
+            _hasPerformedAction = true;
+            _executeDurationTimer = 0.5f;
+        }
+        
+        if (_executeDurationTimer > 0f)
+        {
+            _executeDurationTimer -= Time.deltaTime;
+            return;
         }
 
         if (_entity.enemyData != null)
-        {
             _executeCooldownTimer = _entity.enemyData.executeCooldown;
-        }
 
+        _hasPerformedAction = false;
         ChangeState(EnemyState.IDLE);
     }
     private void HandleDieState()
@@ -97,5 +111,12 @@ public class EnemyStateMachine : MonoBehaviour
     private void ChangeState(EnemyState newState)
     {
         currentState = newState;
+    }
+
+    public void ResetFSM()
+    {
+        currentState = EnemyState.IDLE;
+        _executeCooldownTimer = 0;
+        _movement.SetCanMove(true);
     }
 }

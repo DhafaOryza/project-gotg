@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ecbfb6eab087d7468c1c7bc728d921f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBaseEntity
-  entityData: {fileID: 11400000, guid: 4b06beb205688bd43a2e13ec42d0dcfc, type: 2}
+  entityData: {fileID: 11400000, guid: a7b00b452e7ca2240aac1cf1e54b857a, type: 2}
   bonusMaxHP: 0
   currentHealth: 0
   equippedSkills: []

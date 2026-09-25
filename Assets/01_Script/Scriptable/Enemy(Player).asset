@@ -17,5 +17,8 @@ MonoBehaviour:
   hpPerVitality: 170
   skillCooldownMultiplier: 1
   moveSpeed: 5
+  executeDamage: 90
+  executeRange: 1.5
+  executeCooldown: 1.2
   targetPriority: 1
   threatTier: 0

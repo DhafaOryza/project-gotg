@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class BaseEntity : MonoBehaviour
+public class BaseEntity : MonoBehaviour, IDamageable
 {
     [Header ("Blueprint Entity")]
     public EntityDataSO entityData;
