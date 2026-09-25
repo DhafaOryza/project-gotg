@@ -49,4 +49,6 @@ public class EnemyMovement : MonoBehaviour
             _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
         }
     }
+
+    public void StopMoving() => SetCanMove(false);
 }

@@ -151,6 +151,7 @@ GameObject:
   - component: {fileID: 8319340279156386857}
   - component: {fileID: 2255912767630850982}
   - component: {fileID: 5686578992543251515}
+  - component: {fileID: 8124294629903642155}
   m_Layer: 11
   m_Name: EnemyBase
   m_TagString: Untagged
@@ -230,6 +231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa741b2730b00294c950b450132dbe0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  _target: {fileID: 0}
 --- !u!114 &5686578992543251515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,6 +249,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 5120
   searchInterval: 0.3
+--- !u!114 &8124294629903642155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2977259333405695452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25cc4eb4adf14c04bbdb01dcbdffdc3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStateMachine
+  currentState: 0
 --- !u!1 &4738803724824732887
 GameObject:
   m_ObjectHideFlags: 0

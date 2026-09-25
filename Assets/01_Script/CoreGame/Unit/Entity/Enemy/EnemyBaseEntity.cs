@@ -7,7 +7,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     [SerializeField] private Color _hitcolor = Color.red;
     private Color originalColor;
     private Coroutine flashCoroutine;
-
+    public EnemyDataSO enemyData => entityData as EnemyDataSO;
     protected override void Awake()
     {
         base.Awake();
@@ -50,6 +50,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
             flashCoroutine = StartCoroutine(FlashRedRoutine());
         }
     }
+    public virtual void PerformAction(GameObject target) {}
     private IEnumerator FlashRedRoutine()
     {
         _sr.color = _hitcolor;

@@ -11,6 +11,23 @@ public class EnemyTargeter : MonoBehaviour
     [SerializeField] private float searchInterval = 0.3f; 
 
     private float _timer;
+    public GameObject currentTarget {get; private set;}
+    public bool Hastarget => currentTarget != null;
+    public bool isInRange
+    {
+        get
+        {
+            if (!Hastarget) return false;
+
+            float executeRange = 1.5f;
+            if (_enemyBase != null && _enemyBase.enemyData != null)
+                executeRange = _enemyBase.enemyData.executeRange;
+
+            float distance = Vector2.Distance(transform.position, currentTarget.transform.position);
+            return distance <= executeRange;
+        }
+    }
+
     private void Awake()
     {
         _enemyBase = GetComponent<EnemyBaseEntity>();
@@ -38,7 +55,7 @@ public class EnemyTargeter : MonoBehaviour
         if (enemyData == null) return;
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, targetLayer);
-        Transform bestTarget = null;
+        GameObject bestTarget = null;
         float minDistance = float.MaxValue;
 
         foreach (var hit in hits)
@@ -58,11 +75,12 @@ public class EnemyTargeter : MonoBehaviour
             if (dist < minDistance)
                 {
                     minDistance = dist;
-                    bestTarget = target.transform;
+                    bestTarget = target.gameObject;
                 } 
             }
-
-        _movement.SetTarget(bestTarget);   
+            
+        currentTarget = bestTarget;
+        // _movement.SetTarget(bestTarget);   
     }
 
     private void OnDrawGizmosSelected()
