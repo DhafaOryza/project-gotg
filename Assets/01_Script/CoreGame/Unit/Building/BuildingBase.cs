@@ -1,37 +1,56 @@
 using System;
 using UnityEngine;
 
-namespace _01_Script.CoreGame.Unit
+public class BuildingBase : MonoBehaviour, IDamageable
 {
-    public abstract class BuildingBase : BaseEntity
+    public BuildingDataSO buildingData;
+
+    public int bonusMaxHp;
+
+    public int maxHealth { get; private set; }
+    public int currentHealth;
+
+    public bool IsDestroy { get; protected set; }
+
+    public event Action<int, int> OnHealthChanged;
+    public event Action OnDied;
+
+    private void Awake()
     {
-        [Header ("Building Blueprint")]
-        public BuildingDataSO buildingDataSO => entityData as BuildingDataSO;
-        public string BuildingName => buildingDataSO != null ? buildingDataSO.name : "Unknown";
-
-        protected override void Awake()
-        {
-            base.Awake();
-            if (buildingDataSO != null)
-            {
-                entityData = buildingDataSO;
-            }
-        }
-
-        public override void TakeDamage(int amount)
-        {
-            if (IsDead) return;
-
-            base.TakeDamage(amount);
-            Debug.Log($"[{BuildingName}] Terkena {amount} damage. Sisa HP: {currentHealth}");
-        }
-
-        protected override void Die()
-        {
-            base.Die();
-
-        }
-
-
+        maxHealth = CalcMaxHP();
+        currentHealth = maxHealth;
     }
+
+    public virtual void TakeDamage(int amount)
+    {
+        if (IsDestroy || amount <= 0) return;
+
+        currentHealth = Mathf.Max(0, currentHealth - amount);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        if (currentHealth <= 0)
+            Destroy();
+    }
+
+    protected virtual void Destroy()
+    {
+        IsDestroy = true;
+        OnDied?.Invoke();
+    }
+
+    #region Helper
+
+    private int CalcMaxHP()
+    {
+        if (buildingData == null)
+        {
+            Debug.Log($"[{name}] buildingData not found, Health will be set 1");
+            return 1;
+        }
+
+        int baseHp = Mathf.Max(1, Mathf.RoundToInt(buildingData.baseVitality * buildingData.hpPerVitality) + bonusMaxHp);
+        return baseHp;
+    }
+
+    #endregion
 }

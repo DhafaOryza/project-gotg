@@ -5,8 +5,7 @@ using UnityEngine;
 public class Registry : ScriptableObject
 {
     public PlayerDataSO defaultPlayerData;
-
     public List<SkillDataSO> defaultSkills = new List<SkillDataSO>();
-
     public List<ConsumableDataSO> defaultConsumables = new List<ConsumableDataSO>();
+    public WaveDataSO waveData;
 }

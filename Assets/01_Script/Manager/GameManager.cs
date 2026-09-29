@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 
     public PoolManager poolManager;
     public LevelSpawnerManager levelSpawnerManager;
+    public WaveController waveController;
 
     private bool hasInitialized = false;
 
@@ -48,9 +49,11 @@ public class GameManager : MonoBehaviour
         // Validation Object Manager
         if (poolManager == null) poolManager = Object.FindFirstObjectByType<PoolManager>();
         if (levelSpawnerManager == null) levelSpawnerManager = Object.FindFirstObjectByType<LevelSpawnerManager>();
+        if (waveController == null) waveController = Object.FindFirstObjectByType<WaveController>();
 
         // Initliaze The Manager;
         if (poolManager != null) poolManager.Initialize();
         if (levelSpawnerManager != null) levelSpawnerManager.Initialize();
+        if (waveController != null) waveController.Initilaize();
     }
 }
