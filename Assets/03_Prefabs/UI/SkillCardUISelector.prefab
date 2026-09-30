@@ -103,7 +103,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11ebc1661e7c57e458eafe099c556742, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSelectorCardUI
-  iconImage: {fileID: 4486172626065384983}
+  iconImage: {fileID: 8907163686301312997}
+  followSpeed: 25
+  maxTiltAngle: 15
+  tiltSpeed: 10
 --- !u!1 &3135998995810796932
 GameObject:
   m_ObjectHideFlags: 0

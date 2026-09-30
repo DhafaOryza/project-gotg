@@ -4,18 +4,51 @@ using UnityEngine;
 
 public class PlayerUI : MonoBehaviour
 {
+    [Header ("UI Container")]
+    [SerializeField] private GameObject playerProfile;
+    [SerializeField] private GameObject SkillDeckContainer;
+
     [Header("Skill Card")]
     [SerializeField] private GameObject skillCardPrefab;
     [SerializeField] private Transform skillContainer;
 
-    [Header ("setActive Helper gameObject")]
-    [SerializeField] private GameObject PreparationPanel;
-    [SerializeField] private GameObject SkillSelectorPanel;
-
     private void Start()
     {
+        var waveController = GameManager.Instance?.waveController;
+        if (waveController != null)
+        {
+            waveController.OnWaveStarted += HandleWaveStarted;
+            waveController.OnWaveEnded += HandleWaveEnded;
+        }
+
+        UpdateUIVisibility();
+    }
+
+    private void OnDestroy()
+    {
+        var waveController = GameManager.Instance?.waveController;
+        if (waveController != null)
+        {
+            waveController.OnWaveStarted -= HandleWaveStarted;
+            waveController.OnWaveEnded -= HandleWaveEnded;
+        }
+    }
+    private void UpdateUIVisibility()
+    {
+        var waveController = GameManager.Instance?.waveController;
+        bool isRunning = waveController != null && waveController.IsWaveRunning;
+
+        if (playerProfile != null)
+            playerProfile.SetActive(isRunning);
+        if (SkillDeckContainer != null)
+            SkillDeckContainer.SetActive(isRunning);
+    }
+    private void HandleWaveStarted(int waveIndex)
+    {
+        UpdateUIVisibility();
         SetupSkillUI();
     }
+    private void HandleWaveEnded(int waveIndex) => UpdateUIVisibility();
 
     private void SetupSkillUI()
     {
@@ -27,7 +60,7 @@ public class PlayerUI : MonoBehaviour
         }
 
         List<SkillDataSO> skills = GameSessionData.GetOrCreate().GetSkillsData();
-        if (skills == null && skills.Count == 0)
+        if (skills == null || skills.Count == 0)
         {
             Debug.LogWarning("[PlayerUI] List skill di GameSessionData/Registry kosong.");
             return;

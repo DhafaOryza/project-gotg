@@ -7,6 +7,7 @@ public class SkillSelectorCardUI : MonoBehaviour, IBeginDragHandler, IDragHandle
 {
     [Header("Visual")]
     [SerializeField] private Image iconImage;
+
     [Header("Juice / Feel Settings")]
     [SerializeField] private float followSpeed = 25f;
     [SerializeField] private float maxTiltAngle = 15f;
@@ -29,8 +30,8 @@ public class SkillSelectorCardUI : MonoBehaviour, IBeginDragHandler, IDragHandle
     private void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>();
-        _rootCanvas = GetComponentInParent<Canvas>();
         _rectTransform = GetComponent<RectTransform>();
+        _rootCanvas = GetComponentInParent<Canvas>();
     }
 
     public void Setup(SkillDataSO data, Transform initialHome)
@@ -38,25 +39,31 @@ public class SkillSelectorCardUI : MonoBehaviour, IBeginDragHandler, IDragHandle
         skillData = data;
         homeParent = initialHome;
         currentParent = initialHome;
+
+        if (transform.parent != initialHome)
+        {
+            transform.SetParent(initialHome, false);
+        }
+
         if (iconImage != null && data != null)
             iconImage.sprite = data.icon;
     }
 
-    
     private void Update()
     {
         if (!isDragging) return;
+        _rectTransform.position = Vector3.Lerp(_rectTransform.position, targetPosition, Time.unscaledDeltaTime * followSpeed);
 
-        _rectTransform.position = Vector2.Lerp(_rectTransform.position, targetPosition, Time.deltaTime * followSpeed);
+        // Efek miring (Tilt)
+        Vector2 delta = (Vector2)_rectTransform.position - lastPosition;
+        float targetTilt = Mathf.Clamp(-delta.x * 2f, -maxTiltAngle, maxTiltAngle);
 
-        Vector2 delta =(Vector2)_rectTransform.position - lastPosition;
-        float targettilt = Mathf.Clamp(-delta.x * 2f, -maxTiltAngle, maxTiltAngle);
-
-        Quaternion targetRotation = Quaternion.Euler(0,0,targettilt);
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * tiltSpeed);
+        Quaternion targetRotation = Quaternion.Euler(0, 0, targetTilt);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.unscaledDeltaTime * tiltSpeed);
 
         lastPosition = _rectTransform.position;
     }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (skillData == null) return;
@@ -75,8 +82,8 @@ public class SkillSelectorCardUI : MonoBehaviour, IBeginDragHandler, IDragHandle
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (skillData == null) return;
-            targetPosition = eventData.position;
+        if (!isDragging || skillData == null) return;
+        targetPosition = eventData.position;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -86,23 +93,37 @@ public class SkillSelectorCardUI : MonoBehaviour, IBeginDragHandler, IDragHandle
 
         transform.rotation = Quaternion.identity;
 
-        // Jika tidak di-drop di tempat yang valid (parent tidak berubah saat proses Drop), kembalikan ke parent asal
+        // Jika dilepas tanpa ditangkap DropZone (masih menempel di Canvas)
         if (transform.parent == _rootCanvas.transform)
+        {
             ResetToOriginalParent();
+        }
     }
 
     public void SetNewParent(Transform newParent)
     {
+        if (newParent == null) return;
+
         currentParent = newParent;
-        transform.SetParent(_rootCanvas.transform, true);
+        transform.SetParent(newParent, false);
     }
-    public void ResetToOriginalParent() => transform.SetParent(currentParent, false);
+
+    public void ResetToOriginalParent()
+    {
+        if (currentParent != null)
+        {
+            transform.SetParent(currentParent, false);
+        }
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.dragging) return;
+
         // Jika kartu sedang berada di SkillDeck, klik akan mengembalikannya ke Content/Home
-        if (currentParent != homeParent)
+        if (currentParent != homeParent && homeParent != null)
+        {
             SetNewParent(homeParent);
+        }
     }
 }
