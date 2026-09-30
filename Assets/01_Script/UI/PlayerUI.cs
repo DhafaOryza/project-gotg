@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,10 @@ public class PlayerUI : MonoBehaviour
     [Header("Skill Card")]
     [SerializeField] private GameObject skillCardPrefab;
     [SerializeField] private Transform skillContainer;
+
+    [Header ("setActive Helper gameObject")]
+    [SerializeField] private GameObject PreparationPanel;
+    [SerializeField] private GameObject SkillSelectorPanel;
 
     private void Start()
     {
