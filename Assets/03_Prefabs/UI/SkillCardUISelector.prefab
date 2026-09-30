@@ -12,9 +12,8 @@ GameObject:
   - component: {fileID: 8150008436677281434}
   - component: {fileID: 4486172626065384983}
   - component: {fileID: 5926287276222731163}
-  - component: {fileID: 1578479760147316036}
   m_Layer: 0
-  m_Name: SkillCardUI
+  m_Name: SkillCardUISelector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91,23 +90,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1578479760147316036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1033792837464170527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5992868a73ea8124693053c362b90719, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SkillCardUI
-  iconImage: {fileID: 8907163686301312997}
-  cooldownOverlay: {fileID: 7958142334447440938}
-  targetLayerMask:
-    serializedVersion: 2
-    m_Bits: 6144
 --- !u!1 &3135998995810796932
 GameObject:
   m_ObjectHideFlags: 0

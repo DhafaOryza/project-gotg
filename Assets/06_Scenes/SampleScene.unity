@@ -163,11 +163,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba072d6fbb8c294188c4d53a718b822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSessionData
-  playerData: {fileID: 11400000, guid: 7828122d2ac68b445b5cc8f5511b2205, type: 2}
   choosenSkills:
   - {fileID: 11400000, guid: 41fcf815ed56c7740aac3347a832cd23, type: 2}
   consumableItem: []
-  registryResourcePath: TestRegistry
+  choosenWave: {fileID: 0}
 --- !u!1 &137871678
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,6 +197,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelSpawnerManager
   playerId: {fileID: 11400000, guid: b300f120ed88abc438426b5ea497e3d5, type: 2}
+  spawnPlayerPosition: {fileID: 1470846180}
+  buildingId: {fileID: 0}
+  spawnBuildingPosition: {fileID: 0}
+  enemySpawnPositions:
+  - {fileID: 385954132}
 --- !u!4 &137871680
 Transform:
   m_ObjectHideFlags: 0
@@ -713,6 +717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   poolManager: {fileID: 1789453569}
   levelSpawnerManager: {fileID: 137871679}
+  waveController: {fileID: 0}
 --- !u!4 &1429392309
 Transform:
   m_ObjectHideFlags: 0
@@ -886,9 +891,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a084aac0a3719a8489df2210dabf54f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_01_Script.CoreGame.Unit.Building.GranaryCore
-  entityData: {fileID: 11400000, guid: bcf820216535eeb4cb33ea1a239bf395, type: 2}
-  bonusMaxHP: 0
-  currentHealth: 0
 --- !u!1 &1733172303
 GameObject:
   m_ObjectHideFlags: 0

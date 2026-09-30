@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Registry
   defaultPlayerData: {fileID: 11400000, guid: 7828122d2ac68b445b5cc8f5511b2205, type: 2}
   defaultSkills:
-  - {fileID: 11400000, guid: 9ae44b8cdbf32bf45bfbfa66983ad915, type: 2}
+  - {fileID: 11400000, guid: 41fcf815ed56c7740aac3347a832cd23, type: 2}
   - {fileID: 11400000, guid: 89fa1b9b23b0b1f42b3bd69d8025db3a, type: 2}
   - {fileID: 11400000, guid: 0e3d97729a517c34eaf95776b5564c31, type: 2}
   - {fileID: 11400000, guid: 546b8357e9ab6f14f936a531c26cab96, type: 2}
