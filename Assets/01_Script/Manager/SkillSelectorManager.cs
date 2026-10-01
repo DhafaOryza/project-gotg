@@ -38,9 +38,16 @@ public class SkillSelectorManager : MonoBehaviour
             return;
         }
 
+        List<SkillDataSO> currentlySelectedSkills = GameSessionData.Instance != null ?
+            GameSessionData.Instance.GetSkillsData() :
+            new List<SkillDataSO>();
+
         foreach (var skillSO in availableSkills)
         {
             if (skillSO == null) continue;
+
+            if (currentlySelectedSkills != null && currentlySelectedSkills.Contains(skillSO))
+                continue;
 
             GameObject cardObj = Instantiate(skillCardPrefab, contentContainer);
             SkillSelectorCardUI cardUI = cardObj.GetComponent<SkillSelectorCardUI>();
