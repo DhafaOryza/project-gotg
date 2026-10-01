@@ -40,6 +40,8 @@ public class PlayerBaseEntity : BaseEntity
 
         equippedSkills = session.GetSkillsData();
         equippedConsumables = session.GetConsumables();
+
+        InitializeSkillRuntimes();
     }
 
     /// <summary>

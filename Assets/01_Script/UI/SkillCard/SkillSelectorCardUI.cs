@@ -123,7 +123,10 @@ public class SkillSelectorCardUI : MonoBehaviour, IBeginDragHandler, IDragHandle
         // Jika kartu sedang berada di SkillDeck, klik akan mengembalikannya ke Content/Home
         if (currentParent != homeParent && homeParent != null)
         {
+            SkillDeckUI deckUI = GetComponentInParent<SkillDeckUI>();
             SetNewParent(homeParent);
+            if (deckUI != null)
+                deckUI.SyncSkillToGameSession();
         }
     }
 }

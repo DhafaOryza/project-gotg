@@ -24,6 +24,20 @@ public class PlayerUI : MonoBehaviour
         UpdateUIVisibility();
     }
 
+    private void OnEnable()
+    {
+        var session = GameSessionData.GetOrCreate();
+        if (session != null)
+        {
+            session.OnSkillDataChanged += SetupSkillUI;
+        }
+    }
+    private void OnDisable()
+    {
+        if (GameSessionData.Instance != null)
+            GameSessionData.Instance.OnSkillDataChanged -= SetupSkillUI;
+    }
+
     private void OnDestroy()
     {
         var waveController = GameManager.Instance?.waveController;

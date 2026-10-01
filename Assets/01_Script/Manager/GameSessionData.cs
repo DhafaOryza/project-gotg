@@ -14,6 +14,8 @@ public class GameSessionData : MonoBehaviour
     [Header("Registry Data")]
     [SerializeField] private Registry registryData;
 
+    public System.Action OnSkillDataChanged;
+
     void Awake()
     {
         if (Instance == null)
@@ -57,6 +59,7 @@ public class GameSessionData : MonoBehaviour
     public void SetSkillData(SkillDataSO setSkillData)
     {
         choosenSkills.Add(setSkillData);
+        OnSkillDataChanged?.Invoke();
     }
 
     public void SetSkillsData(List<SkillDataSO> setSkillsData)

@@ -20,6 +20,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0e3d97729a517c34eaf95776b5564c31, type: 2}
   - {fileID: 11400000, guid: 546b8357e9ab6f14f936a531c26cab96, type: 2}
   - {fileID: 11400000, guid: 9499736fe972e7e4ba9b81ca3cc4e46d, type: 2}
+  - {fileID: 11400000, guid: 41fcf815ed56c7740aac3347a832cd23, type: 2}
   Consumables:
   - {fileID: 11400000, guid: 59cbe89ff1ddf30409bdc762d59dbd2d, type: 2}
   - {fileID: 11400000, guid: 2b7da5b97fdcc1f4e91d4daf17565a75, type: 2}
