@@ -52,7 +52,7 @@ public class PlayerUI : MonoBehaviour
 
     private void SetupSkillUI()
     {
-        PlayerBaseEntity player = FindObjectOfType<PlayerBaseEntity>();
+        PlayerBaseEntity player = FindFirstObjectByType<PlayerBaseEntity>();
         if (player == null)
         {
             Debug.LogWarning("[PlayerUI] PlayerBaseEntity tidak ditemukan!");

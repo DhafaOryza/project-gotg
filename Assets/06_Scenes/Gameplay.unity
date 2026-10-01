@@ -238,19 +238,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 71299899}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 690661210}
-        m_TargetAssemblyTypeName: WaveController, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &71299899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,7 +534,7 @@ GameObject:
   - component: {fileID: 287027223}
   - component: {fileID: 287027222}
   m_Layer: 0
-  m_Name: NightCounter
+  m_Name: Night Counter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -923,6 +911,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 383908391}
   m_CullTransparentMesh: 1
+--- !u!1 &397419898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 397419899}
+  - component: {fileID: 397419900}
+  m_Layer: 0
+  m_Name: NightController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &397419899
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397419898}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2042023947}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &397419900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397419898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d227ffe5313f44042ac294426e16529b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NightController
+  currentNightIndex: 0
+  currentNightWave: {fileID: 0}
+  autoStartNextNight: 0
 --- !u!1 &476346325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1613,8 +1648,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PreparationUI
   RootUI: {fileID: 690661210}
-  startButton: {fileID: 71299898}
   skillSelectorPanel: {fileID: 1424105031}
+  nightCounter: {fileID: 1294108585}
+  startButton: {fileID: 71299898}
+  skillOpenButton: {fileID: 1259016734}
+  skillCloseButton: {fileID: 1554197992}
 --- !u!1 &699235202
 GameObject:
   m_ObjectHideFlags: 0
@@ -2671,19 +2709,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1259016732}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 690661212}
-        m_TargetAssemblyTypeName: PreparationUI, Assembly-CSharp
-        m_MethodName: SetSkillSelectorActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1276009667
 GameObject:
   m_ObjectHideFlags: 0
@@ -2771,7 +2797,7 @@ GameObject:
   - component: {fileID: 1294108586}
   - component: {fileID: 1294108585}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: Counter - Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3217,7 +3243,7 @@ GameObject:
   - component: {fileID: 1424105033}
   - component: {fileID: 1424105035}
   m_Layer: 0
-  m_Name: SkillSelectorPanel
+  m_Name: Skill Selector Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4539,6 +4565,7 @@ Transform:
   m_Children:
   - {fileID: 929919026}
   - {fileID: 2119463927}
+  - {fileID: 397419899}
   - {fileID: 1440201600}
   - {fileID: 1400289466}
   - {fileID: 1076972307}
@@ -4558,6 +4585,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   poolManager: {fileID: 929919027}
   levelSpawnerManager: {fileID: 2119463928}
+  nightController: {fileID: 397419900}
   waveController: {fileID: 1440201601}
 --- !u!1 &2087193230
 GameObject:
@@ -4661,7 +4689,7 @@ GameObject:
   - component: {fileID: 2120858985}
   - component: {fileID: 2120858984}
   m_Layer: 0
-  m_Name: SelectorDeckContainer
+  m_Name: Nav Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

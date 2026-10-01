@@ -4,8 +4,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewRegistryData", menuName = "System/Registry/New Registry")]
 public class Registry : ScriptableObject
 {
-    public PlayerDataSO defaultPlayerData;
-    public List<SkillDataSO> defaultSkills = new List<SkillDataSO>();
-    public List<ConsumableDataSO> defaultConsumables = new List<ConsumableDataSO>();
-    public WaveDataSO waveData;
+    [Header("Enemies")]
+    public List<EnemyDataSO> Enemies = new List<EnemyDataSO>();
+
+    [Header("Skills")]
+    public List<SkillDataSO> Skills = new List<SkillDataSO>();
+
+    [Header("Consumables")]
+    public List<ConsumableDataSO> Consumables = new List<ConsumableDataSO>();
+
+    [Header("Waves")]
+    public List<NightWaveDataSO> NightWaves = new List<NightWaveDataSO>();
 }

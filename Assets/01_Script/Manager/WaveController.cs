@@ -6,59 +6,67 @@ public class WaveController : MonoBehaviour
 {
     [SerializeField] private LevelSpawnerManager spawner;
     [SerializeField] private int currentWaveIndex = 0;
-    [SerializeField] private WaveDataSO waveData; // sumber data wave: timer, interval, dan daftar musuh per wave
+    [SerializeField] private NightWaveDataSO waveData; // data night yang sedang dijalankan
 
-    private Coroutine waveRoutine;
+    private Coroutine nightRoutine;
 
-    // ---------- Runtime state & events (untuk UI timer / wave manager) ----------
+    // ---------- Runtime state & events ----------
     public bool IsWaveRunning { get; private set; }
     public float WaveTimeRemaining { get; private set; }
 
-    public event Action<int> OnWaveStarted;              // waveIndex
-    public event Action<int> OnWaveEnded;                // waveIndex (waktu habis / dihentikan)
-    public event Action<float> OnWaveTimeChanged;        // sisa waktu (detik)
+    public event Action<int> OnWaveStarted;       // waveIndex
+    public event Action<int> OnWaveEnded;         // waveIndex
+    public event Action<float> OnWaveTimeChanged; // sisa waktu (detik)
+    public event Action OnNightCompleted;         // semua waveEnemies di night ini sudah habis
 
-    public void Initilaize()
-    {
-        spawner = GameManager.Instance?.levelSpawnerManager;
+    #region Night / Wave Control
 
-        if (waveData == null)
-        {
-            var session = GameSessionData.GetOrCreate();
-            waveData = session.GetWaveData();
-        }
-    }
-
-    #region Wave Control
-
-    public void StartWave() => StartWave(currentWaveIndex);
-
-    public void StartWave(int waveIndex)
+    /// <summary>Dipanggil NightController. Menjalankan seluruh wave dalam satu night.</summary>
+    public void StartNight(NightWaveDataSO nightData)
     {
         if (IsWaveRunning)
         {
-            Debug.LogWarning("[WaveController] Wave masih berjalan, hentikan dulu dengan StopWave().");
+            Debug.LogWarning("[WaveController] Night masih berjalan, hentikan dulu dengan StopWave().");
             return;
         }
 
-        if (!IsWaveValid(waveIndex)) return;
+        spawner = GameManager.Instance?.levelSpawnerManager;
+        waveData = nightData;
+        currentWaveIndex = 0; // night baru selalu mulai dari wave pertama
 
-        waveRoutine = StartCoroutine(WaveRoutine(waveIndex));
+        if (!IsNightValid()) return;
+
+        nightRoutine = StartCoroutine(NightRoutine());
     }
 
-    /// <summary>Hentikan wave sebelum waktunya (mis. semua musuh sudah mati / game over).</summary>
+    /// <summary>Hentikan night sebelum waktunya (mis. game over).</summary>
     public void StopWave()
     {
         if (!IsWaveRunning) return;
 
-        if (waveRoutine != null) StopCoroutine(waveRoutine);
-        waveRoutine = null;
+        if (nightRoutine != null) StopCoroutine(nightRoutine);
+        nightRoutine = null;
         IsWaveRunning = false;
+    }
+
+    private IEnumerator NightRoutine()
+    {
+        IsWaveRunning = true;
+
+        // jalankan wave satu per satu sampai waveEnemies habis
+        while (currentWaveIndex < waveData.waveEnemies.Count)
+        {
+            yield return StartCoroutine(WaveRoutine(currentWaveIndex));
+            currentWaveIndex++;
+        }
+
+        IsWaveRunning = false;
+        nightRoutine = null;
+        OnNightCompleted?.Invoke(); // NightController akan memilih night berikutnya
     }
 
     private IEnumerator WaveRoutine(int waveIndex)
     {
-        IsWaveRunning = true;
         WaveTimeRemaining = waveData.timerPerWave;
         float spawnTimer = 0f; // 0 -> spawn pertama langsung di awal wave
 
@@ -70,7 +78,7 @@ public class WaveController : MonoBehaviour
             if (spawnTimer <= 0f)
             {
                 spawner.SpawnEnemy(waveData.waveEnemies[waveIndex]);
-                spawnTimer = GetRandomSpawnInterval(); // jeda berikutnya diacak ulang tiap spawn
+                spawnTimer = GetRandomSpawnInterval();
             }
 
             yield return null;
@@ -82,9 +90,6 @@ public class WaveController : MonoBehaviour
             OnWaveTimeChanged?.Invoke(WaveTimeRemaining);
         }
 
-        IsWaveRunning = false;
-        waveRoutine = null;
-        currentWaveIndex++; // siap untuk StartWave() berikutnya
         OnWaveEnded?.Invoke(waveIndex);
     }
 
@@ -93,23 +98,23 @@ public class WaveController : MonoBehaviour
         float[] intervals = waveData != null ? waveData.spawnIntervals : null;
 
         if (intervals == null || intervals.Length == 0)
-            return 3f; // fallback kalau array di WaveData kosong
+            return 3f;
 
         float picked = intervals[UnityEngine.Random.Range(0, intervals.Length)];
         return Mathf.Max(0.1f, picked);
     }
 
-    private bool IsWaveValid(int waveIndex)
+    private bool IsNightValid()
     {
         if (spawner == null)
         {
-            Debug.LogWarning("[WaveController] Referensi LevelSpawnerManager belum di-assign (cek Initilaize() / Inspector).");
+            Debug.LogWarning("[WaveController] Referensi LevelSpawnerManager belum di-assign.");
             return false;
         }
 
-        if (waveData == null || waveIndex < 0 || waveIndex >= waveData.waveEnemies.Count)
+        if (waveData == null || waveData.waveEnemies == null || waveData.waveEnemies.Count == 0)
         {
-            Debug.LogWarning($"[WaveController] Wave data / wave index {waveIndex} not valid.");
+            Debug.LogWarning("[WaveController] NightWaveData kosong atau tidak valid.");
             return false;
         }
 
@@ -120,25 +125,9 @@ public class WaveController : MonoBehaviour
 
     #region Public API
 
-    public int GetCurrentWaveIndex()
-    {
-        return currentWaveIndex;
-    }
-
-    public void SetCurrentWaveIndex(int setWaveIndex)
-    {
-        currentWaveIndex = setWaveIndex;
-    }
-
-    public void SetWaveData(WaveDataSO setWaveData)
-    {
-        waveData = setWaveData;
-    }
-
-    public WaveDataSO GetWaveData()
-    {
-        return waveData;
-    }
+    public int GetCurrentWaveIndex() => currentWaveIndex;
+    public void SetCurrentWaveIndex(int setWaveIndex) => currentWaveIndex = setWaveIndex;
+    public NightWaveDataSO GetWaveData() => waveData;
 
     #endregion
 }

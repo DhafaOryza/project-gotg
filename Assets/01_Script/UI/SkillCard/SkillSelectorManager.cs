@@ -15,10 +15,11 @@ public class SkillSelectorManager : MonoBehaviour
 
     private void OnEnable()
     {
-        var registry = Resources.Load<Registry>("TestRegistry");
+        var session = GameSessionData.Instance;
+        var registry = session.GetRegistryData();
         if (registry != null)
         {
-            availableSkills = registry.defaultSkills;
+            availableSkills = registry.Skills;
         }
         GenerateSkillCards();
     }
@@ -66,21 +67,5 @@ public class SkillSelectorManager : MonoBehaviour
         }
 
         return selectedSkills;
-    }
-
-    public void SaveandCloseSelector()
-    {
-        List<SkillDataSO> selectedSkills = GetSelectedDeckSkills();
-
-        if (GameSessionData.Instance != null)
-        {
-            GameSessionData.Instance.SetSkillsData(selectedSkills);
-        }
-
-        PreparationUI preparationUI = FindObjectOfType<PreparationUI>();
-        if (preparationUI != null)
-        {
-            preparationUI.SetSkillSelectorActive(false);
-        }
     }
 }

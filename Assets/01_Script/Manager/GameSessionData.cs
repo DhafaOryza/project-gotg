@@ -11,8 +11,8 @@ public class GameSessionData : MonoBehaviour
     [Header("Consumable Items")]
     [SerializeField] private List<ConsumableDataSO> consumableItem = new List<ConsumableDataSO>();
 
-    [Header("Wave")]
-    [SerializeField] private WaveDataSO choosenWave;
+    [Header("Registry Data")]
+    [SerializeField] private Registry registryData;
 
     void Awake()
     {
@@ -85,36 +85,23 @@ public class GameSessionData : MonoBehaviour
 
     #endregion
 
-    #region Wave Data
+    #region Registry
 
-    public WaveDataSO GetWaveData()
+    public Registry GetRegistryData()
     {
-        return choosenWave;
-    }
-
-    public void SetWaveData(WaveDataSO setWaveData)
-    {
-        choosenWave = setWaveData;
+        return registryData;
     }
 
     #endregion
 
-    public void GetDataRegistry()
+    private void GetDataRegistry()
     {
-        var data = Resources.Load<Registry>("TestRegistry");
+        var data = Resources.Load<Registry>("Registry");
         if (data == null)
         {
             return;
         }
 
-        if (choosenSkills == null || choosenSkills.Count == 0)
-        {
-            choosenSkills = new List<SkillDataSO>(data.defaultSkills);
-        }
-
-        if (choosenWave == null)
-        {
-            choosenWave = data.waveData;
-        }
+        registryData = data;
     }
 }

@@ -10,10 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a89c00201b61dc341b7aa6fd4dd109f6, type: 3}
-  m_Name: WaveData_Level1
+  m_Name: WaveData_Night_002
   m_EditorClassIdentifier: Assembly-CSharp::WaveDataSO
-  timerPerWave: 180
+  nameWaves: Night 2
+  timerPerWave: 120
+  spawnIntervals:
+  - 3
+  - 5
+  - 8
   waveEnemies:
   - waveType: 0
+    spawnPerInterval: 3
     enemyIds:
     - {fileID: 11400000, guid: d2ce71cf22993914f824808e04b42c16, type: 2}

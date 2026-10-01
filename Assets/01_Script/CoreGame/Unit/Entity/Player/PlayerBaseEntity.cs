@@ -10,28 +10,36 @@ public class PlayerBaseEntity : BaseEntity
     [SerializeField] private List<ConsumableDataSO> equippedConsumables = new List<ConsumableDataSO>();
     [SerializeField] private int defaultConsumableQuantity = 2;
 
-    private  List<SkillRuntimeData> skillRuntime = new List<SkillRuntimeData>();
+    private List<SkillRuntimeData> skillRuntime = new List<SkillRuntimeData>();
     public bool CanAct => !IsDead;
 
     protected override void Awake()
     {
-        var session = GameSessionData.GetOrCreate();
-
         base.Awake();
-
-        equippedSkills = session.GetSkillsData();
-        equippedConsumables = session.GetConsumables();
-
+        
         InitializeSkillRuntimes();
     }
 
     private void Update()
     {
-       float deltaTime = Time.deltaTime;
-       foreach (var runtime in skillRuntime)
+        float deltaTime = Time.deltaTime;
+        foreach (var runtime in skillRuntime)
         {
             runtime.UpdateCooldown(deltaTime);
-        } 
+        }
+    }
+
+    public void RedrawSkill()
+    {
+        if (equippedSkills != null || equippedSkills.Count > 0)
+        {
+            equippedSkills.Clear();
+        }
+
+        var session = GameSessionData.GetOrCreate();
+
+        equippedSkills = session.GetSkillsData();
+        equippedConsumables = session.GetConsumables();
     }
 
     /// <summary>
@@ -104,9 +112,10 @@ public class PlayerBaseEntity : BaseEntity
     {
         if (slotIndex >= 0 && slotIndex < skillRuntime.Count)
             return skillRuntime[slotIndex].RemainingCooldown;
-        
+
         return 0f;
     }
+
     public SkillDataSO GetDataData(int slotIndex)
     {
         if (slotIndex >= 0 && slotIndex < skillRuntime.Count)

@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewWaveData", menuName = "Data/Wave/Wave Data")]
-public class WaveDataSO : ScriptableObject
+public class NightWaveDataSO : ScriptableObject
 {
+    public string nameWaves;
     public float timerPerWave = 180f;
     public float[] spawnIntervals = new[] { 3f, 5f, 8f };
     public List<WaveEnemy> waveEnemies = new List<WaveEnemy>();

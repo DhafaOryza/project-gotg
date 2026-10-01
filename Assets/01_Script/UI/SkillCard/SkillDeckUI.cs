@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 public class SkillDeckUI : MonoBehaviour, IDropHandler
 {
     [SerializeField] private int maxSizeDeck;
+    
     public void OnDrop(PointerEventData eventData)
     {
         SkillSelectorCardUI card = eventData.pointerDrag != null ? eventData.pointerDrag.GetComponent<SkillSelectorCardUI>(): null;

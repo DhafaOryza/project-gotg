@@ -15,6 +15,7 @@ public class LevelSpawnerManager : MonoBehaviour
     [SerializeField] private List<Transform> enemySpawnPositions = new List<Transform>();
 
     private PoolManager poolManager;
+    private PlayerBaseEntity player;
 
     public void Initialize()
     {
@@ -26,7 +27,8 @@ public class LevelSpawnerManager : MonoBehaviour
 
     private void SpawnPlayer()
     {
-        poolManager.Spawn(playerId, spawnPlayerPosition.position, Quaternion.identity);
+        var currentPlayer = poolManager.Spawn(playerId, spawnPlayerPosition.position, Quaternion.identity);
+        player = currentPlayer.GetComponent<PlayerBaseEntity>();
     }
 
     private void SpawnBuilding()
@@ -41,7 +43,7 @@ public class LevelSpawnerManager : MonoBehaviour
     /// jumlahnya acak 1 sampai wave.spawnPerInterval (maksimal), masing-masing di titik acak
     /// pada enemySpawnPositions, dengan jenis musuh acak dari wave.enemyIds.
     /// </summary>
-    public void SpawnEnemy(WaveDataSO.WaveEnemy wave)
+    public void SpawnEnemy(NightWaveDataSO.WaveEnemy wave)
     {
         if (!IsSpawnValid(wave)) return;
 
@@ -59,7 +61,7 @@ public class LevelSpawnerManager : MonoBehaviour
         }
     }
 
-    private bool IsSpawnValid(WaveDataSO.WaveEnemy wave)
+    private bool IsSpawnValid(NightWaveDataSO.WaveEnemy wave)
     {
         if (poolManager == null)
         {
@@ -87,6 +89,12 @@ public class LevelSpawnerManager : MonoBehaviour
 
         return true;
     }
+
+    #endregion
+
+    #region Public API
+
+    public PlayerBaseEntity GetCurrentPlayer() { return player; }
 
     #endregion
 }
