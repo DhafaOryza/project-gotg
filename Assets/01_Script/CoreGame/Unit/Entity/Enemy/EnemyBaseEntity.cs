@@ -5,11 +5,13 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     [SerializeField] private Transform attackPoint;
 
     private EnemyDataSO enemyData;
+    private BaseEntity targetPlayer;
     private BuildingBase targetBuilding;
     private Collider2D targetCollider;
     private Rigidbody2D rb;
     private float attackCooldownRemaining;
     private Vector2 AttackOrigin => attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
+    private bool HasTarget => targetPlayer != null || targetBuilding != null;
 
     protected override void Awake()
     {
@@ -24,15 +26,21 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 
         TickAttackCooldown(Time.deltaTime);
 
+        if (targetPlayer != null && targetPlayer.IsDead)
+            ClearTarget();
+
         if (targetBuilding != null && targetBuilding.IsDestroy)
-            SetTarget(null);
+            ClearTarget();
+
+        if (!HasTarget)
+            AcquireTarget();
     }
 
     private void FixedUpdate()
     {
         if (IsDead) return;
 
-        if (targetBuilding == null)
+        if (!HasTarget)
         {
             StopMoving();
             return;
@@ -58,7 +66,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 
     public void OnDespawn()
     {
-        SetTarget(null);
+        ClearTarget();
         attackCooldownRemaining = 0f;
 
         if (rb != null)
@@ -82,18 +90,30 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     }
 
     #region Targeting
-
+    private void ClearTarget()
+    {
+        targetPlayer = null;
+        targetBuilding = null;
+        targetCollider = null;
+    }
     /// <summary>
     /// Set target sekaligus cache collider-nya. Panggil dengan null untuk menghapus target.
     /// </summary>
-    private void SetTarget(BuildingBase building)
+    private void SetTargetPlayer(BaseEntity player)
+    {
+        targetPlayer = player;
+        targetBuilding = null;
+        targetCollider = player != null ? player.GetComponentInChildren<Collider2D>() : null;
+    }
+    private void SetTargetBuilding(BuildingBase building)
     {
         targetBuilding = building;
+        targetPlayer = null;
         targetCollider = building != null ? building.GetComponentInChildren<Collider2D>() : null;
     }
 
     /// <summary>
-    /// Dipanggil saat spawn. Kalau EnemyDataSO.targetPriority == OBJECT, cari BuildingBase
+    /// Dipanggil saat spawn. Kalau EnemyDataSO.targetPriority == OBJECT, cari TargetBase
     /// terdekat di scene dan simpan sebagai target. Priority CLOSEST/PLAYER belum ditangani
     /// di sini (butuh sistem targeting musuh/player terpisah).
     /// </summary>
@@ -105,26 +125,43 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
             return;
         }
 
-        if (enemyData.targetPriority != EnemyTargetPriority.OBJECT)
-            return;
+        switch (enemyData.targetPriority)
+        {
+            case EnemyTargetPriority.OBJECT:
+                SetTargetBuilding(FindClosestBuilding());
+                break;
+            case EnemyTargetPriority.PLAYER:
+                SetTargetPlayer(FindPlayer());
+                break;
+            case EnemyTargetPriority.CLOSEST:
+                FindClosestTarget();
+                break;
+        }
+    }
 
-        SetTarget(FindClosestBuilding());
+    private PlayerBaseEntity FindPlayer()
+    {
+        PlayerBaseEntity player = FindObjectOfType<PlayerBaseEntity>();
+        if (player != null && !player.IsDead)
+            return player;
+
+        return null;
     }
 
     private BuildingBase FindClosestBuilding()
     {
-        var buildings = FindObjectsByType<BuildingBase>(FindObjectsSortMode.None);
-        if (buildings == null || buildings.Length == 0) return null;
+        var Buildings = FindObjectsByType<BuildingBase>(FindObjectsSortMode.None);
+        if (Buildings == null || Buildings.Length == 0) return null;
 
         Vector2 origin = AttackOrigin;
         BuildingBase closest = null;
         float closestDistanceSqr = float.MaxValue;
 
-        foreach (var building in buildings)
+        foreach (var building in Buildings)
         {
             if (building == null || building.IsDestroy) continue;
 
-            // Ukur ke tepi collider, bukan ke pusat building
+            // Ukur ke tepi collider, bukan ke pusat Target
             Collider2D col = building.GetComponentInChildren<Collider2D>();
             Vector2 point = col != null
                 ? col.ClosestPoint(origin)
@@ -139,6 +176,37 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         }
 
         return closest;
+    } 
+
+    private void FindClosestTarget()
+    {
+        PlayerBaseEntity player = FindPlayer();
+        BuildingBase building = FindClosestBuilding();
+
+        if (player == null && building == null)
+        {
+            ClearTarget();
+            return;
+        }
+        if (player == null)
+        {
+            SetTargetPlayer(player);
+            return;
+        }
+        if (building == null)
+        {
+            SetTargetBuilding(building);
+            return;
+        }
+
+        float distToPlayer = Vector2.Distance(AttackOrigin, player.transform.position);
+        float distToBuilding = Vector2.Distance(AttackOrigin, building.transform.position);
+
+        if (distToPlayer < distToBuilding)
+            SetTargetPlayer(player);
+        else
+            SetTargetBuilding(building);
+        
     }
 
     private Vector2 GetTargetClosestPoint(Vector2 from)
@@ -146,7 +214,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         if (targetCollider != null && targetCollider.enabled)
             return targetCollider.ClosestPoint(from);
 
-        return targetBuilding.transform.position;
+        return from;
     }
 
     #endregion
@@ -192,10 +260,19 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 
     private void TryAttackTarget()
     {
-        if (targetBuilding == null || attackCooldownRemaining > 0f || enemyData == null) return;
+        if (attackCooldownRemaining > 0f || enemyData == null) return;
 
-        targetBuilding.TakeDamage(Mathf.RoundToInt(enemyData.attackDamage));
-        attackCooldownRemaining = enemyData.attackCooldown;
+        int damage = Mathf.RoundToInt(enemyData.attackDamage);
+        if (targetPlayer != null)
+        {
+            targetPlayer.TakeDamage(damage);
+            attackCooldownRemaining = enemyData.attackCooldown;
+        }
+        else if (targetBuilding != null)
+        {
+            targetBuilding.TakeDamage(damage);
+            attackCooldownRemaining = enemyData.attackCooldown;
+        }
     }
 
     #endregion
@@ -207,7 +284,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 
         Gizmos.DrawWireSphere(origin, range);
 
-        if (Application.isPlaying && targetBuilding != null)
+        if (Application.isPlaying && HasTarget)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(origin, GetTargetClosestPoint(origin));

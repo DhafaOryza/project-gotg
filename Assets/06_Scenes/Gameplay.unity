@@ -956,7 +956,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NightController
   currentNightIndex: 0
-  currentNightWave: {fileID: 0}
+  currentNightWave: {fileID: 11400000, guid: 1fac8258389216c44b166d92b331063f, type: 2}
   autoStartNextNight: 0
 --- !u!1 &476346325
 GameObject:

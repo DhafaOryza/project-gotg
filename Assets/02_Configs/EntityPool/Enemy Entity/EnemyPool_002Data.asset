@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: EnemyPool_002Data
   m_EditorClassIdentifier: Assembly-CSharp::PoolDataSO
   poolId: {fileID: 11400000, guid: dcab1568c187547428576da8eaec722d, type: 2}
-  prefab: {fileID: 4697853980343132705, guid: 220c2b126629a1e458f4d04581361041, type: 3}
+  prefab: {fileID: 6951517172829391918, guid: fe8aa8cd129ef5f4b937da24f86655fa, type: 3}
   initialSize: 5
   isExpandable: 1
