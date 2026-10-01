@@ -41,8 +41,17 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         MoveOrAttack();
     }
 
+    protected override void Die()
+    {
+        if (IsDead) return;
+
+        base.Die();
+        ReturnToPool();
+    }
+
     public void OnSpawn()
     {
+        ResetState();
         attackCooldownRemaining = 0f;
         AcquireTarget();
     }
@@ -51,7 +60,25 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     {
         SetTarget(null);
         attackCooldownRemaining = 0f;
-        StopMoving();
+
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+    }
+
+    private void ReturnToPool()
+    {
+        var poolManager = GameManager.Instance?.poolManager;
+
+        if (poolManager != null)
+        {
+            poolManager.Despawn(gameObject);
+            return;
+        }
+
+        // Fallback kalau PoolManager tidak ditemukan: tetap hilangkan objek
+        Debug.LogWarning($"[{name}] PoolManager tidak ditemukan, objek dinonaktifkan manual.");
+        OnDespawn();
+        gameObject.SetActive(false);
     }
 
     #region Targeting

@@ -45,7 +45,7 @@ public class BaseEntity : MonoBehaviour, IDamageable
     }
 
     // Dipakai Morning Management ("Memulihkan HP player")
-    public virtual void RecoverForMorning()
+    public virtual void ResetState()
     {
         IsDead = false;
         currentHealth = maxHealth;
@@ -54,6 +54,8 @@ public class BaseEntity : MonoBehaviour, IDamageable
 
     protected virtual void Die()
     {
+        if (IsDead) return;
+
         IsDead = true;
         OnDied?.Invoke();
     }
