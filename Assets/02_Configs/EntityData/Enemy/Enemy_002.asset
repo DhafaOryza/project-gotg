@@ -16,9 +16,9 @@ MonoBehaviour:
   baseVitality: 10
   hpPerVitality: 170
   skillCooldownMultiplier: 1
-  moveSpeed: 10
-  attackDamage: 100
+  moveSpeed: 1.5
+  attackDamage: 20
   attackRange: 2
-  attackCooldown: 1.2
+  attackCooldown: 2.5
   targetPriority: 1
   threatTier: 0

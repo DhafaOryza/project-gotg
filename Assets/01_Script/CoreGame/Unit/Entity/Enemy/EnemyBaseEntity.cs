@@ -120,19 +120,22 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     private void AcquireTarget()
     {
         if (enemyData == null)
-        {
-            Debug.LogWarning($"[{name}] entityData bukan EnemyDataSO, target priority tidak bisa dibaca.");
             return;
-        }
 
         switch (enemyData.targetPriority)
         {
+            case EnemyTargetPriority.PLAYER:
+                PlayerBaseEntity player = FindPlayer();
+                if (player != null)
+                    SetTargetPlayer(player);
+                else
+                    FindClosestTarget();
+                break;
+
             case EnemyTargetPriority.OBJECT:
                 SetTargetBuilding(FindClosestBuilding());
                 break;
-            case EnemyTargetPriority.PLAYER:
-                SetTargetPlayer(FindPlayer());
-                break;
+
             case EnemyTargetPriority.CLOSEST:
                 FindClosestTarget();
                 break;
@@ -141,8 +144,8 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 
     private PlayerBaseEntity FindPlayer()
     {
-        PlayerBaseEntity player = FindObjectOfType<PlayerBaseEntity>();
-        if (player != null && !player.IsDead)
+        PlayerBaseEntity player = FindAnyObjectByType<PlayerBaseEntity>();
+        if (player != null && !player.IsDead && player.CanAct)
             return player;
 
         return null;
@@ -190,12 +193,12 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         }
         if (player == null)
         {
-            SetTargetPlayer(player);
+            SetTargetBuilding(building);
             return;
         }
         if (building == null)
         {
-            SetTargetBuilding(building);
+            SetTargetPlayer(player);
             return;
         }
 
@@ -279,6 +282,8 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 
     private void OnDrawGizmos()
     {
+        if (this == null) return;
+        
         float range = enemyData != null ? enemyData.attackRange : 1.5f;
         Vector2 origin = AttackOrigin;
 
