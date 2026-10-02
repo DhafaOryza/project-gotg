@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerBaseEntity : BaseEntity
@@ -10,8 +11,17 @@ public class PlayerBaseEntity : BaseEntity
     [SerializeField] private List<ConsumableDataSO> equippedConsumables = new List<ConsumableDataSO>();
     [SerializeField] private int defaultConsumableQuantity = 2;
 
+    [Header ("Knockdown & Revive Configs")]
+    [SerializeField] private float reviveDuration = 60f;
+    [SerializeField] private float reviveHpPercentage = 0.15f;
+
     private List<SkillRuntimeData> skillRuntime = new List<SkillRuntimeData>();
-    public bool CanAct => !IsDead;
+    private float currentReviveTimer;
+
+    public bool IsKnockDown {get ; private set;}
+    public float CurrentReviveTimer => currentReviveTimer;
+    public float ReviveDuration => reviveDuration; 
+    public bool CanAct => !IsDead && !IsKnockDown;
 
     protected override void Awake()
     {
@@ -27,6 +37,48 @@ public class PlayerBaseEntity : BaseEntity
         {
             runtime.UpdateCooldown(deltaTime);
         }
+
+        if (IsKnockDown)
+        {
+            currentReviveTimer -= deltaTime;
+            if (currentReviveTimer <= 0f)
+                Revive();
+        }
+    }
+
+    public override void TakeDamage(int amount)
+    {
+        if (IsKnockDown || IsDead) return;
+        base.TakeDamage(amount);
+
+        if (currentHealth <= 0f && !IsKnockDown)
+            StartKnockdown();
+
+    }
+
+    protected override void HandleDeathOrKnockdown()
+    {
+        if (!IsKnockDown)
+            StartKnockdown();
+    }
+
+    public void StartKnockdown()
+    {
+        IsKnockDown = true;
+        currentReviveTimer = reviveDuration;
+        Debug.Log($"[{name}] Player Knockdown! Revive dalam {reviveDuration} detik.");
+    }
+
+    public void Revive()
+    {
+        if (!IsKnockDown) return;
+
+        IsKnockDown = false;
+        IsDead = false;
+
+        int healAmount = Mathf.RoundToInt(maxHealth * reviveHpPercentage);
+        Heal(healAmount);
+        Debug.Log($"[{name}] Player berhasil Revive dengan {currentHealth} HP ({reviveHpPercentage * 100}% HP)!");
     }
 
     public void RedrawSkill()

@@ -60,6 +60,11 @@ public class BaseEntity : MonoBehaviour, IDamageable
         OnDied?.Invoke();
     }
 
+    protected virtual void HandleDeathOrKnockdown()
+    {
+        Die();
+    }
+
     #region Helper
 
     private int CalcMaxHP()
