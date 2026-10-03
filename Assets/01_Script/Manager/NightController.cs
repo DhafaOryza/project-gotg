@@ -7,6 +7,10 @@ public class NightController : MonoBehaviour
     [SerializeField] private int currentNightIndex = 0;
     [SerializeField] private NightWaveDataSO currentNightWave;
     [SerializeField] private bool autoStartNextNight = false; // false = night berikutnya dimulai manual lewat StartNight()
+    
+    [Header("UI References")]
+    [SerializeField] private PreparationUI preparationUI;
+
 
     private WaveController waveController;
     private List<NightWaveDataSO> nightWaves = new List<NightWaveDataSO>();
@@ -89,11 +93,10 @@ public class NightController : MonoBehaviour
         currentNightIndex = nextIndex;
         SelectNight(currentNightIndex);
 
-        PreparationUI preparationUI = FindAnyObjectByType<PreparationUI>();
         if (preparationUI != null)
             preparationUI.ShowPreparationUI();
-        // currentNightIndex = nextIndex;
-        // if (!SelectNight(currentNightIndex)) return;
+        else
+            Debug.LogWarning("[NightController] PreparationUI tidak ditemukan di scene!");
 
         if (autoStartNextNight)
             StartNight();

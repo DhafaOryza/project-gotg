@@ -36,8 +36,8 @@ public class PreparationUI : MonoBehaviour
             return;
         }
 
-        nightController.OnNightEnded += HandleNightEnded;
-        // nightController.OnAllNightsCompleted += HandleAllNightsCompleted;
+        // nightController.OnNightEnded += HandleNightEnded;
+        nightController.OnAllNightsCompleted += HandleAllNightsCompleted;
 
         // Saat game dimulai, tampilkan UI persiapan untuk night pertama
         RootUI.SetActive(true);
@@ -48,8 +48,8 @@ public class PreparationUI : MonoBehaviour
     {
         if (nightController == null) return;
 
-        nightController.OnNightEnded -= HandleNightEnded;
-        // nightController.OnAllNightsCompleted -= HandleAllNightsCompleted;
+        // nightController.OnNightEnded -= HandleNightEnded;
+        nightController.OnAllNightsCompleted -= HandleAllNightsCompleted;
     }
 
     private void OnStartButtonClicked()
@@ -62,11 +62,11 @@ public class PreparationUI : MonoBehaviour
     }
 
     // Night selesai -> munculkan lagi UI persiapan untuk night berikutnya
-    private void HandleNightEnded(int nightIndex)
-    {
-        RootUI.SetActive(true);
-        HandleNightCounter();
-    }
+    // private void HandleNightEnded(int nightIndex)
+    // {
+    //     RootUI.SetActive(true);
+    //     HandleNightCounter();
+    // }
 
     public void ShowPreparationUI()
     {
