@@ -71,7 +71,12 @@ public class NightController : MonoBehaviour
     private void HandleNightCompleted()
     {
         OnNightEnded?.Invoke(currentNightIndex);
+        Debug.Log($"[NightController] Night {currentNightIndex} selesai, menunggu player menekan Continue.");
 
+    }
+
+    public void ProceedToNextNight()
+    {
         int nextIndex = currentNightIndex + 1;
 
         if (nextIndex >= nightWaves.Count)
@@ -82,7 +87,13 @@ public class NightController : MonoBehaviour
         }
 
         currentNightIndex = nextIndex;
-        if (!SelectNight(currentNightIndex)) return;
+        SelectNight(currentNightIndex);
+
+        PreparationUI preparationUI = FindAnyObjectByType<PreparationUI>();
+        if (preparationUI != null)
+            preparationUI.ShowPreparationUI();
+        // currentNightIndex = nextIndex;
+        // if (!SelectNight(currentNightIndex)) return;
 
         if (autoStartNextNight)
             StartNight();

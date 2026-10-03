@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9140396614103056295}
   - component: {fileID: 7373710694221833160}
   - component: {fileID: 392775096965201719}
-  - component: {fileID: 8690227024894287377}
+  - component: {fileID: -8328328798132223250}
   m_Layer: 10
   m_Name: Building_001
   m_TagString: Untagged
@@ -108,7 +108,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &8690227024894287377
+--- !u!114 &-8328328798132223250
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,12 +117,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1076217737196249867}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e70a4b55faf7f1419c1d29c96717793, type: 3}
+  m_Script: {fileID: 11500000, guid: b8b8e0e50fdd25b47b406d7569ad7f8b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BuildingBase
+  m_EditorClassIdentifier: Assembly-CSharp::GranaryBase
   buildingData: {fileID: 11400000, guid: 20221fcc44038d547a495cdb06fa74c6, type: 2}
-  bonusMaxHp: 100
-  currentHealth: 0
+  bonusMaxHp: 0
+  currentHealth: 100
+  OnGranaryDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  _sr: {fileID: 2892089465871056104}
+  DestroyedColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &3847697320604355635
 GameObject:
   m_ObjectHideFlags: 0
