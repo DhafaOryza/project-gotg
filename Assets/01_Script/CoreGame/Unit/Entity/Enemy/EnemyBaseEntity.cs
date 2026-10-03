@@ -265,15 +265,15 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     {
         if (attackCooldownRemaining > 0f || enemyData == null) return;
 
-        int damage = Mathf.RoundToInt(enemyData.attackDamage);
+        // int damage = Mathf.RoundToInt(enemyData.attackDamage);
         if (targetPlayer != null)
         {
-            targetPlayer.TakeDamage(damage);
+            targetPlayer.TakeDamage(Mathf.RoundToInt(enemyData.attackDamage * 1.0f));
             attackCooldownRemaining = enemyData.attackCooldown;
         }
         else if (targetBuilding != null)
         {
-            targetBuilding.TakeDamage(damage);
+            targetBuilding.TakeDamage(Mathf.RoundToInt(enemyData.attackDamage * 0.2f));
             attackCooldownRemaining = enemyData.attackCooldown;
         }
     }
