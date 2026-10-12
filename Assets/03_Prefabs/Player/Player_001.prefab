@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4857722045745236880}
   - component: {fileID: 2793046601936813404}
   - component: {fileID: 2087888349881476537}
+  - component: {fileID: 5215786147734856616}
   m_Layer: 12
   m_Name: Player_001
   m_TagString: Untagged
@@ -118,6 +119,8 @@ MonoBehaviour:
   equippedSkills: []
   equippedConsumables: []
   defaultConsumableQuantity: 2
+  reviveDuration: 60
+  reviveHpPercentage: 0.15
 --- !u!114 &2087888349881476537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,6 +133,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e81f8a6f3299254586ca5afb339e1ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+--- !u!114 &5215786147734856616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992265127889532007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a842e3aee0d7bf54e910f9ca972a7891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
 --- !u!1 &3442747306973909323
 GameObject:
   m_ObjectHideFlags: 0
