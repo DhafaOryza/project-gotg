@@ -28,6 +28,7 @@ public class SkillCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private CanvasGroup canvasGroup;
     private Transform originalParent;
     private Vector2 originalAnchoredPos;
+    private bool isBeingDragged = false;
 
     private void Awake()
     {
@@ -73,9 +74,10 @@ public class SkillCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (skillData == null || owner == null) return;
+        if (skillData == null || owner == null || isBeingDragged) return;
         if (!owner.CanAct || owner.GetSkillCooldownRemaining(slotIndex) > 0f) return;
 
+        isBeingDragged = true;
         originalParent = transform.parent;
         originalAnchoredPos = rectTransform.anchoredPosition;
 
@@ -86,15 +88,23 @@ public class SkillCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (skillData == null) return;
+        if (skillData == null || !isBeingDragged) return;
         rectTransform.position = eventData.position;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!isBeingDragged) return;
+
+        isBeingDragged = false;
         canvasGroup.blocksRaycasts = true;
 
         BaseEntity target = ResolveWorldTarget(eventData);
+        if (originalParent != null)
+        {
+            transform.SetParent(originalParent, true);
+            rectTransform.anchoredPosition = originalAnchoredPos;
+        }
 
         // Kartu selalu kembali ke slot asal; ini bukan "buang kartu", cuma cara input arah skill
         transform.SetParent(originalParent, true);

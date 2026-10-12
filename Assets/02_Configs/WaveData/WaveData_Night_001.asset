@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WaveData_Night_001
   m_EditorClassIdentifier: Assembly-CSharp::WaveDataSO
   nameWaves: Night 1
-  timerPerWave: 2
+  timerPerWave: 60
   spawnIntervals:
   - 3
   - 5
