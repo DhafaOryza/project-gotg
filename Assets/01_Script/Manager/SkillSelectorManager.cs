@@ -16,10 +16,15 @@ public class SkillSelectorManager : MonoBehaviour
     private void OnEnable()
     {
         var session = GameSessionData.Instance;
-        var registry = session.GetRegistryData();
-        if (registry != null)
+        if (session != null)
         {
-            availableSkills = registry.Skills;
+            var registry = session.GetRegistryData();
+            if (registry != null && registry.Skills != null)
+            {
+                availableSkills = registry.Skills.FindAll(
+                    skill => skill != null && session.isSkillUnlocked(skill.skillId)
+                );
+            }
         }
         GenerateSkillCards();
     }

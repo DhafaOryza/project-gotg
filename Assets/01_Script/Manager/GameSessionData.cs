@@ -8,6 +8,9 @@ public class GameSessionData : MonoBehaviour
     [Header("Skill Data")]
     [SerializeField] private List<SkillDataSO> choosenSkills = new List<SkillDataSO>();
 
+    [Header ("Unloked Skill Tracking")]
+    private HashSet<string> unlockedSkillIds = new HashSet<string>();
+
     [Header("Consumable Items")]
     [SerializeField] private List<ConsumableDataSO> consumableItem = new List<ConsumableDataSO>();
 
@@ -30,6 +33,7 @@ public class GameSessionData : MonoBehaviour
         }
 
         GetDataRegistry();
+        InitializeUnlockedSkills();
     }
 
     public static GameSessionData GetOrCreate()
@@ -48,7 +52,25 @@ public class GameSessionData : MonoBehaviour
 
         return gsd;
     }
+    #region Skill Unlock ProgressionData
+    private void InitializeUnlockedSkills()
+    {
+        unlockedSkillIds.Clear();
+        if (registryData != null && registryData.Skills != null)
+            foreach (var skill in registryData.Skills)
+                if (skill != null && skill.unlockByDefault)
+                    unlockedSkillIds.Add(skill.skillId);
+    }
 
+    public bool isSkillUnlocked(string skillId) => unlockedSkillIds.Contains(skillId);
+    public void UnlockSkill(string skillId)
+    {
+        if (!unlockedSkillIds.Contains(skillId))
+            unlockedSkillIds.Add(skillId);
+    }
+
+
+    #endregion
     #region Skill Data
 
     public List<SkillDataSO> GetSkillsData()

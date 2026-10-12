@@ -19,7 +19,7 @@ MonoBehaviour:
   skillType: 1
   icon: {fileID: -3321300037484930216, guid: 6d582f98f91e3bd40be724be527e2bd0, type: 3}
   description: hohtohtohtohtoh
-  isOwned: 0
+  unlockByDefault: 1
   targetType: 0
   cooldown: 3
   skillColor: {r: 0.99565566, g: 1, b: 0.33018857, a: 1}
