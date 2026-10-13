@@ -72,9 +72,9 @@ public class SkillTreeNodeCardUI : MonoBehaviour
         {
             GameSessionData.Instance.SpendCoins(price);
             GameSessionData.Instance.UnlockSkill(_skillData.skillId);
-            // Debug.Log($"[SkillTree] Berhasil membeli skill: {skillData.displayName}");
-            // if (_managerUI != null)
-            //     _managerUI.RefreshSkillTree();
+            Debug.Log($"[SkillTree] Berhasil membeli skill: {_skillData.displayName}");
+            if (_managerUI != null)
+                _managerUI.RefreshSkillTree();
         }
         else
             Debug.LogWarning("[SkillTree] Koin tidak mencukupi untuk membeli skill ini.");

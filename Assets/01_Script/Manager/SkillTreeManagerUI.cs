@@ -21,6 +21,7 @@ public class SkillTreeManagerUI : MonoBehaviour
         ClearContainers();
         GenerateAllTiers();
         UpdateCoinDisplay();
+        UpdateTierRequirement();
     }
 
     private void ClearContainers()
@@ -33,12 +34,12 @@ public class SkillTreeManagerUI : MonoBehaviour
         }
     }
 
-    private void ClearContainerChildren(Transform container)
-    {
-        if (container == null) return;
-        foreach (Transform child in container)
-            Destroy(child.gameObject);
-    }
+    // private void ClearContainerChildren(Transform container)
+    // {
+    //     if (container == null) return;
+    //     foreach (Transform child in container)
+    //         Destroy(child.gameObject);
+    // }
 
     private void GenerateAllTiers()
     {
@@ -76,9 +77,52 @@ public class SkillTreeManagerUI : MonoBehaviour
         }
     }
 
+    // private int GetTotalMasterSKillsForTier(int tier)
+    // {
+    //     if (GameSessionData.Instance == null) return 0;
+    //     List<SkillDataSO> allskills = GameSessionData.Instance.GeatAllMasterSkills();
+
+    //     int count = 0;
+    //     foreach (var skill in allskills)
+    //         if (skill != null && skill.tier == tier)
+    //             count++;
+
+    //     return count;
+    // }
+
     private void UpdateCoinDisplay()
     {
         if (coinText.text != null && GameSessionData.Instance != null)
             coinText.text = $"Coins: {GameSessionData.Instance.GetPlayerCoins()}";
+    }
+
+    private void UpdateTierRequirement()
+    {
+        if (GameSessionData.Instance == null) return;
+
+        foreach (var row in tierRows)
+        {
+            if (row.requireText == null) continue;
+
+            int requireTarget = GetRequiredCountTier(row.tierlevel);
+            if (row.tierlevel == 1)
+            {
+                row.requireText.text = " ";
+                continue;
+            }
+            int unlockedCount = GameSessionData.Instance.GetUnlockedCountForTier(row.tierlevel - 1);
+            row.requireText.text = $"{unlockedCount}/{requireTarget}";
+        }
+    }
+
+    private int GetRequiredCountTier(int tier)
+    {
+        switch (tier)
+        {
+            case 2: return 5;
+            case 3: return 8;
+            case 4: return 10;
+            default: return 0;
+        }
     }
 }

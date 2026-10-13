@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 
@@ -6,4 +7,5 @@ public struct TierRowData
 {
     public int tierlevel;
     public Transform skillContainer;
+    public TextMeshProUGUI requireText;
 }
