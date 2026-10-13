@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: 005
   displayName: Attack_005
+  baseValue: 0
+  typeRange: 0
+  skillType: 0
+  tier: 4
   icon: {fileID: 0}
   description: 
+  unlockByDefault: 0
   targetType: 1
-  range: 3
   cooldown: 3
   skillColor: {r: 1, g: 1, b: 1, a: 1}

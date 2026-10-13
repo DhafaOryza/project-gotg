@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class SkillTreeUI : MonoBehaviour
+public class SkillTreeNodeCardUI : MonoBehaviour
 {
    [Header("UI Components")]
     [SerializeField] private Image iconImage;
