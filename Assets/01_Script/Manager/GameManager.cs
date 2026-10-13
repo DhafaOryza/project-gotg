@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public LevelSpawnerManager levelSpawnerManager;
     public NightController nightController;
     public WaveController waveController;
+    public QuestManager questManager;
 
     private bool hasInitialized = false;
 
@@ -52,10 +53,12 @@ public class GameManager : MonoBehaviour
         if (levelSpawnerManager == null) levelSpawnerManager = Object.FindFirstObjectByType<LevelSpawnerManager>();
         if (nightController == null) nightController = Object.FindFirstObjectByType<NightController>();
         if (waveController == null) waveController = Object.FindFirstObjectByType<WaveController>();
+        if (questManager == null) questManager = Object.FindFirstObjectByType<QuestManager>();
 
         // Initliaze The Manager;
         if (poolManager != null) poolManager.Initialize();
         if (levelSpawnerManager != null) levelSpawnerManager.Initialize();
         if (nightController != null) nightController.Initialize();
+        if (questManager != null) questManager.Initialize();
     }
 }
