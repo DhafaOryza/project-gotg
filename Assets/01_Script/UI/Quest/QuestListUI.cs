@@ -6,37 +6,40 @@ using UnityEngine.UI;
 public class QuestListUI : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private Transform questListContainer; 
-    [SerializeField] private GameObject questItemPrefab;   
+    [SerializeField] private Transform scrollContentTransform;
+    [SerializeField] private GameObject questItemPrefab;
 
     /// <summary>
-    /// Membersihkan dan memperbarui tampilan daftar quest aktif pada panel kiri layar.
+    /// Membersihkan dan memperbarui tampilan daftar quest aktif menggunakan Scroll View.
     /// </summary>
     public void RefreshQuestList(List<QuestDataSO> activeQuests)
     {
-        if (questListContainer == null || questItemPrefab == null) return;
+        if (scrollContentTransform == null || questItemPrefab == null)
+        {
+            Debug.LogWarning("[QuestListUI] ScrollContentTransform atau QuestItemPrefab belum di-assign di Inspector!");
+            return;
+        }
 
-        // Bersihkan list item quest lama di dalam container
-        foreach (Transform child in questListContainer)
+        // 1. Bersihkan list item quest lama di dalam Content ScrollView
+        foreach (Transform child in scrollContentTransform)
         {
             Destroy(child.gameObject);
         }
 
-        // Buat elemen baru untuk setiap quest yang sedang aktif
+        // 2. Buat elemen baru untuk setiap quest yang sedang aktif
         foreach (var quest in activeQuests)
         {
             if (quest != null)
             {
-                GameObject itemObj = Instantiate(questItemPrefab, questListContainer);
+                GameObject itemObj = Instantiate(questItemPrefab, scrollContentTransform);
                 itemObj.transform.localScale = Vector3.one;
 
-                // PENTING: Memastikan ukuran elemen terbaca oleh Vertical Layout Group
                 var layoutElement = itemObj.GetComponent<LayoutElement>();
                 if (layoutElement == null)
                 {
                     layoutElement = itemObj.AddComponent<LayoutElement>();
                 }
-                layoutElement.minHeight = 30;
+                layoutElement.minHeight = 40;
 
                 TextMeshProUGUI txt = itemObj.GetComponentInChildren<TextMeshProUGUI>();
                 if (txt != null)
@@ -45,5 +48,7 @@ public class QuestListUI : MonoBehaviour
                 }
             }
         }
+
+        Debug.Log($"[QuestListUI] Scroll View diperbarui. Total quest aktif: {activeQuests.Count}");
     }
 }
