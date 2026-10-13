@@ -4,7 +4,8 @@ using UnityEngine;
 public class BuildingDataSO : ScriptableObject
 {
     public int baseVitality = 10;
-
+    public int baseDefend = 5;
+    
     [Header("Stat Scaling")]
     public float hpPerVitality = 170f;
 

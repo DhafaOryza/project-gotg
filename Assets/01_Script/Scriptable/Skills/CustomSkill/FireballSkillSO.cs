@@ -5,8 +5,7 @@ public class FireballSkillSO : AOESkillSO
 {
     [Header ("VFX")]
     public PoolIdSO VfxID;
-    [Header ("stats")]
-    public int damage = 40;
+    
 
     public override void Activate(PlayerBaseEntity caster, BaseEntity target)
     {
@@ -39,7 +38,7 @@ public class FireballSkillSO : AOESkillSO
 
                 if (target.entityData.Faction != caster.entityData.Faction)
                 {
-                    target.TakeDamage(damage);
+                    target.TakeDamage(baseValue);
                     Debug.Log($"[Fireball] Mengenai target: {target.name}");
                 }
             }

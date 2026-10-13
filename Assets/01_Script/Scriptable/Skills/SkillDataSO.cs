@@ -11,20 +11,28 @@ public enum SkillTargetType
 [CreateAssetMenu(fileName = "NewSkillData", menuName = "Data/Skill/Skill Data")]
 public class SkillDataSO : ScriptableObject
 {
+    [Header("Targeting & Cooldown")]
     public string skillId;
     public string displayName;
+    public int baseValue;
+    public TypeRange typeRange;
+    public SkillType skillType;
+
+    [Header ("Skill Tier")]
+    [Range (1, 4)] public int tier;
+
+
+    [Header("UI & Visual")]
     public Sprite icon;
-
     [TextArea] public string description;
+    
+    [Header ("Progession Default")]
+    public bool unlockByDefault = false;
 
-    [Header("Targeting")]
+    [Header("Targeting & Cooldown")]
     public SkillTargetType targetType = SkillTargetType.Enemy;
-
-    [Header("Cooldown")]
-    public float cooldown = 3f; // dikali entityData.skillCooldownMultiplier saat runtime
-
-    [Header("Feedback")]
-    public Color skillColor = Color.white; // "Warna/efek skill membedakan fungsi ability"
+    public float cooldown = 3f;
+    public Color skillColor = Color.white;
 
     public bool IsValidTarget(PlayerBaseEntity caster, BaseEntity target)
     {
