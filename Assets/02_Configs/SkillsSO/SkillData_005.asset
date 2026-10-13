@@ -17,7 +17,7 @@ MonoBehaviour:
   baseValue: 0
   typeRange: 0
   skillType: 0
-  tier: 4
+  tier: 1
   icon: {fileID: 0}
   description: 
   unlockByDefault: 0

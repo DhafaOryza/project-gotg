@@ -15,7 +15,7 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         npcData = entityData as NPCDataSO;
     }
 
-    public void Interact(PlayerBaseEntity player)
+    public virtual void Interact(PlayerBaseEntity player)
     {        
         if (ConversationUIManager.Instance != null && npcData != null)
         {
