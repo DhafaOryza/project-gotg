@@ -7,4 +7,8 @@ public class NPCDataSO : EntityDataSO
     [TextArea(3, 5)]
     public string[] dialogueLines;
     public Sprite npcPortrait;
+
+    [Header("Quest Offering")]
+    [Tooltip("Quest yang akan ditawarkan NPC setelah percakapan selesai.")]
+    public QuestDataSO assignedQuest;
 }

@@ -7,7 +7,6 @@ public class QuestDataSO : ScriptableObject
     public string questTitle;
     [TextArea(2, 4)]
     public string questDescription;
-    public QuestType questType;
 
     [Header("Rewards")]
     public int goldReward;

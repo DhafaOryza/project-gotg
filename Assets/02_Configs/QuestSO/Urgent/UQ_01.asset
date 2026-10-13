@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 018b5eaa1a263a587999d92208e024ac, type: 3}
-  m_Name: NewQuestData
-  m_EditorClassIdentifier: Assembly-CSharp::QuestDataSO
-  questId: DQ_001
-  questTitle: 
-  questDescription: Kill 100 Monster Tier 1
-  questType: 0
-  goldReward: 200
+  m_Script: {fileID: 11500000, guid: c7bbd6684a00ebe5f8687a82447abcba, type: 3}
+  m_Name: UQ_01
+  m_EditorClassIdentifier: Assembly-CSharp::UrgentQuestDataSO
+  questId: UQ_01
+  questTitle: Kill
+  questDescription: Kill 50 Enemy sebelum mereka mencapai Lumbung
+  goldReward: 1000
   rewardConsumable: 0
   consumableReward: {fileID: 0}
+  timeLimitSeconds: 60

@@ -7,8 +7,8 @@ public class QuestManager : MonoBehaviour
     public static QuestManager Instance { get; private set; }
 
     [Header("Database Quests")]
-    [SerializeField] private List<QuestDataSO> allDailyQuests = new List<QuestDataSO>();
-    [SerializeField] private List<QuestDataSO> allUrgentQuests = new List<QuestDataSO>();
+    [SerializeField] private List<DailyQuestDataSO> allDailyQuests = new List<DailyQuestDataSO>();
+    [SerializeField] private List<UrgentQuestDataSO> allUrgentQuests = new List<UrgentQuestDataSO>();
 
     [Header("Active Quests")]
     private List<QuestDataSO> activeQuests = new List<QuestDataSO>();
@@ -28,11 +28,10 @@ public class QuestManager : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
-        // Hubungkan event NightController secara aman tanpa nesting callback
+        // PENTING: Mendengarkan event OnNightStarted dari NightController secara mandiri (Loose Coupling)
         var nightController = GameManager.Instance?.nightController;
         if (nightController != null)
         {
-            // Pastikan tidak terjadi double subscription
             nightController.OnNightStarted -= HandleNightStarted;
             nightController.OnNightStarted += HandleNightStarted;
         }
@@ -40,7 +39,6 @@ public class QuestManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Bersihkan event listener saat objek dihancurkan
         var nightController = GameManager.Instance?.nightController;
         if (nightController != null)
         {
@@ -49,7 +47,7 @@ public class QuestManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Handler yang terpanggil otomatis saat NightController memicu event OnNightStarted.
+    /// Handler yang terpanggil otomatis saat malam dimulai untuk memicu pengecekan Urgent Quest.
     /// </summary>
     private void HandleNightStarted(int nightIndex)
     {
@@ -57,7 +55,7 @@ public class QuestManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Dipanggil saat Start Night untuk mengecek kemunculan Urgent Quest secara random.
+    /// Mengecek kemunculan Urgent Quest secara acak saat malam dimulai.
     /// </summary>
     public void CheckAndTriggerUrgentQuest()
     {
@@ -68,7 +66,7 @@ public class QuestManager : MonoBehaviour
         if (isUrgentHappening)
         {
             int randomIndex = UnityEngine.Random.Range(0, allUrgentQuests.Count);
-            QuestDataSO selectedUrgent = allUrgentQuests[randomIndex];
+            UrgentQuestDataSO selectedUrgent = allUrgentQuests[randomIndex];
 
             if (QuestInformationUI.Instance != null)
             {
@@ -82,14 +80,14 @@ public class QuestManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Dipanggil ketika player berinteraksi dengan NPC untuk mengambil Daily Quest.
+    /// Mengambil Daily Quest secara acak ketika player berinteraksi dengan NPC.
     /// </summary>
     public void RequestDailyQuestFromNPC()
     {
         if (allDailyQuests == null || allDailyQuests.Count == 0) return;
 
         int randomIndex = UnityEngine.Random.Range(0, allDailyQuests.Count);
-        QuestDataSO selectedDaily = allDailyQuests[randomIndex];
+        DailyQuestDataSO selectedDaily = allDailyQuests[randomIndex];
 
         if (QuestInformationUI.Instance != null)
         {
@@ -97,6 +95,9 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Menerima quest yang ditawarkan dan memasukkannya ke daftar quest aktif player.
+    /// </summary>
     public void AcceptQuest(QuestDataSO quest)
     {
         if (quest == null || activeQuests.Contains(quest)) return;
@@ -111,6 +112,9 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Menolak quest yang ditawarkan.
+    /// </summary>
     public void DeclineQuest(QuestDataSO quest)
     {
         Debug.Log($"[QuestManager] Quest Ditolak: {(quest != null ? quest.questTitle : "Null")}");

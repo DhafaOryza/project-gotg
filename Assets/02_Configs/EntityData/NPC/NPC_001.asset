@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c1165d03365aa4ab910e73bfa3924ea, type: 3}
   m_Name: NPC_001
   m_EditorClassIdentifier: Assembly-CSharp::NPCDataSO
+  _faction: 0
+  baseVitality: 10
+  hpPerVitality: 170
+  skillCooldownMultiplier: 0
+  moveSpeed: 5
   npcName: David
   dialogueLines:
   - Hello
   npcPortrait: {fileID: -3321300037484930216, guid: 6d582f98f91e3bd40be724be527e2bd0, type: 3}
+  assignedQuest: {fileID: 11400000, guid: 68b325b0698bd2dc4bca00e0149209b3, type: 2}

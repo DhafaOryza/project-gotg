@@ -15,9 +15,10 @@ MonoBehaviour:
   _faction: 0
   baseVitality: 10
   hpPerVitality: 170
-  skillCooldownMultiplier: 1
+  skillCooldownMultiplier: 0
   moveSpeed: 3
   npcName: Mike
   dialogueLines:
   - something wrong?
   npcPortrait: {fileID: -3321300037484930216, guid: 6d582f98f91e3bd40be724be527e2bd0, type: 3}
+  assignedQuest: {fileID: 11400000, guid: 92b190b4cf8264c79909e20fe8cf274b, type: 2}

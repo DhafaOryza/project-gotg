@@ -2,24 +2,37 @@ using UnityEngine;
 
 public class NPCBaseEntity : BaseEntity, IInteractable
 {
-    [Header("NPC Configuration")]
-    [SerializeField] private NPCDataSO npcData;
-
     [Header("Interaction Settings")]
     [SerializeField] private float interactionRadius = 2f;
 
-    // private NPCDataSO npcData;
-
     public float InteractionRadius => interactionRadius;
-    public NPCDataSO NpcData => npcData;
+    
+    private NPCDataSO npcData;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        npcData = entityData as NPCDataSO;
+    }
+
+    /// <summary>
+    /// Menangani interaksi player: Memulai obrolan, lalu memicu Quest Information setelah obrolan selesai.
+    /// </summary>
     public void Interact(PlayerBaseEntity player)
     {
         Debug.Log($"Berinteraksi dengan NPC: {(npcData != null ? npcData.npcName : name)}");
         
         if (ConversationUIManager.Instance != null && npcData != null)
         {
-            ConversationUIManager.Instance.StartConversation(npcData);
+            // Mulai percakapan, berikan callback untuk memunculkan Quest Information di akhir obrolan
+            ConversationUIManager.Instance.StartConversation(npcData, () =>
+            {
+                // Bagian ini dijalankan tepat setelah obrolan selesai (setelah player klik teks terakhir)
+                if (npcData.assignedQuest != null && QuestInformationUI.Instance != null)
+                {
+                    QuestInformationUI.Instance.ShowQuestOffer(npcData.assignedQuest);
+                }
+            });
         }
         else
         {

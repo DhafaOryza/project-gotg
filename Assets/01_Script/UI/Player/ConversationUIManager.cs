@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Unity.VisualScripting;
+using System;
 
 public class ConversationUIManager : MonoBehaviour
 {
@@ -16,6 +16,7 @@ public class ConversationUIManager : MonoBehaviour
     private NPCDataSO currentNPCData;
     private int currentIndex = 0;
     private bool isConversationActive = false;
+    private Action onConversationFinished;
 
     private void Awake()
     {
@@ -39,11 +40,12 @@ public class ConversationUIManager : MonoBehaviour
         }
     }
 
-    public void StartConversation(NPCDataSO data)
+    public void StartConversation(NPCDataSO data, Action finishCallBack = null)
     {
         currentNPCData = data;
         currentIndex = 0;
         isConversationActive = true;
+        onConversationFinished = finishCallBack;
 
         if (conversationPanel != null)
             conversationPanel.SetActive(true);
@@ -95,5 +97,8 @@ public class ConversationUIManager : MonoBehaviour
 
         if (conversationPanel != null)
             conversationPanel.SetActive(false);
+
+        onConversationFinished?.Invoke();
+        onConversationFinished = null;
     }
 }
