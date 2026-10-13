@@ -131,7 +131,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 10, y: 10, z: 10, w: 10}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -147,7 +147,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1033792837464170527, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
       propertyPath: m_Name
-      value: SkillTreeCardUI
+      value: SkillTreeNodeCardUI
       objectReference: {fileID: 0}
     - target: {fileID: 3135998995810796932, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
       propertyPath: m_Name
@@ -264,10 +264,108 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7285134102256024676, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4240664430489192577}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1033792837464170527, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8682316244933938613}
+    - targetCorrespondingSourceObject: {fileID: 1033792837464170527, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8755733140136651807}
   m_SourcePrefab: {fileID: 100100000, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
 --- !u!224 &3120205927780282843 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7285134102256024676, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
   m_PrefabInstance: {fileID: 5644360655200095679}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3875442253901802074 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8907163686301312997, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
+  m_PrefabInstance: {fileID: 5644360655200095679}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!1 &4615073646451469728 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1033792837464170527, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
+  m_PrefabInstance: {fileID: 5644360655200095679}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8682316244933938613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4615073646451469728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17cdce5af43cf3c4d8aaa7f69f3a7493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillTreeNodeCardUI
+  iconImage: {fileID: 3875442253901802074}
+  priceOrStatusText: {fileID: 8416568214014411626}
+  lockPanel: {fileID: 7336788637933914171}
+  actionButton: {fileID: 8755733140136651807}
+--- !u!114 &8755733140136651807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4615073646451469728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 8076882813998197672}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &7336788637933914171 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3135998995810796932, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
+  m_PrefabInstance: {fileID: 5644360655200095679}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8076882813998197672 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4486172626065384983, guid: 4ed2d293ffe00894b8fd1cc5008ce31b, type: 3}
+  m_PrefabInstance: {fileID: 5644360655200095679}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4615073646451469728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image

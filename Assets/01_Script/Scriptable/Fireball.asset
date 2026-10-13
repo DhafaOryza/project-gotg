@@ -17,6 +17,7 @@ MonoBehaviour:
   baseValue: 666666
   typeRange: 1
   skillType: 1
+  tier: 1
   icon: {fileID: -3321300037484930216, guid: 6d582f98f91e3bd40be724be527e2bd0, type: 3}
   description: hohtohtohtohtoh
   unlockByDefault: 1
