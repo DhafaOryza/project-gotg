@@ -6,7 +6,7 @@ public class NightController : MonoBehaviour
 {
     [SerializeField] private int currentNightIndex = 0;
     [SerializeField] private NightWaveDataSO currentNightWave;
-    [SerializeField] private bool autoStartNextNight = false; // false = night berikutnya dimulai manual lewat StartNight()
+    [SerializeField] private bool autoStartNextNight = false;
     
     [Header("UI References")]
     [SerializeField] private PreparationUI preparationUI;
@@ -16,8 +16,8 @@ public class NightController : MonoBehaviour
     private List<NightWaveDataSO> nightWaves = new List<NightWaveDataSO>();
     private bool isInitialized;
 
-    public event Action<int> OnNightStarted;   // nightIndex
-    public event Action<int> OnNightEnded;     // nightIndex
+    public event Action<int> OnNightStarted;
+    public event Action<int> OnNightEnded;
     public event Action OnAllNightsCompleted;
 
     public int CurrentNightIndex => currentNightIndex;
@@ -82,22 +82,28 @@ public class NightController : MonoBehaviour
     public void ProceedToNextNight()
     {
         int nextIndex = currentNightIndex + 1;
-
+    
         if (nextIndex >= nightWaves.Count)
         {
             Debug.Log("[NightController] Semua night sudah selesai.");
             OnAllNightsCompleted?.Invoke();
             return;
         }
-
+    
         currentNightIndex = nextIndex;
         SelectNight(currentNightIndex);
-
+    
         if (preparationUI != null)
             preparationUI.ShowPreparationUI();
         else
             Debug.LogWarning("[NightController] PreparationUI tidak ditemukan di scene!");
-
+    
+        // TAMBAHAN: Panggil randomizer Urgent Quest saat mendekati malam / fase persiapan
+        if (GameManager.Instance != null && GameManager.Instance.questManager != null)
+        {
+            GameManager.Instance.questManager.CheckAndTriggerUrgentQuest();
+        }
+    
         if (autoStartNextNight)
             StartNight();
     }

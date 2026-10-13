@@ -16,9 +16,7 @@ public class NPCBaseEntity : BaseEntity, IInteractable
     }
 
     public void Interact(PlayerBaseEntity player)
-    {
-        Debug.Log($"Berinteraksi dengan NPC: {(npcData != null ? npcData.npcName : name)}");
-        
+    {        
         if (ConversationUIManager.Instance != null && npcData != null)
         {
             ConversationUIManager.Instance.StartConversation(npcData, () =>

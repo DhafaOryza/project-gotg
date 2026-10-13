@@ -12,6 +12,9 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private QuestInformationUI questInformationUI;
     [SerializeField] private QuestListUI questListUI;
 
+    [Header("ChanceUrqentQuest")]
+    [SerializeField] private float chance = 0.5f;
+
     public event Action<QuestDataSO> OnQuestAccepted;
 
     public void Initialize()
@@ -40,11 +43,14 @@ public class QuestManager : MonoBehaviour
         CheckAndTriggerUrgentQuest();
     }
 
+    /// <summary>
+    /// Mengecek kemunculan Urgent Quest secara acak (misalnya peluang 50%) saat mendekati malam.
+    /// </summary>
     public void CheckAndTriggerUrgentQuest()
     {
         if (allUrgentQuests == null || allUrgentQuests.Count == 0) return;
 
-        bool isUrgentHappening = UnityEngine.Random.value <= 0.5f;
+        bool isUrgentHappening = UnityEngine.Random.value <= chance;
 
         if (isUrgentHappening)
         {
@@ -58,7 +64,12 @@ public class QuestManager : MonoBehaviour
                     if (isAccepted) AcceptQuest(selectedUrgent);
                     else DeclineQuest(selectedUrgent);
                 });
+                Debug.Log($"[QuestManager] Urgent Quest Muncul: {selectedUrgent.questTitle}");
             }
+        }
+        else
+        {
+            Debug.Log("[QuestManager] Tidak ada Urgent Quest untuk malam ini.");
         }
     }
 

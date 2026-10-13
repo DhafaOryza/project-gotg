@@ -12,12 +12,6 @@ public class NightWaveDataSO : ScriptableObject
     [System.Serializable]
     public class WaveEnemy
     {
-        public enum WaveType
-        {
-            USUAL,
-            BOSS
-        }
-
         public WaveType waveType = WaveType.USUAL;
         public int spawnPerInterval = 3;
         public List<PoolIdSO> enemyIds = new List<PoolIdSO>();
