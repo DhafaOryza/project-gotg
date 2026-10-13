@@ -10,6 +10,10 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private List<DailyQuestDataSO> allDailyQuests = new List<DailyQuestDataSO>();
     [SerializeField] private List<UrgentQuestDataSO> allUrgentQuests = new List<UrgentQuestDataSO>();
 
+    [Header("UI References")]
+    [SerializeField] private QuestInformationUI questInformationUI;
+    [SerializeField] private QuestListUI questListUI;
+
     [Header("Active Quests")]
     private List<QuestDataSO> activeQuests = new List<QuestDataSO>();
 
@@ -23,12 +27,8 @@ public class QuestManager : MonoBehaviour
             Destroy(gameObject);
     }
 
-    /// <summary>
-    /// Dipanggil secara seragam oleh GameManager saat inisialisasi scene.
-    /// </summary>
     public void Initialize()
     {
-        // PENTING: Mendengarkan event OnNightStarted dari NightController secara mandiri (Loose Coupling)
         var nightController = GameManager.Instance?.nightController;
         if (nightController != null)
         {
@@ -46,17 +46,11 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Handler yang terpanggil otomatis saat malam dimulai untuk memicu pengecekan Urgent Quest.
-    /// </summary>
     private void HandleNightStarted(int nightIndex)
     {
         CheckAndTriggerUrgentQuest();
     }
 
-    /// <summary>
-    /// Mengecek kemunculan Urgent Quest secara acak saat malam dimulai.
-    /// </summary>
     public void CheckAndTriggerUrgentQuest()
     {
         if (allUrgentQuests == null || allUrgentQuests.Count == 0) return;
@@ -68,20 +62,21 @@ public class QuestManager : MonoBehaviour
             int randomIndex = UnityEngine.Random.Range(0, allUrgentQuests.Count);
             UrgentQuestDataSO selectedUrgent = allUrgentQuests[randomIndex];
 
-            if (QuestInformationUI.Instance != null)
+            if (questInformationUI != null)
             {
-                QuestInformationUI.Instance.ShowQuestOffer(selectedUrgent);
+                questInformationUI.ShowQuestOffer(selectedUrgent, (isAccepted) =>
+                {
+                    if (isAccepted) AcceptQuest(selectedUrgent);
+                    else DeclineQuest(selectedUrgent);
+                });
             }
-        }
-        else
-        {
-            Debug.Log("[QuestManager] Tidak ada Urgent Quest malam ini.");
+            else
+            {
+                Debug.LogWarning("[QuestManager] questInformationUI belum di-assign di Inspector!");
+            }
         }
     }
 
-    /// <summary>
-    /// Mengambil Daily Quest secara acak ketika player berinteraksi dengan NPC.
-    /// </summary>
     public void RequestDailyQuestFromNPC()
     {
         if (allDailyQuests == null || allDailyQuests.Count == 0) return;
@@ -89,15 +84,20 @@ public class QuestManager : MonoBehaviour
         int randomIndex = UnityEngine.Random.Range(0, allDailyQuests.Count);
         DailyQuestDataSO selectedDaily = allDailyQuests[randomIndex];
 
-        if (QuestInformationUI.Instance != null)
+        if (questInformationUI != null)
         {
-            QuestInformationUI.Instance.ShowQuestOffer(selectedDaily);
+            questInformationUI.ShowQuestOffer(selectedDaily, (isAccepted) =>
+            {
+                if (isAccepted) AcceptQuest(selectedDaily);
+                else DeclineQuest(selectedDaily);
+            });
+        }
+        else
+        {
+            Debug.LogWarning("[QuestManager] questInformationUI belum di-assign di Inspector!");
         }
     }
 
-    /// <summary>
-    /// Menerima quest yang ditawarkan dan memasukkannya ke daftar quest aktif player.
-    /// </summary>
     public void AcceptQuest(QuestDataSO quest)
     {
         if (quest == null || activeQuests.Contains(quest)) return;
@@ -106,15 +106,37 @@ public class QuestManager : MonoBehaviour
         OnQuestAccepted?.Invoke(quest);
         Debug.Log($"[QuestManager] Quest Diterima: {quest.questTitle}");
 
-        if (QuestListUI.Instance != null)
+        if (questListUI != null)
         {
-            QuestListUI.Instance.RefreshQuestList(activeQuests);
+            questListUI.RefreshQuestList(activeQuests);
+        }
+        else
+        {
+            Debug.LogWarning("[QuestManager] questListUI belum di-assign di Inspector!");
         }
     }
 
     /// <summary>
-    /// Menolak quest yang ditawarkan.
+    /// Menawarkan quest spesifik (misalnya quest yang di-assign langsung ke NPC tertentu).
     /// </summary>
+    public void RequestSpecificQuest(QuestDataSO questToOffer)
+    {
+        if (questToOffer == null) return;
+    
+        if (questInformationUI != null)
+        {
+            questInformationUI.ShowQuestOffer(questToOffer, (isAccepted) =>
+            {
+                if (isAccepted) AcceptQuest(questToOffer);
+                else DeclineQuest(questToOffer);
+            });
+        }
+        else
+        {
+            Debug.LogWarning("[QuestManager] questInformationUI belum di-assign di Inspector!");
+        }
+    }
+
     public void DeclineQuest(QuestDataSO quest)
     {
         Debug.Log($"[QuestManager] Quest Ditolak: {(quest != null ? quest.questTitle : "Null")}");

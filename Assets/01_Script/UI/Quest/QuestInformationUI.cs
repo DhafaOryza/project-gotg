@@ -1,11 +1,10 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class QuestInformationUI : MonoBehaviour
 {
-    public static QuestInformationUI Instance { get; private set; }
-
     [Header("UI Components")]
     [SerializeField] private GameObject questInfoPanel;
     [SerializeField] private TextMeshProUGUI titleText;
@@ -15,14 +14,10 @@ public class QuestInformationUI : MonoBehaviour
     [SerializeField] private Button declineButton;
 
     private QuestDataSO currentPendingQuest;
+    private Action<bool> onQuestResponseCallback; // PENTING: Menggunakan callback untuk merespon pilihan player
 
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-
         if (questInfoPanel != null)
             questInfoPanel.SetActive(false);
 
@@ -33,9 +28,14 @@ public class QuestInformationUI : MonoBehaviour
             declineButton.onClick.AddListener(OnDeclineClicked);
     }
 
-    public void ShowQuestOffer(QuestDataSO quest)
+    /// <summary>
+    /// Menampilkan panel tawaran quest kepada pemain beserta callback ketika tombol dipilih.
+    /// </summary>
+    public void ShowQuestOffer(QuestDataSO quest, Action<bool> responseCallback)
     {
         currentPendingQuest = quest;
+        onQuestResponseCallback = responseCallback;
+
         if (currentPendingQuest == null) return;
 
         if (titleText != null) titleText.text = quest.questTitle;
@@ -45,34 +45,38 @@ public class QuestInformationUI : MonoBehaviour
         if (questInfoPanel != null)
             questInfoPanel.SetActive(true);
 
-        // Opsional: Pause game saat pilihan quest muncul agar player bisa membaca dulu
         Time.timeScale = 0f;
     }
 
+    /// <summary>
+    /// Dipanggil ketika tombol Accept ditekan oleh pemain.
+    /// </summary>
     private void OnAcceptClicked()
     {
-        if (currentPendingQuest != null)
-        {
-            QuestManager.Instance.AcceptQuest(currentPendingQuest);
-        }
+        onQuestResponseCallback?.Invoke(true);
         ClosePanel();
     }
 
+    /// <summary>
+    /// Dipanggil ketika tombol Decline ditekan oleh pemain.
+    /// </summary>
     private void OnDeclineClicked()
     {
-        if (currentPendingQuest != null)
-        {
-            QuestManager.Instance.DeclineQuest(currentPendingQuest);
-        }
+        onQuestResponseCallback?.Invoke(false);
         ClosePanel();
     }
 
+    /// <summary>
+    /// Menutup panel informasi quest dan mengembalikan waktu game normal.
+    /// </summary>
     private void ClosePanel()
     {
         currentPendingQuest = null;
+        onQuestResponseCallback = null;
+
         if (questInfoPanel != null)
             questInfoPanel.SetActive(false);
 
-        Time.timeScale = 1f; // Kembalikan waktu game normal
+        Time.timeScale = 1f;
     }
 }

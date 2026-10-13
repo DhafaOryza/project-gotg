@@ -15,28 +15,36 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         npcData = entityData as NPCDataSO;
     }
 
-    /// <summary>
-    /// Menangani interaksi player: Memulai obrolan, lalu memicu Quest Information setelah obrolan selesai.
-    /// </summary>
     public void Interact(PlayerBaseEntity player)
     {
         Debug.Log($"Berinteraksi dengan NPC: {(npcData != null ? npcData.npcName : name)}");
         
         if (ConversationUIManager.Instance != null && npcData != null)
         {
-            // Mulai percakapan, berikan callback untuk memunculkan Quest Information di akhir obrolan
             ConversationUIManager.Instance.StartConversation(npcData, () =>
             {
-                // Bagian ini dijalankan tepat setelah obrolan selesai (setelah player klik teks terakhir)
-                if (npcData.assignedQuest != null && QuestInformationUI.Instance != null)
+                // Setelah obrolan selesai, jika NPC ini memiliki assignedQuest, tawarkan lewat QuestManager
+                if (npcData.assignedQuest != null)
                 {
-                    QuestInformationUI.Instance.ShowQuestOffer(npcData.assignedQuest);
+                    if (QuestManager.Instance != null)
+                    {
+                        Debug.Log($"[NPCBaseEntity] Membuka Quest Information untuk quest: {npcData.assignedQuest.questTitle}");
+                        QuestManager.Instance.RequestSpecificQuest(npcData.assignedQuest);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[NPCBaseEntity] QuestManager.Instance tidak ditemukan!");
+                    }
+                }
+                else
+                {
+                    Debug.Log("NPC ini tidak memiliki assignedQuest khusus.");
                 }
             });
         }
         else
         {
-            Debug.LogWarning("ConversationUIManager atau NPCData belum di-setup!");
+            Debug.LogWarning("[NPCBaseEntity] ConversationUIManager atau NPCData belum di-setup!");
         }
     }
 
