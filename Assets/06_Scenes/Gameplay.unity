@@ -6478,7 +6478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveController
   spawner: {fileID: 2119463928}
   currentWaveIndex: 0
-  waveData: {fileID: 0}
+  waveData: {fileID: 11400000, guid: 1fac8258389216c44b166d92b331063f, type: 2}
 --- !u!1 &1464650820
 GameObject:
   m_ObjectHideFlags: 0

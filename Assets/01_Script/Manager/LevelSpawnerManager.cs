@@ -14,10 +14,6 @@ public class LevelSpawnerManager : MonoBehaviour
     [Header("Enemy")]
     [SerializeField] private List<Transform> enemySpawnPositions = new List<Transform>();
 
-    [Header ("NPC")]
-    [SerializeField] private List<Transform> NPCSpawnPosition = new List<Transform>();
-    [SerializeField] private List<NPCSpawnConfig> levelNPCsToSpawn = new List<NPCSpawnConfig>();
-
     private PoolManager poolManager;
     private PlayerBaseEntity player;
 
@@ -27,7 +23,6 @@ public class LevelSpawnerManager : MonoBehaviour
 
         SpawnPlayer();
         SpawnBuilding();
-        SpawnNPCs();
     }
 
     private void SpawnPlayer()
@@ -63,38 +58,6 @@ public class LevelSpawnerManager : MonoBehaviour
             if (enemyId == null) continue;
 
             poolManager.Spawn(enemyId, position.position, Quaternion.identity);
-        }
-    }
-
-    private void SpawnNPCs()
-    {
-        // Buat salinan list posisi spawn agar bisa kita acak tanpa merusak list aslinya (supaya tidak ada NPC yang menumpuk di titik sama jika jumlah NPC < jumlah titik)
-        List<Transform> availablePositions = new List<Transform>(NPCSpawnPosition);
-
-        foreach (var npcConfig in levelNPCsToSpawn)
-        {
-            if (npcConfig.npcPoolId == null) continue;
-
-            for (int i = 0; i < npcConfig.spawnCount; i++)
-            {
-                if (availablePositions.Count == 0)
-                {
-                    Debug.LogWarning("[LevelSpawnerManager] Jumlah titik spawn NPC habis, beberapa NPC tidak dapat di-spawn.");
-                    break;
-                }
-
-                // Ambil posisi secara acak dari list
-                int randomIndex = Random.Range(0, availablePositions.Count);
-                Transform spawnTransform = availablePositions[randomIndex];
-
-                // Hapus posisi yang sudah dipakai agar tidak dipilih lagi oleh NPC berikutnya
-                availablePositions.RemoveAt(randomIndex);
-
-                if (spawnTransform != null)
-                {
-                    poolManager.Spawn(npcConfig.npcPoolId, spawnTransform.position, Quaternion.identity);
-                }
-            }
         }
     }
 

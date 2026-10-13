@@ -15,28 +15,22 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         npcData = entityData as NPCDataSO;
     }
 
-    /// <summary>
-    /// Menangani interaksi player: Memulai obrolan, lalu memicu Quest Information setelah obrolan selesai.
-    /// </summary>
     public void Interact(PlayerBaseEntity player)
     {
         Debug.Log($"Berinteraksi dengan NPC: {(npcData != null ? npcData.npcName : name)}");
         
         if (ConversationUIManager.Instance != null && npcData != null)
         {
-            // Mulai percakapan, berikan callback untuk memunculkan Quest Information di akhir obrolan
             ConversationUIManager.Instance.StartConversation(npcData, () =>
             {
-                // Bagian ini dijalankan tepat setelah obrolan selesai (setelah player klik teks terakhir)
-                if (npcData.assignedQuest != null && QuestInformationUI.Instance != null)
+                if (npcData.assignedQuest != null)
                 {
-                    QuestInformationUI.Instance.ShowQuestOffer(npcData.assignedQuest);
+                    if (GameManager.Instance != null)
+                    {
+                        GameManager.Instance.questManager.RequestSpecificQuest(npcData.assignedQuest);
+                    }
                 }
             });
-        }
-        else
-        {
-            Debug.LogWarning("ConversationUIManager atau NPCData belum di-setup!");
         }
     }
 

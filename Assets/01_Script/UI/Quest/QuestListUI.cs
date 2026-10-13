@@ -1,43 +1,70 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class QuestListUI : MonoBehaviour
 {
-    public static QuestListUI Instance { get; private set; }
-
     [Header("UI References")]
-    [SerializeField] private Transform questListContainer; // Parent dengan Vertical Layout Group di panel kiri
-    [SerializeField] private GameObject questItemPrefab;   // Prefab teks/panel kecil untuk item quest di list
+    [SerializeField] private Transform scrollContentTransform;
+    [SerializeField] private GameObject QuestPanel;
+    [SerializeField] private GameObject questItemPrefab;
 
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
+        if (QuestPanel != null)
+        {
+            QuestPanel.SetActive(false);
+        }
     }
 
+    /// <summary>
+    /// Membersihkan dan memperbarui tampilan daftar quest aktif menggunakan Scroll View.
+    /// </summary>
     public void RefreshQuestList(List<QuestDataSO> activeQuests)
     {
-        // Bersihkan list lama
-        foreach (Transform child in questListContainer)
+        if (scrollContentTransform == null || questItemPrefab == null)
+        {
+            Debug.LogWarning("[QuestListUI] ScrollContentTransform atau QuestItemPrefab belum di-assign di Inspector!");
+            return;
+        }
+
+        bool hasActiveQuests = activeQuests != null && activeQuests.Count > 0;
+
+        if (QuestPanel != null)
+        {
+            QuestPanel.SetActive(hasActiveQuests);
+        }
+
+        // 1. Bersihkan list item quest lama di dalam Content ScrollView
+        foreach (Transform child in scrollContentTransform)
         {
             Destroy(child.gameObject);
         }
 
-        // Buat elemen baru untuk setiap quest aktif
+        // 2. Buat elemen baru untuk setiap quest yang sedang aktif
         foreach (var quest in activeQuests)
         {
-            if (questItemPrefab != null && questListContainer != null)
+            if (quest != null)
             {
-                GameObject itemObj = Instantiate(questItemPrefab, questListContainer);
+                GameObject itemObj = Instantiate(questItemPrefab, scrollContentTransform);
+                itemObj.transform.localScale = Vector3.one;
+
+                var layoutElement = itemObj.GetComponent<LayoutElement>();
+                if (layoutElement == null)
+                {
+                    layoutElement = itemObj.AddComponent<LayoutElement>();
+                }
+                layoutElement.minHeight = 40;
+
                 TextMeshProUGUI txt = itemObj.GetComponentInChildren<TextMeshProUGUI>();
                 if (txt != null)
                 {
-                    txt.text = $"• {quest.questTitle}";
+                    txt.text = $"• {quest.questDescription}";
                 }
             }
         }
+
+        Debug.Log($"[QuestListUI] Scroll View diperbarui. Total quest aktif: {activeQuests.Count}");
     }
 }
