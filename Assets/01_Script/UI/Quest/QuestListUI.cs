@@ -7,7 +7,16 @@ public class QuestListUI : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private Transform scrollContentTransform;
+    [SerializeField] private GameObject QuestPanel;
     [SerializeField] private GameObject questItemPrefab;
+
+    private void Awake()
+    {
+        if (QuestPanel != null)
+        {
+            QuestPanel.SetActive(false);
+        }
+    }
 
     /// <summary>
     /// Membersihkan dan memperbarui tampilan daftar quest aktif menggunakan Scroll View.
@@ -18,6 +27,13 @@ public class QuestListUI : MonoBehaviour
         {
             Debug.LogWarning("[QuestListUI] ScrollContentTransform atau QuestItemPrefab belum di-assign di Inspector!");
             return;
+        }
+
+        bool hasActiveQuests = activeQuests != null && activeQuests.Count > 0;
+
+        if (QuestPanel != null)
+        {
+            QuestPanel.SetActive(hasActiveQuests);
         }
 
         // 1. Bersihkan list item quest lama di dalam Content ScrollView
@@ -44,7 +60,7 @@ public class QuestListUI : MonoBehaviour
                 TextMeshProUGUI txt = itemObj.GetComponentInChildren<TextMeshProUGUI>();
                 if (txt != null)
                 {
-                    txt.text = $"• {quest.questTitle}";
+                    txt.text = $"• {quest.questDescription}";
                 }
             }
         }

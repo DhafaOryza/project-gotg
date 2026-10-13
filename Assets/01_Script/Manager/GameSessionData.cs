@@ -21,6 +21,9 @@ public class GameSessionData : MonoBehaviour
     [Header ("Player Economy")]
     [SerializeField] private int PlayerCoin = 500;
 
+    [Header("Quest Progression")]
+    [SerializeField] private List<QuestDataSO> activeQuestsSession = new List<QuestDataSO>();
+
     public System.Action OnSkillDataChanged;
 
     void Awake()
@@ -131,6 +134,28 @@ public class GameSessionData : MonoBehaviour
     public void SetConsumables(List<ConsumableDataSO> setConsumables)
     {
         consumableItem = setConsumables;
+    }
+
+    #endregion
+
+    #region Quest System
+
+    public List<QuestDataSO> GetActiveQuestsSession() => activeQuestsSession;
+
+    public void AddActiveQuestSession(QuestDataSO quest)
+    {
+        if (quest != null && !activeQuestsSession.Contains(quest))
+        {
+            activeQuestsSession.Add(quest);
+        }
+    }
+
+    public void RemoveActiveQuestSession(QuestDataSO quest)
+    {
+        if (quest != null && activeQuestsSession.Contains(quest))
+        {
+            activeQuestsSession.Remove(quest);
+        }
     }
 
     #endregion

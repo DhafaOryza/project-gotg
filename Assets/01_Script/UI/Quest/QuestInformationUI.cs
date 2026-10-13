@@ -14,7 +14,7 @@ public class QuestInformationUI : MonoBehaviour
     [SerializeField] private Button declineButton;
 
     private QuestDataSO currentPendingQuest;
-    private Action<bool> onQuestResponseCallback; // PENTING: Menggunakan callback untuk merespon pilihan player
+    private Action<bool> onQuestResponseCallback;
 
     private void Awake()
     {

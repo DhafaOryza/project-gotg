@@ -4,28 +4,15 @@ using UnityEngine;
 
 public class QuestManager : MonoBehaviour
 {
-    public static QuestManager Instance { get; private set; }
-
     [Header("Database Quests")]
     [SerializeField] private List<DailyQuestDataSO> allDailyQuests = new List<DailyQuestDataSO>();
     [SerializeField] private List<UrgentQuestDataSO> allUrgentQuests = new List<UrgentQuestDataSO>();
 
-    [Header("UI References")]
+    [Header("UI References (Diisi dari Inspector)")]
     [SerializeField] private QuestInformationUI questInformationUI;
     [SerializeField] private QuestListUI questListUI;
 
-    [Header("Active Quests")]
-    private List<QuestDataSO> activeQuests = new List<QuestDataSO>();
-
     public event Action<QuestDataSO> OnQuestAccepted;
-
-    private void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
 
     public void Initialize()
     {
@@ -35,6 +22,8 @@ public class QuestManager : MonoBehaviour
             nightController.OnNightStarted -= HandleNightStarted;
             nightController.OnNightStarted += HandleNightStarted;
         }
+
+        RefreshUI();
     }
 
     private void OnDestroy()
@@ -70,10 +59,6 @@ public class QuestManager : MonoBehaviour
                     else DeclineQuest(selectedUrgent);
                 });
             }
-            else
-            {
-                Debug.LogWarning("[QuestManager] questInformationUI belum di-assign di Inspector!");
-            }
         }
     }
 
@@ -92,28 +77,6 @@ public class QuestManager : MonoBehaviour
                 else DeclineQuest(selectedDaily);
             });
         }
-        else
-        {
-            Debug.LogWarning("[QuestManager] questInformationUI belum di-assign di Inspector!");
-        }
-    }
-
-    public void AcceptQuest(QuestDataSO quest)
-    {
-        if (quest == null || activeQuests.Contains(quest)) return;
-
-        activeQuests.Add(quest);
-        OnQuestAccepted?.Invoke(quest);
-        Debug.Log($"[QuestManager] Quest Diterima: {quest.questTitle}");
-
-        if (questListUI != null)
-        {
-            questListUI.RefreshQuestList(activeQuests);
-        }
-        else
-        {
-            Debug.LogWarning("[QuestManager] questListUI belum di-assign di Inspector!");
-        }
     }
 
     /// <summary>
@@ -122,7 +85,7 @@ public class QuestManager : MonoBehaviour
     public void RequestSpecificQuest(QuestDataSO questToOffer)
     {
         if (questToOffer == null) return;
-    
+
         if (questInformationUI != null)
         {
             questInformationUI.ShowQuestOffer(questToOffer, (isAccepted) =>
@@ -137,10 +100,56 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    public void AcceptQuest(QuestDataSO quest)
+    {
+        if (quest == null) return;
+
+        // Simpan ke GameSessionData agar persisten
+        if (GameSessionData.Instance != null)
+        {
+            GameSessionData.Instance.AddActiveQuestSession(quest);
+        }
+
+        OnQuestAccepted?.Invoke(quest);
+        Debug.Log($"[QuestManager] Quest Diterima: {quest.questTitle}");
+
+        RefreshUI();
+    }
+
     public void DeclineQuest(QuestDataSO quest)
     {
         Debug.Log($"[QuestManager] Quest Ditolak: {(quest != null ? quest.questTitle : "Null")}");
     }
 
-    public List<QuestDataSO> GetActiveQuests() => activeQuests;
+    public void CompleteQuest(QuestDataSO quest)
+    {
+        if (quest == null) return;
+
+        if (GameSessionData.Instance != null)
+        {
+            GameSessionData.Instance.RemoveActiveQuestSession(quest);
+
+        }
+
+        Debug.Log($"[QuestManager] Quest Selesai: {quest.questTitle}. Reward diberikan!");
+        RefreshUI();
+    }
+
+    private void RefreshUI()
+    {
+        if (questListUI != null && GameSessionData.Instance != null)
+        {
+            List<QuestDataSO> currentActiveQuests = GameSessionData.Instance.GetActiveQuestsSession();
+            questListUI.RefreshQuestList(currentActiveQuests);
+        }
+    }
+
+    public List<QuestDataSO> GetActiveQuests()
+    {
+        if (GameSessionData.Instance != null)
+        {
+            return GameSessionData.Instance.GetActiveQuestsSession();
+        }
+        return new List<QuestDataSO>();
+    }
 }

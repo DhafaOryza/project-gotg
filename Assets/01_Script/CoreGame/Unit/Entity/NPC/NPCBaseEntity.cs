@@ -23,28 +23,14 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         {
             ConversationUIManager.Instance.StartConversation(npcData, () =>
             {
-                // Setelah obrolan selesai, jika NPC ini memiliki assignedQuest, tawarkan lewat QuestManager
                 if (npcData.assignedQuest != null)
                 {
-                    if (QuestManager.Instance != null)
+                    if (GameManager.Instance != null)
                     {
-                        Debug.Log($"[NPCBaseEntity] Membuka Quest Information untuk quest: {npcData.assignedQuest.questTitle}");
-                        QuestManager.Instance.RequestSpecificQuest(npcData.assignedQuest);
+                        GameManager.Instance.questManager.RequestSpecificQuest(npcData.assignedQuest);
                     }
-                    else
-                    {
-                        Debug.LogWarning("[NPCBaseEntity] QuestManager.Instance tidak ditemukan!");
-                    }
-                }
-                else
-                {
-                    Debug.Log("NPC ini tidak memiliki assignedQuest khusus.");
                 }
             });
-        }
-        else
-        {
-            Debug.LogWarning("[NPCBaseEntity] ConversationUIManager atau NPCData belum di-setup!");
         }
     }
 
