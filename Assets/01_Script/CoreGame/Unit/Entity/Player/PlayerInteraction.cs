@@ -15,6 +15,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
+        Interact();
+    }
+
+    private void Interact()
+    {
         FindNearestNPC();
 
         if (Input.GetKeyDown(KeyCode.E) && nearestNPC != null)
@@ -25,7 +30,6 @@ public class PlayerInteraction : MonoBehaviour
 
     private void FindNearestNPC()
     {
-        // Cari seluruh NPCBaseEntity yang ada di dalam scene
         NPCBaseEntity[] allNPCs = FindObjectsByType<NPCBaseEntity>(FindObjectsSortMode.None);
         
         NPCBaseEntity closest = null;
@@ -38,7 +42,6 @@ public class PlayerInteraction : MonoBehaviour
 
             float distance = Vector2.Distance(playerPos, npc.transform.position);
 
-            // Cek apakah player berada di dalam radius interaksi NPC tersebut
             if (distance <= npc.InteractionRadius)
             {
                 if (distance < minDistance)
