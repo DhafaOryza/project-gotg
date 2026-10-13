@@ -2829,6 +2829,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529118656}
   m_CullTransparentMesh: 1
+--- !u!1 &538369648 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3927949830090874156, guid: 31de277ebb6edfa1986de203b4c2a0b2, type: 3}
+  m_PrefabInstance: {fileID: 1429877707}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &538369649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538369648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64faf1c5c0453ac45902f2fc08ecf520, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PatrolSoldier
+  entityData: {fileID: 11400000, guid: 122bf0d91286bc274b4701550d9ee3ab, type: 2}
+  bonusMaxHP: 0
+  currentHealth: 0
+  interactionRadius: 2
 --- !u!1 &567378897
 GameObject:
   m_ObjectHideFlags: 0
@@ -6852,10 +6873,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_001
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4082160952361942064, guid: 31de277ebb6edfa1986de203b4c2a0b2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3927949830090874156, guid: 31de277ebb6edfa1986de203b4c2a0b2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 538369649}
   m_SourcePrefab: {fileID: 100100000, guid: 31de277ebb6edfa1986de203b4c2a0b2, type: 3}
 --- !u!1 &1440201599
 GameObject:
