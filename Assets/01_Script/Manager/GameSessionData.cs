@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class GameSessionData : MonoBehaviour
@@ -16,6 +17,9 @@ public class GameSessionData : MonoBehaviour
 
     [Header("Registry Data")]
     [SerializeField] private Registry registryData;
+
+    [Header ("Player Economy")]
+    [SerializeField] private int PlayerCoin = 500;
 
     public System.Action OnSkillDataChanged;
 
@@ -70,13 +74,34 @@ public class GameSessionData : MonoBehaviour
     }
 
 
-    #endregion
+    #endregion 
+
     #region Skill Data
 
-    public List<SkillDataSO> GetSkillsData()
+    public List<SkillDataSO> GeatAllMasterSkills()
     {
-        return choosenSkills;
+        if (registryData != null)
+            return registryData.Skills;
+        
+        return new List<SkillDataSO>();
     }
+
+    public int GetUnlockedCountForTier(int targetTier)
+    {
+        int count = 0;
+        if (registryData != null && registryData.Skills != null)
+            foreach (var skill in registryData.Skills)
+                if (skill != null && skill.tier == targetTier)
+                    if (isSkillUnlocked(skill.skillId))
+                        count++;
+
+        return count;
+    }
+
+    public int GetPlayerCoins() => PlayerCoin;
+    public void SpendCoins(int amount) => PlayerCoin -= amount; 
+
+    public List<SkillDataSO> GetSkillsData() => choosenSkills;
 
     public void SetSkillData(SkillDataSO setSkillData)
     {

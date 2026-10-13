@@ -18,6 +18,9 @@ public class SkillDataSO : ScriptableObject
     public TypeRange typeRange;
     public SkillType skillType;
 
+    [Header ("Skill Tier")]
+    [Range (1, 4)] public int tier;
+
 
     [Header("UI & Visual")]
     public Sprite icon;
