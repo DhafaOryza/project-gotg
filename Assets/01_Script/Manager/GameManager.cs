@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public NightController nightController;
     public WaveController waveController;
     public QuestManager questManager;
+    public ConversationUI conversationUI;
 
     private bool hasInitialized = false;
 

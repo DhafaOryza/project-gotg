@@ -3,10 +3,8 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
-public class ConversationUIManager : MonoBehaviour
+public class ConversationUI : MonoBehaviour
 {
-    public static ConversationUIManager Instance { get; private set; }
-
     [Header("UI References")]
     [SerializeField] private GameObject conversationPanel;
     [SerializeField] private TextMeshProUGUI nameText;
@@ -18,26 +16,9 @@ public class ConversationUIManager : MonoBehaviour
     private bool isConversationActive = false;
     private Action onConversationFinished;
 
-    private void Awake()
+    public void Setup(NPCDataSO npc)
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-
-        if (conversationPanel != null)
-            conversationPanel.SetActive(false);
-    }
-
-    private void Update()
-    {
-        if (isConversationActive)
-        {
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
-            {
-                OnNextButtonClicked();
-            }
-        }
+        
     }
 
     public void StartConversation(NPCDataSO data, Action finishCallBack = null)

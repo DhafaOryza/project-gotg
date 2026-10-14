@@ -17,9 +17,10 @@ public class NPCBaseEntity : BaseEntity, IInteractable
 
     public virtual void Interact(PlayerBaseEntity player)
     {        
-        if (ConversationUIManager.Instance != null && npcData != null)
+        if (npcData != null)
         {
-            ConversationUIManager.Instance.StartConversation(npcData, () =>
+            var conversationPanel = GameManager.Instance.conversationUI;
+            conversationPanel.StartConversation(npcData, () =>
             {
                 if (npcData.assignedQuest != null)
                 {

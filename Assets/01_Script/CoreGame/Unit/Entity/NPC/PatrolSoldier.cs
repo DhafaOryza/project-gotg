@@ -10,18 +10,18 @@ public class PatrolSoldier : NPCBaseEntity
         base.Awake();
         skillTreeManagerUI = Object.FindAnyObjectByType<SkillTreeManagerUI>(FindObjectsInactive.Include);
     }
-    public override void Interact(PlayerBaseEntity player)
-    {
-        if (ConversationUIManager.Instance != null && entityData is NPCDataSO npcData)
-        {
-            ConversationUIManager.Instance.StartConversation(npcData, () =>
-            {
-                if (skillTreeManagerUI != null)
-                {
-                    skillTreeManagerUI.gameObject.SetActive(true);
-                    skillTreeManagerUI.RefreshSkillTree();  
-                }
-            });
-        }
-    }
+    // public override void Interact(PlayerBaseEntity player)
+    // {
+    //     if (ConversationUIManager.Instance != null && entityData is NPCDataSO npcData)
+    //     {
+    //         ConversationUIManager.Instance.StartConversation(npcData, () =>
+    //         {
+    //             if (skillTreeManagerUI != null)
+    //             {
+    //                 skillTreeManagerUI.gameObject.SetActive(true);
+    //                 skillTreeManagerUI.RefreshSkillTree();  
+    //             }
+    //         });
+    //     }
+    // }
 }
