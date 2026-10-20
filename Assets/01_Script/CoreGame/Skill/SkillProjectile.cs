@@ -14,14 +14,20 @@ public class SkillProjectile : MonoBehaviour
     [Tooltip("Kalau aktif, projectile menembus musuh dan bisa mengenai banyak musuh.")]
     [SerializeField] private bool piercing = false;
 
-    private BaseEntity owner;
-    private int damage;
+    private BaseEntity _owner;
+    private int _damage;
+    private float _maxRange;
+    private Vector3 _spawnPosition;
+    private bool _ispiercing;
     private readonly HashSet<BaseEntity> alreadyHit = new HashSet<BaseEntity>();
 
-    public void Setup(BaseEntity owner, int damage)
+    public void Setup(BaseEntity owner, int damage, float maxRange, bool isAOE)
     {
-        this.owner = owner;
-        this.damage = damage;
+        _owner = owner;
+        _damage = damage;
+        _maxRange = maxRange;
+        _spawnPosition = transform.position;
+        _ispiercing = isAOE;
     }
 
     private void Awake()
@@ -40,16 +46,20 @@ public class SkillProjectile : MonoBehaviour
     {
         // Bergerak ke arah "kanan" prefab; arahnya diatur lewat rotasi saat spawn.
         transform.Translate(Vector3.right * speed * Time.deltaTime, Space.Self);
+        float distanceTraveled = Vector3.Distance(_spawnPosition, transform.position);
+        if (distanceTraveled >= _maxRange)
+            Destroy(gameObject);
+
+        
     }
 
     private void OnTriggerEnter(Collider other)
     {
         var target = other.GetComponentInParent<BaseEntity>();
-        if (target == null || target == owner) return;
-        if (target is PlayerBaseEntity) return;          // tidak melukai player
+        if (target == null || target == _owner || target is PlayerBaseEntity) return;
         if (!alreadyHit.Add(target)) return;             // satu musuh hanya kena sekali
 
-        target.TakeDamage(damage);
+        target.TakeDamage(_damage);
 
         if (!piercing)
             Destroy(gameObject);

@@ -13,15 +13,19 @@ MonoBehaviour:
   m_Name: SkillData_004
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: 004
-  displayName: Attack_004
+  displayName: Hay Bale Roll
   description: 
-  baseValue: 0
-  typeRange: 0
-  skillType: 0
+  baseValue: 10
   tier: 1
+  typeRange: 1
+  skillType: 0
+  targetMode: 1
+  isProjectile: 1
   icon: {fileID: 0}
   locked: 0
-  targetType: 1
+  targetType: 0
   cooldown: 3
-  skillColor: {r: 1, g: 1, b: 1, a: 1}
-  skillPrefab: {fileID: 0}
+  skillColor: {r: 0.02641511, g: 0.020748325, b: 0.003339268, a: 1}
+  maxRange: 10
+  HitboxSize: {x: 2, y: 2, z: 1}
+  skillPrefab: {fileID: 8946592561061051195, guid: 54a0636354ee996469f397d139e27860, type: 3}

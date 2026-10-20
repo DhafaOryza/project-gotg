@@ -46,28 +46,33 @@ public class PlayerBaseEntity : BaseEntity
         }
     }
 
+    // Satu runtime per slot, termasuk slot kosong (null), supaya indeks skillRuntime
+    // selalu sejajar dengan equippedSkills (slot 2 = tombol E walau slot 0 dan 1 kosong).
     private void InitializeSkillRuntimes()
     {
         skillRuntime.Clear();
+
+        if (equippedSkills == null) return;
+
         foreach (var skill in equippedSkills)
         {
-            if (skill != null)
-            {
-                skillRuntime.Add(new SkillRuntimeData(skill));
-            }
+            skillRuntime.Add(new SkillRuntimeData(skill));
         }
     }
 
     public void RedrawSkill()
     {
-        if (equippedSkills != null || equippedSkills.Count > 0)
+        var skillsManager = GameManager.Instance?.skillsManager;
+        if (skillsManager == null)
         {
-            equippedSkills.Clear();
+            Debug.LogWarning($"[{name}] RedrawSkill: skillsManager tidak ditemukan, loadout tidak diperbarui.");
+            return;
         }
 
-        var skillsManager = GameManager.Instance?.skillsManager;
-
-        equippedSkills = skillsManager.choosenSkills;
+        // SALIN list-nya (jangan di-assign langsung). Kalau equippedSkills menunjuk list yang sama
+        // dengan skillsManager.choosenSkills, pemanggilan RedrawSkill berikutnya akan menjalankan
+        // equippedSkills.Clear() dan ikut menghapus pilihan skill di SkillsManager.
+        equippedSkills = new List<SkillDataSO>(skillsManager.choosenSkills);
 
         InitializeSkillRuntimes();
     }
@@ -107,7 +112,7 @@ public class PlayerBaseEntity : BaseEntity
         Debug.Log($"[{name}] Player berhasil Revive dengan {currentHealth} HP ({reviveHpPercentage * 100}% HP)!");
     }
 
-    public bool TryUseSkill(int slotIndex, float aimX)
+    public bool TryUseSkill(int slotIndex, Transform attackPoint , Vector2 aimDirection)
     {
         if (!CanAct) return false;
 
@@ -123,7 +128,7 @@ public class PlayerBaseEntity : BaseEntity
         if (runtime.isOnCooldown) return false;
 
         // Gagal (mis. prefab belum diisi) -> cooldown tidak dimulai.
-        if (!skill.Activate(this, aimX)) return false;
+        if (!skill.Activate(this, attackPoint, aimDirection)) return false;
 
         runtime.StartCooldown(skill.cooldown);
 
@@ -147,5 +152,13 @@ public class PlayerBaseEntity : BaseEntity
     public void NotifySkillDropMissed(int slotIndex)
     {
         Debug.Log($"[{name}] Skill pada slot {slotIndex} di-drop di tempat yang tidak valid.");
+    }
+
+    public SkillDataSO GetEquippedSkillData(int slotIndex)
+    {
+        if (slotIndex >= 0 && slotIndex < equippedSkills.Count)
+            return equippedSkills[slotIndex];
+
+        return null;
     }
 }

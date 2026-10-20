@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class BaseEntity : MonoBehaviour, IDamageable
+public class BaseEntity : MonoBehaviour, IDamageable, IHealthSource
 {
     [Header ("Blueprint Entity")]
     public EntityDataSO entityData;
@@ -14,6 +14,10 @@ public class BaseEntity : MonoBehaviour, IDamageable
 
     public bool IsDead { get; protected set; }
 
+    public int CurrentHealth => currentHealth;
+    public int MaxHealth => maxHealth;
+
+
     public event Action<int, int> OnHealthChanged; // current, max
     public event Action<int> OnDamaged;             // damage amount
     public event Action OnDied;
@@ -22,6 +26,11 @@ public class BaseEntity : MonoBehaviour, IDamageable
     {
         maxHealth = CalcMaxHP();
         currentHealth = maxHealth;
+    }
+
+    void OnValidate()
+    {
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
     public virtual void TakeDamage(int amount)

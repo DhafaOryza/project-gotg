@@ -13,6 +13,11 @@ public class PlayerController : MonoBehaviour
     [Header("Optional")]
     [SerializeField] private GameObject clickMarkerPrefab;
 
+    [Header ("Skill Settings & AttackPoint")]
+    [Range(0.05f, 1f)]
+    [SerializeField] private float slowMoScale = 0.5f;
+    [SerializeField] private Transform attackPoint;
+
     [Header("Skill Keys")]
     public KeyCode skill1 = KeyCode.Q;
     public KeyCode skill2 = KeyCode.W;
@@ -41,12 +46,19 @@ public class PlayerController : MonoBehaviour
 
     // Buffer untuk OverlapSphereNonAlloc supaya tidak membuat array baru tiap interact.
     private readonly Collider[] interactBuffer = new Collider[16];
-
+    private bool suppressHeldFollow = false;
     // Setelah Stop(), klik kanan yang masih ditahan tidak langsung menggerakkan player lagi.
     // Flag ini hilang saat tombol mouse dilepas atau ada klik baru.
-    private bool suppressHeldFollow;
+   
+
+    //Tracking Mode
+    private bool isAiming = false;
+    private int activeAimSlot = -1;
+    private Vector2 currentAimDirection = Vector2.right;
 
     public bool IsMoving => hasTarget;
+    public bool IsAiming => isAiming;
+    public Vector2 CurrentAimDirection => currentAimDirection;
 
     public void Setup()
     {
@@ -62,7 +74,26 @@ public class PlayerController : MonoBehaviour
         playerObject = _currentPlayer.gameObject;
         playerRb = _currentPlayer.GetComponent<Rigidbody>();
         cam = Camera.main;
+
+        if (attackPoint == null)
+        {
+            attackPoint = playerObject.transform.Find("AttackPoint");
+            if (attackPoint == null)
+                attackPoint = playerObject.transform.Find("attackpoint");
+
+            if (attackPoint == null)
+            {
+                Debug.LogWarning("[PlayerController] Child AttackPoint TIDAK DITEMUKAN di Player! Skill akan keluar dari pivot kaki.");
+                attackPoint = playerObject.transform;
+            }
+            else
+            {
+                Debug.Log($"[PlayerController] Berhasil mengaitkan AttackPoint di posisi Y: {attackPoint.localPosition.y}");
+            }
+            
+        }
     }
+    
 
     private void Update()
     {
@@ -85,8 +116,8 @@ public class PlayerController : MonoBehaviour
         if (ReadKeyDown(interact))
             TryInteract();
 
-        HandleMovementInput();
         HandleSkillInput();
+        HandleMovementInput();
     }
 
     // Cari IInteractable terdekat dalam interactRange, lalu panggil Interact()-nya.
@@ -121,9 +152,11 @@ public class PlayerController : MonoBehaviour
     }
 
     private void HandleMovementInput()
-    {
-        bool pressed = ReadMouseDown();
-        bool rawHeld = ReadMouseHeld();
+    {   
+        if (isAiming) return;
+
+        bool pressed = ReadRightMouseDown();
+        bool rawHeld = ReadRightMouseHeld();
 
         if (!rawHeld || pressed)
             suppressHeldFollow = false;
@@ -132,15 +165,15 @@ public class PlayerController : MonoBehaviour
 
         if (!pressed && !held) return;
 
-        if (TryGetMouseWorldX(out float x))
+        if (TryGetMouseWorldPosition(out Vector3 mouseworldPosition))
         {
-            targetX = x;
+            targetX = mouseworldPosition.x;
             hasTarget = true;
 
             if (pressed && clickMarkerPrefab != null)
             {
                 Instantiate(clickMarkerPrefab,
-                    new Vector3(x, playerRb.position.y, playerRb.position.z),
+                    new Vector3(mouseworldPosition.x, playerRb.position.y, playerRb.position.z),
                     Quaternion.identity);
             }
         }
@@ -149,15 +182,119 @@ public class PlayerController : MonoBehaviour
     // Tombol skill1..skill4 dipetakan berurutan ke slot 0..3 di equippedSkills.
     private void HandleSkillInput()
     {
+        if (isAiming)
+        {
+            CalculateAimDirection();
+
+            if (ReadRightMouseDown())
+            {
+                CancelAiming();
+                suppressHeldFollow = true;
+                return;
+            }
+
+            var releaseKey = ReadKeyUp(GetSkillKey(activeAimSlot));
+            var leftClick = ReadLeftMouseDown();
+
+            if (releaseKey || leftClick)
+                ExecuteActiveSkill();
+
+            return ;
+        }
+
         for (int slot = 0; slot < SkillSlotCount; slot++)
         {
-            if (ReadKeyDown(GetSkillKey(slot)))
+            KeyCode key = GetSkillKey(slot);
+            if (ReadKeyDown(key))
             {
-                // Skill dibidik ke posisi kursor; kalau gagal dihitung, default ke kanan.
-                float aimX = TryGetMouseWorldX(out float x) ? x : playerRb.position.x + 1f;
-                playerEntity.TryUseSkill(slot, aimX);
+                if (playerEntity.GetSkillCooldownRemaining(slot) <= 0f)
+                {
+                   var skillData = playerEntity.GetEquippedSkillData(slot);
+                   if (skillData == null) continue;
+
+                    if (skillData.targetType == SkillTargetType.Self)
+                        playerEntity.TryUseSkill(slot, attackPoint, Vector2.right);
+                    else    
+                        StartAiming(slot);
+                    
+                    break;
+                }
+                else
+                {
+                    Debug.Log($"[Skill] slot {slot} masih cooldown");
+                }
+                
             }
         }
+    }
+
+    private void StartAiming(int slotIndex)
+    {
+        isAiming = true;
+        activeAimSlot = slotIndex;
+        Stop();
+
+        Time.timeScale = slowMoScale;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+    }
+
+    private void CalculateAimDirection()
+    {
+        if (!TryGetMouseWorldPosition(out Vector3 mouseworldpos)) return;
+
+        float mouseDirectionX = mouseworldpos.x - playerRb.position.x;
+
+        if (attackPoint != null && attackPoint != playerObject.transform)
+        {
+            Vector3 localpos = attackPoint.localPosition;
+            float absX = Mathf.Abs(localpos.x);
+
+            localpos.x = (mouseDirectionX >= 0f)? absX : -absX;
+            attackPoint.localPosition = localpos;
+        }
+
+        Vector3 origin = attackPoint != null ? attackPoint.position : playerRb.position;
+        Vector2 dir = new Vector2(mouseworldpos.x - origin.x, mouseworldpos.y - origin.y);
+
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        if (angle < 0f)
+            angle = (dir.x >= 0f) ? 0f : 180f;
+
+        float rad = angle * Mathf.Deg2Rad;
+        currentAimDirection = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)).normalized;
+    }
+
+    private void ExecuteActiveSkill()
+    {
+        int slot = activeAimSlot;
+        ResetTimeScale();
+        isAiming = false;
+        activeAimSlot = -1;
+
+        // if (attackPoint != null)
+        // {
+        //     Debug.Log($"<color=cyan>[EXECUTE] Nama AttackPoint: {attackPoint.name} | World Pos: {attackPoint.position} | Local Pos: {attackPoint.localPosition}</color>");
+        // }
+        // else
+        // {
+        //     Debug.LogError("[EXECUTE] attackPoint bernilai NULL!");
+        // }
+
+        playerEntity.TryUseSkill(slot, attackPoint, currentAimDirection);
+    }
+
+    private void CancelAiming()
+    {
+        ResetTimeScale();
+        isAiming = false;
+        activeAimSlot = -1;
+    }
+
+    private void ResetTimeScale()
+    {
+        Time.timeScale = 1.0f;
+        Time.fixedDeltaTime = 0.02f;
     }
 
     private KeyCode GetSkillKey(int slot)
@@ -222,9 +359,9 @@ public class PlayerController : MonoBehaviour
     }
 
     // Ubah posisi mouse jadi posisi dunia di bidang tempat player berada.
-    private bool TryGetMouseWorldX(out float x)
+    private bool TryGetMouseWorldPosition(out Vector3 worldpos)
     {
-        x = 0f;
+        worldpos = Vector3.zero;
 
         Vector2 screenPos = ReadMousePosition();
         Ray ray = cam.ScreenPointToRay(screenPos);
@@ -234,23 +371,45 @@ public class PlayerController : MonoBehaviour
 
         if (plane.Raycast(ray, out float enter))
         {
-            x = ray.GetPoint(enter).x;
+            worldpos = ray.GetPoint(enter);
             return true;
         }
         return false;
     }
 
+
+
     // Input: jalan di Input System baru maupun yang lama.
-    private bool ReadMouseDown()
+
+#region  Input helper
+
+    private bool ReadLeftMouseDown()
     {
 #if ENABLE_INPUT_SYSTEM
-        return Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame;
-#else
-        return Input.GetMouseButtonDown(1);
+    return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+#else 
+    return Input.GetMouseButtonDown(0);
 #endif
     }
 
-    private bool ReadMouseHeld()
+    private bool ReadRightMouseDown()
+    {
+#if ENABLE_INPUT_SYSTEM
+    return Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame;
+#else 
+    return Input.GetMouseButtonDown(1);
+#endif 
+    }
+//     private bool ReadMouseDown()
+//     {
+// #if ENABLE_INPUT_SYSTEM
+//         return Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame;
+// #else
+//         return Input.GetMouseButtonDown(1);
+// #endif
+//     }
+
+   private bool ReadRightMouseHeld()
     {
 #if ENABLE_INPUT_SYSTEM
         return Mouse.current != null && Mouse.current.rightButton.isPressed;
@@ -285,10 +444,26 @@ public class PlayerController : MonoBehaviour
 #endif
     }
 
+    private bool ReadKeyUp(KeyCode keyCode)
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current == null) return false;
+        string keyName = keyCode.ToString().Replace("Alpha", "Digit");
+        if (System.Enum.TryParse(keyName, out Key key) && key != Key.None)
+            return Keyboard.current[key].wasReleasedThisFrame;
+        return false;
+#else
+        return Input.GetKeyUp(keyCode);
+#endif
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
         Vector3 pos = playerRb != null ? playerRb.position : transform.position;
         Gizmos.DrawWireSphere(pos, interactRange);
     }
+
+#endregion
+
 }

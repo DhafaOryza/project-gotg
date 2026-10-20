@@ -13,15 +13,19 @@ MonoBehaviour:
   m_Name: SkillData_001
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: 001
-  displayName: Attack_001
+  displayName: Haymaker
   description: 
-  baseValue: 0
+  baseValue: 20
+  tier: 1
   typeRange: 0
   skillType: 0
-  tier: 1
-  icon: {fileID: 0}
+  targetMode: 0
+  isProjectile: 0
+  icon: {fileID: 21300000, guid: b761766bb8ba61548941f11f840bb8df, type: 3}
   locked: 0
   targetType: 0
   cooldown: 3
-  skillColor: {r: 1, g: 1, b: 1, a: 1}
+  skillColor: {r: 0.9547169, g: 0.17833383, b: 0.17833383, a: 1}
+  maxRange: 2
+  HitboxSize: {x: 2, y: 2, z: 1}
   skillPrefab: {fileID: 4207328673673525399, guid: 86b3eba05849fa44baf23404adca7508, type: 3}
