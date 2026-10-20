@@ -18,14 +18,16 @@ public class SkillProjectile : MonoBehaviour
     private int _damage;
     private float _maxRange;
     private Vector3 _spawnPosition;
+    private bool _ispiercing;
     private readonly HashSet<BaseEntity> alreadyHit = new HashSet<BaseEntity>();
 
-    public void Setup(BaseEntity owner, int damage, float maxRange = 10f)
+    public void Setup(BaseEntity owner, int damage, float maxRange, bool isAOE)
     {
         _owner = owner;
         _damage = damage;
         _maxRange = maxRange;
         _spawnPosition = transform.position;
+        _ispiercing = isAOE;
     }
 
     private void Awake()
@@ -54,8 +56,7 @@ public class SkillProjectile : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var target = other.GetComponentInParent<BaseEntity>();
-        if (target == null || target == _owner) return;
-        if (target is PlayerBaseEntity) return;          // tidak melukai player
+        if (target == null || target == _owner || target is PlayerBaseEntity) return;
         if (!alreadyHit.Add(target)) return;             // satu musuh hanya kena sekali
 
         target.TakeDamage(_damage);

@@ -15,10 +15,11 @@ MonoBehaviour:
   skillId: 002
   displayName: 'Axe Throw  '
   description: 
-  baseValue: 0
+  baseValue: 15
   tier: 1
   typeRange: 1
   skillType: 0
+  targetMode: 0
   isProjectile: 1
   icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   locked: 0

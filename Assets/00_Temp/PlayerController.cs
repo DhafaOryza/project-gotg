@@ -77,11 +77,23 @@ public class PlayerController : MonoBehaviour
 
         if (attackPoint == null)
         {
-            attackPoint = playerObject.transform.Find("attackPoint");
+            attackPoint = playerObject.transform.Find("AttackPoint");
             if (attackPoint == null)
-            attackPoint = playerObject.transform;
+                attackPoint = playerObject.transform.Find("attackpoint");
+
+            if (attackPoint == null)
+            {
+                Debug.LogWarning("[PlayerController] Child AttackPoint TIDAK DITEMUKAN di Player! Skill akan keluar dari pivot kaki.");
+                attackPoint = playerObject.transform;
+            }
+            else
+            {
+                Debug.Log($"[PlayerController] Berhasil mengaitkan AttackPoint di posisi Y: {attackPoint.localPosition.y}");
+            }
+            
         }
     }
+    
 
     private void Update()
     {
@@ -234,7 +246,7 @@ public class PlayerController : MonoBehaviour
 
         if (attackPoint != null && attackPoint != playerObject.transform)
         {
-            Vector2 localpos = attackPoint.localPosition;
+            Vector3 localpos = attackPoint.localPosition;
             float absX = Mathf.Abs(localpos.x);
 
             localpos.x = (mouseDirectionX >= 0f)? absX : -absX;
@@ -259,6 +271,15 @@ public class PlayerController : MonoBehaviour
         ResetTimeScale();
         isAiming = false;
         activeAimSlot = -1;
+
+        // if (attackPoint != null)
+        // {
+        //     Debug.Log($"<color=cyan>[EXECUTE] Nama AttackPoint: {attackPoint.name} | World Pos: {attackPoint.position} | Local Pos: {attackPoint.localPosition}</color>");
+        // }
+        // else
+        // {
+        //     Debug.LogError("[EXECUTE] attackPoint bernilai NULL!");
+        // }
 
         playerEntity.TryUseSkill(slot, attackPoint, currentAimDirection);
     }
@@ -444,4 +465,5 @@ public class PlayerController : MonoBehaviour
     }
 
 #endregion
+
 }

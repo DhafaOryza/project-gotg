@@ -15,10 +15,11 @@ MonoBehaviour:
   skillId: 001
   displayName: Haymaker
   description: 
-  baseValue: 15
+  baseValue: 20
   tier: 1
   typeRange: 0
   skillType: 0
+  targetMode: 0
   isProjectile: 0
   icon: {fileID: 21300000, guid: b761766bb8ba61548941f11f840bb8df, type: 3}
   locked: 0

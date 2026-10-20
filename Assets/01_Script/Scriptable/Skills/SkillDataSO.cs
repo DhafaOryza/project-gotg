@@ -20,6 +20,7 @@ public class SkillDataSO : ScriptableObject
     public int tier;
     public TypeRange typeRange;
     public SkillType skillType;
+    public TargetMode targetMode;
     public bool isProjectile = false;
 
     [Header("UI & Visual")]
@@ -57,24 +58,48 @@ public class SkillDataSO : ScriptableObject
             GameObject spawned = Instantiate(skillPrefab, spawnPos, rotation);
             if (spawned.TryGetComponent(out SkillProjectile projectile))
             {
-                projectile.Setup(user, baseValue, maxRange);
+                bool isAOE = (targetMode == TargetMode.AOE_TARGET);
+                projectile.Setup(user, baseValue, maxRange, isAOE);
             }
             return true;
 
         }
 
-         Vector3 boxCenter = spawnPos + (Vector3)(aimDirection.normalized * (maxRange * 0.5f));
+        Vector3 boxCenter = spawnPos + (Vector3)(aimDirection.normalized * (maxRange * 0.5f));
         Collider[] hits = Physics.OverlapBox(boxCenter, HitboxSize * 0.5f, rotation);
-
-        foreach (var hit in hits)
+        
+        if (targetMode == TargetMode.SINGLE_TARGET)
         {
-            var target = hit.GetComponentInParent<BaseEntity>();
-            if (target != null && target != user && !(target is PlayerBaseEntity))
+            BaseEntity closestTarget = null;
+            float closestDistance = float.MaxValue;
+
+            foreach (var hit in hits)
             {
-                target.TakeDamage(baseValue);
+                var target = hit.GetComponentInParent<BaseEntity>();
+                if (target != null && target != user && !(target is PlayerBaseEntity))
+                {
+                    float dist = Vector3.Distance(spawnPos, target.transform.position);
+                    if (dist < closestDistance)
+                    {
+                        closestDistance = dist;
+                        closestTarget = target;
+                    }
+                }
+            }
+
+            
+            closestTarget?.TakeDamage(baseValue);
+        }
+        else
+        {
+            foreach (var hit in hits)
+            {
+                var target = hit.GetComponentInParent<BaseEntity>();
+                if (target != null && target != user && !(target is PlayerBaseEntity))
+                    target.TakeDamage(baseValue);
             }
         }
-
+    
         return true;
     }
 }
