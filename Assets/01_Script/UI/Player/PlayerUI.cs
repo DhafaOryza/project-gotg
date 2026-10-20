@@ -1,99 +1,85 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerUI : MonoBehaviour
 {
-    [Header ("UI Container")]
-    [SerializeField] private GameObject playerProfile;
-    [SerializeField] private GameObject SkillDeckContainer;
+    public static PlayerUI Instance { get; set; }
 
-    [Header("Skill Card")]
-    [SerializeField] private GameObject skillCardPrefab;
+    [SerializeField] private PreparationUI preparationUI;
+
+    [Header("Skill Panel")]
     [SerializeField] private Transform skillContainer;
+    [SerializeField] private SkillUI skillUIPrefab;
 
-    private void Start()
+    private SkillsManager skillsManager;
+    private PlayerController playerController;
+
+    void Awake()
     {
-        var waveController = GameManager.Instance?.waveController;
-        if (waveController != null)
+        if (Instance == null)
         {
-            waveController.OnWaveStarted += HandleWaveStarted;
-            waveController.OnWaveEnded += HandleWaveEnded;
+            Instance = this;
         }
-
-        UpdateUIVisibility();
-    }
-
-    private void OnEnable()
-    {
-        var session = GameSessionData.GetOrCreate();
-        if (session != null)
+        else if (Instance != this)
         {
-            session.OnSkillDataChanged += SetupSkillUI;
-        }
-    }
-    private void OnDisable()
-    {
-        if (GameSessionData.Instance != null)
-            GameSessionData.Instance.OnSkillDataChanged -= SetupSkillUI;
-    }
-
-    private void OnDestroy()
-    {
-        var waveController = GameManager.Instance?.waveController;
-        if (waveController != null)
-        {
-            waveController.OnWaveStarted -= HandleWaveStarted;
-            waveController.OnWaveEnded -= HandleWaveEnded;
-        }
-    }
-    private void UpdateUIVisibility()
-    {
-        var waveController = GameManager.Instance?.waveController;
-        bool isRunning = waveController != null && waveController.IsWaveRunning;
-
-        if (playerProfile != null)
-            playerProfile.SetActive(isRunning);
-        if (SkillDeckContainer != null)
-            SkillDeckContainer.SetActive(isRunning);
-    }
-    private void HandleWaveStarted(int waveIndex)
-    {
-        UpdateUIVisibility();
-        SetupSkillUI();
-    }
-    private void HandleWaveEnded(int waveIndex) => UpdateUIVisibility();
-
-    private void SetupSkillUI()
-    {
-        PlayerBaseEntity player = FindFirstObjectByType<PlayerBaseEntity>();
-        if (player == null)
-        {
-            Debug.LogWarning("[PlayerUI] PlayerBaseEntity tidak ditemukan!");
             return;
         }
+    }
 
-        List<SkillDataSO> skills = GameSessionData.GetOrCreate().GetSkillsData();
-        if (skills == null || skills.Count == 0)
-        {
-            Debug.LogWarning("[PlayerUI] List skill di GameSessionData/Registry kosong.");
+    void Start()
+    {
+        InitializeUI();
+    }
+
+    public void InitializeUI()
+    {
+        if (preparationUI == null) preparationUI = Object.FindFirstObjectByType<PreparationUI>();
+
+        if (preparationUI != null) preparationUI.gameObject.SetActive(false);
+        if (skillContainer != null) skillContainer.gameObject.SetActive(false);
+    }
+
+    public void InitializeSkillUI()
+    {
+        skillsManager = GameManager.Instance?.skillsManager;
+        playerController = GameManager.Instance?.playerController;
+
+        if (skillsManager == null || playerController == null || skillUIPrefab == null || skillContainer == null)
             return;
-        }
 
-        foreach (Transform dummyChild in skillContainer)
+        var skills = skillsManager.choosenSkills;
+        var keys = new List<KeyCode>
         {
-            Destroy(dummyChild.gameObject);
-        }
+            playerController.skill1,
+            playerController.skill2,
+            playerController.skill3,
+            playerController.skill4,
+        };
 
-        for (int i = 0; i < skills.Count ; i++)
+        for (int i = 0; i < skills.Count && i < keys.Count; i++)
         {
-            GameObject cardGO = Instantiate(skillCardPrefab, skillContainer);
-            SkillCardUI cardUI = cardGO.GetComponent<SkillCardUI>();
-            if (cardUI != null)
-            {
-                cardUI.Setup(player, i, skills[i]);
-            }
-
+            SkillUI currentSkill = Instantiate(skillUIPrefab, skillContainer);
+            currentSkill.Setup(skills[i].icon, keys[i].ToString());
         }
+    }
+
+    public void OpenPreparationUI()
+    {
+        preparationUI.gameObject.SetActive(true);
+    }
+
+    public void ClosePreparationUI()
+    {
+        preparationUI.gameObject.SetActive(false);
+    }
+
+    public void OpenSkillUI()
+    {
+        skillContainer.gameObject.SetActive(true);
+    }
+
+    public void CloseSkillUI()
+    {
+        skillContainer.gameObject.SetActive(false);
     }
 }

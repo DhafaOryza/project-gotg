@@ -14,11 +14,6 @@ public class WaveController : MonoBehaviour
     public bool IsWaveRunning { get; private set; }
     public float WaveTimeRemaining { get; private set; }
 
-    public event Action<int> OnWaveStarted;       // waveIndex
-    public event Action<int> OnWaveEnded;         // waveIndex
-    public event Action<float> OnWaveTimeChanged; // sisa waktu (detik)
-    public event Action OnNightCompleted;         // semua waveEnemies di night ini sudah habis
-
     #region Night / Wave Control
 
     /// <summary>Dipanggil NightController. Menjalankan seluruh wave dalam satu night.</summary>
@@ -62,16 +57,12 @@ public class WaveController : MonoBehaviour
 
         IsWaveRunning = false;
         nightRoutine = null;
-        OnNightCompleted?.Invoke(); // NightController akan memilih night berikutnya
     }
 
     private IEnumerator WaveRoutine(int waveIndex)
     {
         WaveTimeRemaining = waveData.timerPerWave;
         float spawnTimer = 0f; // 0 -> spawn pertama langsung di awal wave
-
-        OnWaveStarted?.Invoke(waveIndex);
-        OnWaveTimeChanged?.Invoke(WaveTimeRemaining);
 
         while (WaveTimeRemaining > 0f)
         {
@@ -87,10 +78,7 @@ public class WaveController : MonoBehaviour
             WaveTimeRemaining = Mathf.Max(0f, WaveTimeRemaining - dt);
             spawnTimer -= dt;
 
-            OnWaveTimeChanged?.Invoke(WaveTimeRemaining);
         }
-
-        OnWaveEnded?.Invoke(waveIndex);
     }
 
     private float GetRandomSpawnInterval()

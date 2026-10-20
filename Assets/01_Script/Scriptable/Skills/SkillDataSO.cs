@@ -11,45 +11,50 @@ public enum SkillTargetType
 [CreateAssetMenu(fileName = "NewSkillData", menuName = "Data/Skill/Skill Data")]
 public class SkillDataSO : ScriptableObject
 {
-    [Header("Targeting & Cooldown")]
     public string skillId;
     public string displayName;
+    [TextArea] public string description;
     public int baseValue;
+
+    [Header("Targeting & Cooldown")]
     public TypeRange typeRange;
     public SkillType skillType;
 
-    [Header ("Skill Tier")]
-    [Range (1, 4)] public int tier;
+    [Header("Skill Tier")]
+    [Range(1, 4)] public int tier;
 
 
     [Header("UI & Visual")]
     public Sprite icon;
-    [TextArea] public string description;
-    
-    [Header ("Progession Default")]
-    public bool unlockByDefault = false;
+
+    [Header("Progession Default")]
+    public bool locked = true;
 
     [Header("Targeting & Cooldown")]
     public SkillTargetType targetType = SkillTargetType.Enemy;
     public float cooldown = 3f;
     public Color skillColor = Color.white;
 
-    public bool IsValidTarget(PlayerBaseEntity caster, BaseEntity target)
+    [Header("Prefabs")]
+    public GameObject skillPrefab;
+
+    public bool Activate(PlayerBaseEntity user, float aimX)
     {
-        if (target == null) return false;
-
-        bool isSelf = target == (BaseEntity)caster;
-
-        switch (targetType)
+        if (skillPrefab == null)
         {
-            case SkillTargetType.Enemy: return !isSelf;
-            case SkillTargetType.Self: return isSelf;
-            default: return true; // Any
+            Debug.LogWarning($"[{displayName}] skillPrefab belum diisi, skill tidak dijalankan.");
+            return false;
         }
-    }
 
-    public virtual void Activate(PlayerBaseEntity caster, BaseEntity target)
-    {
-        Debug.Log($"[Skill] {displayName} digunakan oleh {caster.name} ke target {(target != null ? target.name : "null")}");
+        Vector3 origin = user.transform.position;
+
+        // Prefab bergerak ke arah transform.right, jadi cukup diputar 180 derajat untuk menghadap kiri.
+        float yaw = aimX >= origin.x ? 0f : 180f;
+        GameObject spawned = Instantiate(skillPrefab, origin, Quaternion.Euler(0f, yaw, 0f));
+
+        if (spawned.TryGetComponent(out SkillProjectile projectile))
+            projectile.Setup(user, baseValue);
+
+        return true;
     }
 }

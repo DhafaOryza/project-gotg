@@ -3,29 +3,30 @@ using UnityEngine;
 
 public class PlayerBaseEntity : BaseEntity
 {
-    [Header("Skill Loadout (3-5 skill)")]
+    [Header("Skill Loadout")]
     [SerializeField] private List<SkillDataSO> equippedSkills = new List<SkillDataSO>();
 
     [Header("Consumable Loadout")]
     [SerializeField] private List<ConsumableDataSO> equippedConsumables = new List<ConsumableDataSO>();
-    [SerializeField] private int defaultConsumableQuantity = 2;
+    // [SerializeField] private int defaultConsumableQuantity = 2;
 
-    [Header ("Knockdown & Revive Configs")]
+    [Header("Knockdown & Revive Configs")]
     [SerializeField] private float reviveDuration = 60f;
     [SerializeField] private float reviveHpPercentage = 0.15f;
 
     private List<SkillRuntimeData> skillRuntime = new List<SkillRuntimeData>();
     private float currentReviveTimer;
 
-    public bool IsKnockDown {get ; private set;}
+    public bool IsKnockDown { get; private set; }
     public float CurrentReviveTimer => currentReviveTimer;
-    public float ReviveDuration => reviveDuration; 
+    public float ReviveDuration => reviveDuration;
     public bool CanAct => !IsDead && !IsKnockDown;
+
 
     protected override void Awake()
     {
         base.Awake();
-        
+
         InitializeSkillRuntimes();
     }
 
@@ -43,6 +44,32 @@ public class PlayerBaseEntity : BaseEntity
             if (currentReviveTimer <= 0f)
                 Revive();
         }
+    }
+
+    private void InitializeSkillRuntimes()
+    {
+        skillRuntime.Clear();
+        foreach (var skill in equippedSkills)
+        {
+            if (skill != null)
+            {
+                skillRuntime.Add(new SkillRuntimeData(skill));
+            }
+        }
+    }
+
+    public void RedrawSkill()
+    {
+        if (equippedSkills != null || equippedSkills.Count > 0)
+        {
+            equippedSkills.Clear();
+        }
+
+        var skillsManager = GameManager.Instance?.skillsManager;
+
+        equippedSkills = skillsManager.choosenSkills;
+
+        InitializeSkillRuntimes();
     }
 
     public override void TakeDamage(int amount)
@@ -80,83 +107,28 @@ public class PlayerBaseEntity : BaseEntity
         Debug.Log($"[{name}] Player berhasil Revive dengan {currentHealth} HP ({reviveHpPercentage * 100}% HP)!");
     }
 
-    public void RedrawSkill()
+    public bool TryUseSkill(int slotIndex, float aimX)
     {
-        if (equippedSkills != null || equippedSkills.Count > 0)
-        {
-            equippedSkills.Clear();
-        }
+        if (!CanAct) return false;
 
-        var session = GameSessionData.GetOrCreate();
+        if (slotIndex < 0 || slotIndex >= equippedSkills.Count) return false;
 
-        equippedSkills = session.GetSkillsData();
-        equippedConsumables = session.GetConsumables();
+        var skill = equippedSkills[slotIndex];
+        if (skill == null) return false;
 
-        InitializeSkillRuntimes();
-    }
+        // skillRuntime dibuat dari equippedSkills dengan urutan yang sama.
+        if (slotIndex >= skillRuntime.Count) return false;
 
-    /// <summary>
-    /// Menyiapkan data runtime cooldown berdasarkan equippedSkills.
-    /// </summary>
-    private void InitializeSkillRuntimes()
-    {
-        skillRuntime.Clear();
-        foreach (var skill in equippedSkills)
-        {
-            if (skill != null)
-            {
-                skillRuntime.Add(new SkillRuntimeData(skill));
-            }
-        }
-    }
+        var runtime = skillRuntime[slotIndex];
+        if (runtime.isOnCooldown) return false;
 
-    /// <summary>
-    /// Method untuk memanggil Skill yang dipunyai player.
-    /// </summary>
-    public bool TryUseSkill(int slotIndex, BaseEntity target)
-    {
-        if (!CanAct)
-        {
-            Debug.LogWarning($"[{name}] Tidak bisa menggunakan skill karena karakter tidak aktif/mati.");
-            return false;
-        }
+        // Gagal (mis. prefab belum diisi) -> cooldown tidak dimulai.
+        if (!skill.Activate(this, aimX)) return false;
 
-        if (slotIndex < 0 || slotIndex >= skillRuntime.Count)
-        {
-            Debug.LogWarning($"[{name}] Slot Index skill {slotIndex} di luar jangkauan.");
-            return false;
-        }
+        runtime.StartCooldown(skill.cooldown);
 
-        SkillRuntimeData runtime = skillRuntime[slotIndex];
-        SkillDataSO skill = runtime.skilldata;
-
-        if (skill == null)
-        {
-            Debug.LogWarning($"[{name}] Skill pada slot {slotIndex} kosong.");
-            return false;
-        }
-
-        if (runtime.isOnCooldown)
-        {
-            Debug.LogWarning($"[{name}] Skill '{skill.displayName}' masih cooldown! (Sisa: {runtime.RemainingCooldown:F1}s)");
-            return false;
-        }
-
-        if (!skill.IsValidTarget(this, target))
-        {
-            Debug.LogWarning($"[{name}] Target {(target != null ? target.name : "null")} tidak valid untuk skill '{skill.displayName}'. Tipe Target: {skill.targetType}");
-            return false;
-        }
-
-        skill.Activate(this, target);
-        float cdMultiplier = entityData != null ? entityData.skillCooldownMultiplier : 1f;
-        float finalcooldown = skill.cooldown * cdMultiplier;
-
-        runtime.StartCooldown(finalcooldown);
-        Debug.Log($"<color=green>[PlayerSkill]</color> Skill '{skill.displayName}' berhasil digunakan ke {(target != null ? target.name : "null")}. Cooldown: {finalcooldown:F1}s");
         return true;
     }
-
 
     /// <summary>
     ///  Helper Methods
@@ -167,14 +139,6 @@ public class PlayerBaseEntity : BaseEntity
             return skillRuntime[slotIndex].RemainingCooldown;
 
         return 0f;
-    }
-
-    public SkillDataSO GetDataData(int slotIndex)
-    {
-        if (slotIndex >= 0 && slotIndex < skillRuntime.Count)
-            return skillRuntime[slotIndex].skilldata;
-
-        return null;
     }
 
     /// <summary>

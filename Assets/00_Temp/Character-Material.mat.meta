@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/00_Temp/Character-Material.mat.meta
 guid: af8ecc2c94cfb3b44ad141585635987c
+========
+guid: 2807bd0e93079b64da3378110bab9488
+>>>>>>>> main:Assets/Global Volume Profile.asset.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000

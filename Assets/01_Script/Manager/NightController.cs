@@ -7,18 +7,10 @@ public class NightController : MonoBehaviour
     [SerializeField] private int currentNightIndex = 0;
     [SerializeField] private NightWaveDataSO currentNightWave;
     [SerializeField] private bool autoStartNextNight = false;
-    
-    [Header("UI References")]
-    [SerializeField] private PreparationUI preparationUI;
-
 
     private WaveController waveController;
     private List<NightWaveDataSO> nightWaves = new List<NightWaveDataSO>();
     private bool isInitialized;
-
-    public event Action<int> OnNightStarted;
-    public event Action<int> OnNightEnded;
-    public event Action OnAllNightsCompleted;
 
     public int CurrentNightIndex => currentNightIndex;
 
@@ -27,13 +19,14 @@ public class NightController : MonoBehaviour
         if (isInitialized) return;
 
         var session = GameSessionData.GetOrCreate();
-        var registry = session.GetRegistryData();
 
-        if (registry == null || registry.NightWaves == null || registry.NightWaves.Count == 0)
+        if (session == null || session.nightwaves == null || session.nightwaves.Count == 0)
         {
-            Debug.LogWarning("[NightController] Registry atau NightWaves kosong.");
+            Debug.LogWarning("[NightController] NightWaves Data is Empty on GameSession!");
             return;
         }
+
+        nightWaves = session.nightwaves;
 
         waveController = GameManager.Instance?.waveController;
         if (waveController == null)
@@ -42,18 +35,14 @@ public class NightController : MonoBehaviour
             return;
         }
 
-        nightWaves = registry.NightWaves;
-
         if (!SelectNight(currentNightIndex)) return;
 
-        waveController.OnNightCompleted += HandleNightCompleted;
         isInitialized = true;
     }
 
     private void OnDestroy()
     {
-        if (waveController != null)
-            waveController.OnNightCompleted -= HandleNightCompleted;
+        
     }
 
     /// <summary>Mulai night yang sedang terpilih (currentNightWave).</summary>
@@ -65,45 +54,36 @@ public class NightController : MonoBehaviour
             return;
         }
 
-        OnNightStarted?.Invoke(currentNightIndex);
         waveController.StartNight(currentNightWave);
-        
-        var currentPlayer = GameManager.Instance.levelSpawnerManager.GetCurrentPlayer();
+
+        var currentPlayer = GameManager.Instance?.levelSpawnerManager.GetCurrentPlayer();
         currentPlayer.RedrawSkill();
+
+        var playerUI = GameManager.Instance?.playerUI;
+        playerUI.InitializeSkillUI();
+        playerUI.OpenSkillUI();
+        
+        playerUI.ClosePreparationUI();
     }
 
     private void HandleNightCompleted()
     {
-        OnNightEnded?.Invoke(currentNightIndex);
         Debug.Log($"[NightController] Night {currentNightIndex} selesai, menunggu player menekan Continue.");
-
     }
 
     public void ProceedToNextNight()
     {
         int nextIndex = currentNightIndex + 1;
-    
+
         if (nextIndex >= nightWaves.Count)
         {
             Debug.Log("[NightController] Semua night sudah selesai.");
-            OnAllNightsCompleted?.Invoke();
             return;
         }
-    
+
         currentNightIndex = nextIndex;
         SelectNight(currentNightIndex);
-    
-        if (preparationUI != null)
-            preparationUI.ShowPreparationUI();
-        else
-            Debug.LogWarning("[NightController] PreparationUI tidak ditemukan di scene!");
-    
-        // TAMBAHAN: Panggil randomizer Urgent Quest saat mendekati malam / fase persiapan
-        if (GameManager.Instance != null && GameManager.Instance.questManager != null)
-        {
-            GameManager.Instance.questManager.CheckAndTriggerUrgentQuest();
-        }
-    
+
         if (autoStartNextNight)
             StartNight();
     }
