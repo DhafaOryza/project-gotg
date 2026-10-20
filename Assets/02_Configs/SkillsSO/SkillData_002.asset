@@ -13,15 +13,18 @@ MonoBehaviour:
   m_Name: SkillData_002
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: 002
-  displayName: Attack_002
+  displayName: 'Axe Throw  '
   description: 
   baseValue: 0
-  typeRange: 0
-  skillType: 0
   tier: 1
-  icon: {fileID: 0}
+  typeRange: 1
+  skillType: 0
+  isProjectile: 1
+  icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   locked: 0
   targetType: 0
   cooldown: 3
   skillColor: {r: 1, g: 1, b: 1, a: 1}
-  skillPrefab: {fileID: 0}
+  maxRange: 8
+  HitboxSize: {x: 2, y: 2, z: 1}
+  skillPrefab: {fileID: 8946592561061051195, guid: 4fee0c23e61edf84d9f4bceb8c67beb5, type: 3}

@@ -107,7 +107,7 @@ public class PlayerBaseEntity : BaseEntity
         Debug.Log($"[{name}] Player berhasil Revive dengan {currentHealth} HP ({reviveHpPercentage * 100}% HP)!");
     }
 
-    public bool TryUseSkill(int slotIndex, float aimX)
+    public bool TryUseSkill(int slotIndex, Transform attackPoint , Vector2 aimDirection)
     {
         if (!CanAct) return false;
 
@@ -123,7 +123,7 @@ public class PlayerBaseEntity : BaseEntity
         if (runtime.isOnCooldown) return false;
 
         // Gagal (mis. prefab belum diisi) -> cooldown tidak dimulai.
-        if (!skill.Activate(this, aimX)) return false;
+        if (!skill.Activate(this, attackPoint, aimDirection)) return false;
 
         runtime.StartCooldown(skill.cooldown);
 
@@ -147,5 +147,13 @@ public class PlayerBaseEntity : BaseEntity
     public void NotifySkillDropMissed(int slotIndex)
     {
         Debug.Log($"[{name}] Skill pada slot {slotIndex} di-drop di tempat yang tidak valid.");
+    }
+
+    public SkillDataSO GetEquippedSkillData(int slotIndex)
+    {
+        if (slotIndex >= 0 && slotIndex < equippedSkills.Count)
+            return equippedSkills[slotIndex];
+
+        return null;
     }
 }
