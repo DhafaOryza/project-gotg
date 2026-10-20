@@ -16,10 +16,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_003
       objectReference: {fileID: 0}
-    - target: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
-      propertyPath: m_Layer
-      value: 12
-      objectReference: {fileID: 0}
     - target: {fileID: 3033933179832952179, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -71,10 +67,6 @@ PrefabInstance:
     - target: {fileID: 5458927994843168632, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_Color.r
       value: 0.07058811
-      objectReference: {fileID: 0}
-    - target: {fileID: 5458927994843168632, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
-      propertyPath: m_SortingOrder
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6695799739565963735, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_Layer

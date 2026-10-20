@@ -64,6 +64,10 @@ public class NightController : MonoBehaviour
         playerUI.OpenSkillUI();
         
         playerUI.ClosePreparationUI();
+
+        // Set all Interactable Object to false
+        var spawner = GameManager.Instance?.levelSpawnerManager;
+        spawner.SetAllInteractable(false);
     }
 
     private void HandleNightCompleted()
