@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +11,10 @@ public class GameManager : MonoBehaviour
     public NightController nightController;
     public WaveController waveController;
     public QuestManager questManager;
+    public PlayerController playerController;
+    public SkillsManager skillsManager;
+    public CinemachineCamera cinemachine;
+    public PlayerUI playerUI;
 
     private bool hasInitialized = false;
 
@@ -54,11 +59,16 @@ public class GameManager : MonoBehaviour
         if (nightController == null) nightController = Object.FindFirstObjectByType<NightController>();
         if (waveController == null) waveController = Object.FindFirstObjectByType<WaveController>();
         if (questManager == null) questManager = Object.FindFirstObjectByType<QuestManager>();
+        if (playerController == null) playerController = Object.FindFirstObjectByType<PlayerController>();
+        if (skillsManager == null) skillsManager = Object.FindFirstObjectByType<SkillsManager>();
+        if (cinemachine == null) cinemachine = Object.FindFirstObjectByType<CinemachineCamera>();
+        if (playerUI == null) playerUI = Object.FindFirstObjectByType<PlayerUI>();
 
         // Initliaze The Manager;
         if (poolManager != null) poolManager.Initialize();
         if (levelSpawnerManager != null) levelSpawnerManager.Initialize();
         if (nightController != null) nightController.Initialize();
         if (questManager != null) questManager.Initialize();
+        if (playerController != null) playerController.Setup();
     }
 }

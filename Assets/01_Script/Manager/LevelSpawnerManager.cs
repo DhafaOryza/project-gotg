@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class LevelSpawnerManager : MonoBehaviour
@@ -16,6 +17,8 @@ public class LevelSpawnerManager : MonoBehaviour
 
     private PoolManager poolManager;
     private PlayerBaseEntity player;
+    private GranaryBase granary;
+    private CinemachineCamera cinemachine;
 
     public void Initialize()
     {
@@ -27,13 +30,23 @@ public class LevelSpawnerManager : MonoBehaviour
 
     private void SpawnPlayer()
     {
+        if (playerId == null) return;
+
         var currentPlayer = poolManager.Spawn(playerId, spawnPlayerPosition.position, Quaternion.identity);
         player = currentPlayer.GetComponent<PlayerBaseEntity>();
+
+        cinemachine = GameManager.Instance?.cinemachine;
+        if (cinemachine == null) return;
+
+        cinemachine.Target = new CameraTarget { TrackingTarget = player.transform };
     }
 
     private void SpawnBuilding()
     {
-        poolManager.Spawn(buildingId, spawnBuildingPosition.position, Quaternion.identity);
+        if (buildingId == null) return;
+
+        var currentGranary = poolManager.Spawn(buildingId, spawnBuildingPosition.position, Quaternion.identity);
+        granary = currentGranary.GetComponent<GranaryBase>();
     }
 
     #region Spawning
@@ -95,6 +108,7 @@ public class LevelSpawnerManager : MonoBehaviour
     #region Public API
 
     public PlayerBaseEntity GetCurrentPlayer() { return player; }
+    public GranaryBase GetCurrentGranary() { return granary; }
 
     #endregion
 }

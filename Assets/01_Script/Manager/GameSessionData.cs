@@ -1,30 +1,21 @@
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 public class GameSessionData : MonoBehaviour
 {
     public static GameSessionData Instance { get; set; }
 
-    [Header("Skill Data")]
-    [SerializeField] private List<SkillDataSO> choosenSkills = new List<SkillDataSO>();
-
-    [Header ("Unloked Skill Tracking")]
-    private HashSet<string> unlockedSkillIds = new HashSet<string>();
-
-    [Header("Consumable Items")]
-    [SerializeField] private List<ConsumableDataSO> consumableItem = new List<ConsumableDataSO>();
+    [Header("Data Whole Game")]
+    public List<EnemyDataSO> enemies = new List<EnemyDataSO>();
+    public List<SkillDataSO> skills = new List<SkillDataSO>();
+    public List<ConsumableDataSO> consumables = new List<ConsumableDataSO>();
+    public List<NightWaveDataSO> nightwaves = new List<NightWaveDataSO>();
 
     [Header("Registry Data")]
-    [SerializeField] private Registry registryData;
+    public Registry registryData;
 
-    [Header ("Player Economy")]
-    [SerializeField] private int PlayerCoin = 500;
-
-    [Header("Quest Progression")]
-    [SerializeField] private List<QuestDataSO> activeQuestsSession = new List<QuestDataSO>();
-
-    public System.Action OnSkillDataChanged;
+    [Header("Player Economy")]
+    public int PlayerCoin = 500;
 
     void Awake()
     {
@@ -40,7 +31,6 @@ public class GameSessionData : MonoBehaviour
         }
 
         GetDataRegistry();
-        InitializeUnlockedSkills();
     }
 
     public static GameSessionData GetOrCreate()
@@ -59,113 +49,11 @@ public class GameSessionData : MonoBehaviour
 
         return gsd;
     }
-    #region Skill Unlock ProgressionData
-    private void InitializeUnlockedSkills()
-    {
-        unlockedSkillIds.Clear();
-        if (registryData != null && registryData.Skills != null)
-            foreach (var skill in registryData.Skills)
-                if (skill != null && skill.unlockByDefault)
-                    unlockedSkillIds.Add(skill.skillId);
-    }
 
-    public bool isSkillUnlocked(string skillId) => unlockedSkillIds.Contains(skillId);
-    public void UnlockSkill(string skillId)
-    {
-        if (!unlockedSkillIds.Contains(skillId))
-            unlockedSkillIds.Add(skillId);
-    }
-
-
-    #endregion 
-
-    #region Skill Data
-
-    public List<SkillDataSO> GeatAllMasterSkills()
-    {
-        if (registryData != null)
-            return registryData.Skills;
-        
-        return new List<SkillDataSO>();
-    }
-
-    public int GetUnlockedCountForTier(int targetTier)
-    {
-        int count = 0;
-        if (registryData != null && registryData.Skills != null)
-            foreach (var skill in registryData.Skills)
-                if (skill != null && skill.tier == targetTier)
-                    if (isSkillUnlocked(skill.skillId))
-                        count++;
-
-        return count;
-    }
+    #region Currency
 
     public int GetPlayerCoins() => PlayerCoin;
-    public void SpendCoins(int amount) => PlayerCoin -= amount; 
-
-    public List<SkillDataSO> GetSkillsData() => choosenSkills;
-
-    public void SetSkillData(SkillDataSO setSkillData)
-    {
-        choosenSkills.Add(setSkillData);
-        OnSkillDataChanged?.Invoke();
-    }
-
-    public void SetSkillsData(List<SkillDataSO> setSkillsData)
-    {
-        choosenSkills = setSkillsData;
-    }
-
-    #endregion
-
-    #region Consumable Item
-
-    public List<ConsumableDataSO> GetConsumables()
-    {
-        return consumableItem;
-    }
-
-    public void SetConsumable(ConsumableDataSO setConsumable)
-    {
-        consumableItem.Add(setConsumable);
-    }
-
-    public void SetConsumables(List<ConsumableDataSO> setConsumables)
-    {
-        consumableItem = setConsumables;
-    }
-
-    #endregion
-
-    #region Quest System
-
-    public List<QuestDataSO> GetActiveQuestsSession() => activeQuestsSession;
-
-    public void AddActiveQuestSession(QuestDataSO quest)
-    {
-        if (quest != null && !activeQuestsSession.Contains(quest))
-        {
-            activeQuestsSession.Add(quest);
-        }
-    }
-
-    public void RemoveActiveQuestSession(QuestDataSO quest)
-    {
-        if (quest != null && activeQuestsSession.Contains(quest))
-        {
-            activeQuestsSession.Remove(quest);
-        }
-    }
-
-    #endregion
-
-    #region Registry
-
-    public Registry GetRegistryData()
-    {
-        return registryData;
-    }
+    public void SpendCoins(int amount) => PlayerCoin -= amount;
 
     #endregion
 
@@ -178,5 +66,10 @@ public class GameSessionData : MonoBehaviour
         }
 
         registryData = data;
+
+        enemies = data.Enemies;
+        skills = data.Skills;
+        consumables = data.Consumables;
+        nightwaves = data.NightWaves;
     }
 }

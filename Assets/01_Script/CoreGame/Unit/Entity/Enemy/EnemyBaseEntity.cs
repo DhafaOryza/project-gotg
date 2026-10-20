@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyBaseEntity : BaseEntity, IPoolable
@@ -7,17 +8,20 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     private EnemyDataSO enemyData;
     private BaseEntity targetPlayer;
     private BuildingBase targetBuilding;
-    private Collider2D targetCollider;
-    private Rigidbody2D rb;
+    private Collider targetCollider;
+    private Rigidbody rb;
     private float attackCooldownRemaining;
     private Vector2 AttackOrigin => attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
     private bool HasTarget => targetPlayer != null || targetBuilding != null;
+
+    // Buffer bersama supaya GetSolidCollider tidak membuat array baru tiap dipanggil.
+    private static readonly List<Collider> colliderBuffer = new List<Collider>();
 
     protected override void Awake()
     {
         base.Awake();
         enemyData = entityData as EnemyDataSO;
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -70,7 +74,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         attackCooldownRemaining = 0f;
 
         if (rb != null)
-            rb.linearVelocity = Vector2.zero;
+            rb.linearVelocity = Vector3.zero;
     }
 
     private void ReturnToPool()
@@ -103,13 +107,13 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     {
         targetPlayer = player;
         targetBuilding = null;
-        targetCollider = player != null ? player.GetComponentInChildren<Collider2D>() : null;
+        targetCollider = GetSolidCollider(player);
     }
     private void SetTargetBuilding(BuildingBase building)
     {
         targetBuilding = building;
         targetPlayer = null;
-        targetCollider = building != null ? building.GetComponentInChildren<Collider2D>() : null;
+        targetCollider = GetSolidCollider(building);
     }
 
     /// <summary>
@@ -165,9 +169,9 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
             if (building == null || building.IsDestroy) continue;
 
             // Ukur ke tepi collider, bukan ke pusat Target
-            Collider2D col = building.GetComponentInChildren<Collider2D>();
+            Collider col = GetSolidCollider(building);
             Vector2 point = col != null
-                ? col.ClosestPoint(origin)
+                ? ClosestPointXY(col, origin)
                 : (Vector2)building.transform.position;
 
             float distanceSqr = (point - origin).sqrMagnitude;
@@ -215,9 +219,42 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     private Vector2 GetTargetClosestPoint(Vector2 from)
     {
         if (targetCollider != null && targetCollider.enabled)
-            return targetCollider.ClosestPoint(from);
+            return ClosestPointXY(targetCollider, from);
 
         return from;
+    }
+
+    /// <summary>
+    /// Ambil collider "padat" (bukan trigger) milik objek atau child-nya.
+    /// Collider trigger (mis. area deteksi sign) sengaja dilewati supaya musuh
+    /// tidak mengukur jarak ke area trigger yang lebih besar dari bangunannya.
+    /// </summary>
+    private static Collider GetSolidCollider(Component root)
+    {
+        if (root == null) return null;
+
+        root.GetComponentsInChildren(colliderBuffer);
+        foreach (var col in colliderBuffer)
+        {
+            if (col.enabled && !col.isTrigger)
+                return col;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Titik terdekat di collider dari titik 'from', diukur di bidang XY (sumbu Z diabaikan
+    /// karena game bergerak di bidang 2D). Untuk MeshCollider non-convex dipakai bounds,
+    /// karena Collider.ClosestPoint tidak mendukungnya.
+    /// </summary>
+    private static Vector2 ClosestPointXY(Collider col, Vector2 from)
+    {
+        Vector3 from3 = new Vector3(from.x, from.y, col.bounds.center.z);
+
+        if (col is MeshCollider mesh && !mesh.convex)
+            return col.bounds.ClosestPoint(from3);
+
+        return col.ClosestPoint(from3);
     }
 
     #endregion
@@ -240,7 +277,8 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
             // Gerak hanya di sumbu X, sumbu Y diurus gravitasi
             float dx = closestPoint.x - origin.x;
             float dirX = Mathf.Abs(dx) > 0.01f ? Mathf.Sign(dx) : 0f;
-            rb.linearVelocity = new Vector2(dirX * moveSpeed, rb.linearVelocity.y);
+            Vector3 vel = rb.linearVelocity;
+            rb.linearVelocity = new Vector3(dirX * moveSpeed, vel.y, vel.z);
         }
         else
         {
@@ -252,7 +290,10 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     private void StopMoving()
     {
         if (rb != null)
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y); // Y dibiarkan
+        {
+            Vector3 vel = rb.linearVelocity;
+            rb.linearVelocity = new Vector3(0f, vel.y, vel.z); // Y dibiarkan
+        }
     }
 
     private void TickAttackCooldown(float deltaTime)

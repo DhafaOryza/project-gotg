@@ -1,100 +1,153 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PreparationUI : MonoBehaviour
 {
-    [SerializeField] private GameObject RootUI;
-    [SerializeField] private GameObject skillSelectorPanel;
+    [Header("References")]
+    [SerializeField] private Button btnPreparation;
+    [SerializeField] private Button btnExploreWorld;
+    [SerializeField] private Button btnStartNight;
+    [SerializeField] private TextMeshProUGUI txtNightCounter;
 
-    [Header("Header")]
-    [SerializeField] private TextMeshProUGUI nightCounter;
+    [Header("Panel")]
+    [SerializeField] private GameObject preparationSkillPanel;
 
-    [Header("Button")]
-    [SerializeField] private Button startButton;
-
-    [Header("Skill Deck Button")]
-    [SerializeField] private Button skillOpenButton;
-    [SerializeField] private Button skillCloseButton;
+    [Header("Prepare Skill UI")]
+    [SerializeField] private Button btnPrepareBack;
+    [SerializeField] private SkillCard skillCardPrefab;
+    [SerializeField] private Transform skillContainer;
+    [SerializeField] private SlotUI slotUIPrefab;
+    [SerializeField] private Transform skillSlotContainer;
 
     private NightController nightController;
 
-    void Awake()
+    void OnEnable()
     {
-        startButton.onClick.AddListener(OnStartButtonClicked);
-        skillOpenButton.onClick.AddListener(OpenSkillDeck);
-        skillCloseButton.onClick.AddListener(CloseSkillDeck);
+        Initialize();
     }
 
-    void Start()
+    void Initialize()
     {
-        nightController = GameManager.Instance?.nightController;
+        if (nightController == null) nightController = GameManager.Instance?.nightController;
 
-        if (nightController == null)
-        {
-            Debug.LogWarning("[PreparationUI] NightController belum tersedia di GameManager.");
-            return;
-        }
+        // Button
+        if (btnPreparation != null) btnPreparation.onClick.AddListener(HandlePreparationButton);
+        if (btnExploreWorld != null) btnExploreWorld.onClick.AddListener(HandleExploreWorldButton);
+        if (btnStartNight != null) btnStartNight.onClick.AddListener(HandleStartNightButton);
 
-        // nightController.OnNightEnded += HandleNightEnded;
-        nightController.OnAllNightsCompleted += HandleAllNightsCompleted;
-
-        // Saat game dimulai, tampilkan UI persiapan untuk night pertama
-        RootUI.SetActive(true);
+        // Night Counter
         HandleNightCounter();
-    }
 
-    void OnDestroy()
-    {
-        if (nightController == null) return;
-
-        // nightController.OnNightEnded -= HandleNightEnded;
-        nightController.OnAllNightsCompleted -= HandleAllNightsCompleted;
-    }
-
-    private void OnStartButtonClicked()
-    {
-        if (nightController == null) return;
-
-        CloseSkillDeck();
-        RootUI.SetActive(false);
-        nightController.StartNight();
-    }
-
-    // Night selesai -> munculkan lagi UI persiapan untuk night berikutnya
-    // private void HandleNightEnded(int nightIndex)
-    // {
-    //     RootUI.SetActive(true);
-    //     HandleNightCounter();
-    // }
-
-    public void ShowPreparationUI()
-    {
-        RootUI.SetActive(true);
-        HandleNightCounter();
-    }
-
-    // Night terakhir selesai -> tidak ada night lagi, jadi UI persiapan disembunyikan
-    // (ganti dengan logika menang / ending sesuai game Anda)
-    private void HandleAllNightsCompleted()
-    {
-        RootUI.SetActive(false);
+        // Prepare Skill Panel
+        if (preparationSkillPanel != null) preparationSkillPanel.SetActive(false);
+        if (btnPrepareBack != null) btnPrepareBack.onClick.AddListener(HandleBackPreparationButton);
     }
 
     private void HandleNightCounter()
     {
-        nightCounter.text = $"Night {nightController.CurrentNightIndex + 1}";
+        if (txtNightCounter == null || nightController == null) return;
+
+        txtNightCounter.text = $"Night {nightController.CurrentNightIndex + 1}";
     }
 
-    public void OpenSkillDeck()
+    private void HandlePreparationButton()
     {
-        if (skillSelectorPanel.activeSelf) return;
-        skillSelectorPanel.SetActive(true);
+        preparationSkillPanel.SetActive(true);
+        GenerateSkillCard();
+        GenerateSkillSlot();
     }
 
-    public void CloseSkillDeck()
+    private void HandleBackPreparationButton()
     {
-        if (!skillSelectorPanel.activeSelf) return;
-        skillSelectorPanel.SetActive(false);
+        preparationSkillPanel.SetActive(false);
     }
+
+    private void HandleExploreWorldButton()
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void HandleStartNightButton()
+    {
+        nightController.StartNight();
+    }
+
+    #region Prepare Skill Panel
+
+    private void GenerateSkillCard()
+    {
+        var session = GameSessionData.Instance;
+        var skills = session.skills;
+
+        var skillsManager = GameManager.Instance?.skillsManager;
+        var choosenSkills = skillsManager.choosenSkills;
+
+        ClearSkillContainer();
+
+        foreach (var skill in skills)
+        {
+            if (skill.locked) continue;
+
+            if (choosenSkills.Contains(skill)) continue;
+
+            SkillCard skillCard = Instantiate(skillCardPrefab, skillContainer);
+            skillCard.Initialize(skill);
+        }
+    }
+
+    private void ClearSkillContainer()
+    {
+        if (skillContainer.childCount == 0) return;
+
+        for (int i = 0; i < skillContainer.childCount; i++)
+        {
+            Destroy(skillContainer.GetChild(i).gameObject);
+        }
+    }
+
+    private void GenerateSkillSlot()
+    {
+        var skillsManager = GameManager.Instance?.skillsManager;
+        var playerController = GameManager.Instance?.playerController;
+
+        var keys = new List<KeyCode>
+        {
+            playerController.skill1,
+            playerController.skill2,
+            playerController.skill3,
+            playerController.skill4,
+        };
+
+        ClearSkillSlot();
+
+        var chosen = skillsManager.choosenSkills;
+
+        for (int i = 0; i < skillsManager.maxSkills; i++)
+        {
+            SlotUI slot = Instantiate(slotUIPrefab, skillSlotContainer);
+
+            string key = i < keys.Count ? keys[i].ToString() : "";
+            slot.Initialize(key, i < chosen.Count ? chosen[i] : null);
+        }
+    }
+
+    private void ClearSkillSlot()
+    {
+        if (skillSlotContainer.childCount == 0) return;
+
+        for (int i = 0; i < skillSlotContainer.childCount; i++)
+        {
+            Destroy(skillSlotContainer.GetChild(i).gameObject);
+        }
+    }
+
+    public void RedrawPrepareSkill()
+    {
+        GenerateSkillCard();
+        GenerateSkillSlot();
+    }
+
+    #endregion
 }
