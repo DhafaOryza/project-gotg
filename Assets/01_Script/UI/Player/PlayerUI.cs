@@ -11,13 +11,23 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private Transform _skillContainer;
     [SerializeField] private SkillUI _skillUIPrefab;
 
-    [Header("Dialog System")]
+    [Header("Conversation UI")]
     [SerializeField] private ConversationUI _conversationUI;
+
+    [Header("Role Specific UIs")]
+    [SerializeField] private HealthUI _healthUI;
+    [SerializeField] private GranaryUI _granaryUI;
+    [SerializeField] private ShopUI _shopUI;
+    [SerializeField] private SkillTreeUI _skillTreeUI;
 
     private SkillsManager _skillsManager;
     private PlayerController _playerController;
 
-    public ConversationUI DialogSystem => _conversationUI;
+    public ConversationUI ConversationUI => _conversationUI;
+    public HealthUI HealthUI => _healthUI;
+    public GranaryUI GranaryUI => _granaryUI;
+    public ShopUI ShopUI => _shopUI;
+    public SkillTreeUI SkillTreeUI => _skillTreeUI;
 
     void Awake()
     {
@@ -44,9 +54,17 @@ public class PlayerUI : MonoBehaviour
     {
         if (_preparationUI == null) _preparationUI = Object.FindFirstObjectByType<PreparationUI>();
         if (_conversationUI == null) _conversationUI = Object.FindFirstObjectByType<ConversationUI>();
+        if (_healthUI == null) _healthUI = Object.FindFirstObjectByType<HealthUI>();
+        if (_granaryUI == null) _granaryUI = Object.FindFirstObjectByType<GranaryUI>();
+        if (_shopUI == null) _shopUI = Object.FindFirstObjectByType<ShopUI>();
+        if (_skillTreeUI == null) _skillTreeUI = Object.FindFirstObjectByType<SkillTreeUI>();
 
         if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
         if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
+        if (_healthUI != null) _healthUI.gameObject.SetActive(false);
+        if (_granaryUI != null) _granaryUI.gameObject.SetActive(false);
+        if (_shopUI != null) _shopUI.gameObject.SetActive(false);
+        if (_skillTreeUI != null) _skillTreeUI.gameObject.SetActive(false);
     }
 
     public void InitializeSkillUI()
@@ -69,7 +87,7 @@ public class PlayerUI : MonoBehaviour
         for (int i = 0; i < skills.Count && i < keys.Count; i++)
         {
             SkillUI currentSkill = Instantiate(_skillUIPrefab, _skillContainer);
-            currentSkill.Setup(skills[i].icon, keys[i].ToString());
+            currentSkill.Setup(keys[i].ToString(), skills[i]);
         }
     }
 

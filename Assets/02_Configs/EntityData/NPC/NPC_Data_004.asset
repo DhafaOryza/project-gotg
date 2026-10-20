@@ -17,11 +17,13 @@ MonoBehaviour:
   hpPerVitality: 170
   skillCooldownMultiplier: 0
   moveSpeed: 3
-  npcName: Mike
-  dialogueLines:
-  - rem Ipsum is standard placeholder or dummy text used in the graphic design, printing,
-    and publishing industries to preview layouts without being distracted by readable
-    content.  It is derived from sections 1.10.32 and 1.10.33 of De finibus bonorum
-    et malorum, a 45 BC treatise on ethics by the Roman philosopher Cicero.
-  npcPortrait: {fileID: 21300000, guid: 1eac088cce5bf6940b712362c315dcf4, type: 3}
-  assignedQuest: {fileID: 0}
+  _npcName: 
+  _dialogueLines:
+  - "Lorem Ipsum is standard dummy text used in the graphic design, publishing, and
+    web development industries to preview layouts and visual mockups without distracting
+    from the design with meaningful content.  It has a more-or-less normal distribution
+    of letters, making it appear like readable English and allowing viewers to focus
+    on the visual structure rather than the text itself. \n\n"
+  _npcPortrait: {fileID: 0}
+  _npcRole: 2
+  _assignedQuest: {fileID: 0}
