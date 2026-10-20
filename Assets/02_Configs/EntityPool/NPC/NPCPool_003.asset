@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1365a4ec2648ab479de0a24dbfaa65b, type: 3}
-  m_Name: NPCPool_002
+  m_Name: NPCPool_003
   m_EditorClassIdentifier: Assembly-CSharp::PoolDataSO
-  poolId: {fileID: 11400000, guid: 4ecc62a68a264f6f5ac1e895d8551203, type: 2}
-  prefab: {fileID: 3927949830090874156, guid: 06b40e77a3e26136c8dd1e13c52a86e1, type: 3}
+  poolId: {fileID: 11400000, guid: 73cdcf6dc0f13fd25858bf527e027aac, type: 2}
+  prefab: {fileID: 3927949830090874156, guid: 31de277ebb6edfa1986de203b4c2a0b2, type: 3}
   initialSize: 5
   isExpandable: 1

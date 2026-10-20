@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c89b8e69a29f4a846b174a460bb604ec, type: 3}
-  m_Name: NPCId_002
+  m_Name: NPCId_005
   m_EditorClassIdentifier: Assembly-CSharp::PoolIdSO

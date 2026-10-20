@@ -2,59 +2,97 @@ using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
+[System.Serializable]
+public struct NPCSpawnConfig
+{
+    [SerializeField] private PoolIdSO _npcPoolId;
+    [SerializeField] private Transform _spawnPosition;
+
+    public PoolIdSO NpcPoolId => _npcPoolId;
+    public Transform SpawnPosition => _spawnPosition;
+}
+
 public class LevelSpawnerManager : MonoBehaviour
 {
     [Header("Player")]
-    [SerializeField] private PoolIdSO playerId;
-    [SerializeField] private Transform spawnPlayerPosition;
+    [SerializeField] private PoolIdSO _playerId;
+    [SerializeField] private Transform _spawnPlayerPosition;
 
     [Header("Building")]
-    [SerializeField] private PoolIdSO buildingId;
-    [SerializeField] private Transform spawnBuildingPosition;
+    [SerializeField] private PoolIdSO _buildingId;
+    [SerializeField] private Transform _spawnBuildingPosition;
+
+    [Header("NPC Spawning")]
+    [SerializeField] private List<NPCSpawnConfig> _npcSpawnConfigs = new List<NPCSpawnConfig>();
 
     [Header("Enemy")]
-    [SerializeField] private List<Transform> enemySpawnPositions = new List<Transform>();
+    [SerializeField] private List<Transform> _enemySpawnPositions = new List<Transform>();
 
-    private PoolManager poolManager;
-    private PlayerBaseEntity player;
-    private GranaryBase granary;
-    private CinemachineCamera cinemachine;
+    private PoolManager _poolManager;
+    private PlayerBaseEntity _player;
+    private GranaryBase _granary;
+    private CinemachineCamera _cinemachine;
 
     public void Initialize()
     {
-        poolManager = GameManager.Instance?.poolManager;
+        _poolManager = GameManager.Instance?.poolManager;
 
         SpawnPlayer();
         SpawnBuilding();
+        SpawnNPCs();
     }
 
     private void SpawnPlayer()
     {
-        if (playerId == null) return;
+        if (_playerId == null || _spawnPlayerPosition == null) return;
 
-        var currentPlayer = poolManager.Spawn(playerId, spawnPlayerPosition.position, Quaternion.identity);
-        player = currentPlayer.GetComponent<PlayerBaseEntity>();
+        var currentPlayer = _poolManager.Spawn(_playerId, _spawnPlayerPosition.position, Quaternion.identity);
+        _player = currentPlayer.GetComponent<PlayerBaseEntity>();
 
-        cinemachine = GameManager.Instance?.cinemachine;
-        if (cinemachine == null) return;
+        _cinemachine = GameManager.Instance?.cinemachine;
+        if (_cinemachine == null) return;
 
-        cinemachine.Target = new CameraTarget { TrackingTarget = player.transform };
+        _cinemachine.Target = new CameraTarget { TrackingTarget = _player.transform };
     }
 
     private void SpawnBuilding()
     {
-        if (buildingId == null) return;
+        if (_buildingId == null || _spawnBuildingPosition == null) return;
 
-        var currentGranary = poolManager.Spawn(buildingId, spawnBuildingPosition.position, Quaternion.identity);
-        granary = currentGranary.GetComponent<GranaryBase>();
+        var currentGranary = _poolManager.Spawn(_buildingId, _spawnBuildingPosition.position, Quaternion.identity);
+        _granary = currentGranary.GetComponent<GranaryBase>();
+    }
+
+    /// <summary>
+    /// Spawns predefined NPCs at their specific assigned positions without randomization.
+    /// </summary>
+    private void SpawnNPCs()
+    {
+        if (_poolManager == null || _npcSpawnConfigs == null) return;
+
+        foreach (var config in _npcSpawnConfigs)
+        {
+            if (config.NpcPoolId != null && config.SpawnPosition != null)
+            {
+                var spawnedNPC = _poolManager.Spawn(config.NpcPoolId, config.SpawnPosition.position, Quaternion.identity);
+
+                if (spawnedNPC == null)
+                {
+                    Debug.LogWarning($"[LevelSpawnerManager] Gagal spawn NPC dengan ID: {config.NpcPoolId.name}. Pastikan ID sudah terdaftar di PoolCatalog!");
+                }
+                else
+                {
+                    Debug.Log($"[LevelSpawnerManager] Berhasil spawn NPC: {spawnedNPC.name} di posisi {config.SpawnPosition.position}");
+                }
+            }
+            
+        }
     }
 
     #region Spawning
 
     /// <summary>
-    /// Spawn musuh untuk satu interval berdasarkan data wave yang dikirim WaveController:
-    /// jumlahnya acak 1 sampai wave.spawnPerInterval (maksimal), masing-masing di titik acak
-    /// pada enemySpawnPositions, dengan jenis musuh acak dari wave.enemyIds.
+    /// Spawn enemies for an interval based on wave data.
     /// </summary>
     public void SpawnEnemy(NightWaveDataSO.WaveEnemy wave)
     {
@@ -64,21 +102,21 @@ public class LevelSpawnerManager : MonoBehaviour
 
         for (int i = 0; i < spawnCount; i++)
         {
-            Transform position = enemySpawnPositions[Random.Range(0, enemySpawnPositions.Count)];
+            Transform position = _enemySpawnPositions[Random.Range(0, _enemySpawnPositions.Count)];
             if (position == null) continue;
 
             PoolIdSO enemyId = wave.enemyIds[Random.Range(0, wave.enemyIds.Count)];
             if (enemyId == null) continue;
 
-            poolManager.Spawn(enemyId, position.position, Quaternion.identity);
+            _poolManager.Spawn(enemyId, position.position, Quaternion.identity);
         }
     }
 
     private bool IsSpawnValid(NightWaveDataSO.WaveEnemy wave)
     {
-        if (poolManager == null)
+        if (_poolManager == null)
         {
-            Debug.LogWarning("[LevelSpawnerManager] PoolManager not ready, call Initialize() first.");
+            Debug.LogWarning("[LevelSpawnerManager] PoolManager not ready.");
             return false;
         }
 
@@ -88,9 +126,9 @@ public class LevelSpawnerManager : MonoBehaviour
             return false;
         }
 
-        if (enemySpawnPositions == null || enemySpawnPositions.Count == 0)
+        if (_enemySpawnPositions == null || _enemySpawnPositions.Count == 0)
         {
-            Debug.LogWarning("[LevelSpawnerManager] enemySpawnPositions kosong.");
+            Debug.LogWarning("[LevelSpawnerManager] Enemy spawn positions are empty.");
             return false;
         }
 
@@ -107,8 +145,8 @@ public class LevelSpawnerManager : MonoBehaviour
 
     #region Public API
 
-    public PlayerBaseEntity GetCurrentPlayer() { return player; }
-    public GranaryBase GetCurrentGranary() { return granary; }
+    public PlayerBaseEntity GetCurrentPlayer() => _player;
+    public GranaryBase GetCurrentGranary() => _granary;
 
     #endregion
 }

@@ -4,6 +4,8 @@ public class NPCBaseEntity : BaseEntity, IInteractable
 {
     [Header("Interaction Settings")]
     [SerializeField] private float interactionRadius = 2f;
+
+    public float InteractionRadius => interactionRadius;
     
     private NPCDataSO npcData;
 
@@ -15,7 +17,16 @@ public class NPCBaseEntity : BaseEntity, IInteractable
 
     public void Interact(PlayerBaseEntity player)
     {
-        throw new System.NotImplementedException();
+        if (PlayerUI.Instance != null && npcData != null)
+        {
+            PlayerUI.Instance.DialogSystem.StartNPCDialog(npcData, () =>
+            {
+                if (npcData.assignedQuest != null && GameManager.Instance != null && GameManager.Instance.questManager != null)
+                {
+                    GameManager.Instance.questManager.RequestSpecificQuest(npcData.assignedQuest);
+                }
+            });
+        }
     }
 
     private void OnDrawGizmosSelected()

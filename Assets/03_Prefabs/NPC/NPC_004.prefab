@@ -9,12 +9,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2843187380360543424, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      propertyPath: npcData
+      value: 
+      objectReference: {fileID: 11400000, guid: e14a7e31cb97f71caacabee4a29e9767, type: 2}
+    - target: {fileID: 2843187380360543424, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: entityData
       value: 
-      objectReference: {fileID: 11400000, guid: 122bf0d91286bc274b4701550d9ee3ab, type: 2}
+      objectReference: {fileID: 11400000, guid: e14a7e31cb97f71caacabee4a29e9767, type: 2}
     - target: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_Name
-      value: NPC_001
+      value: NPC_004
       objectReference: {fileID: 0}
     - target: {fileID: 3033933179832952179, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_LocalPosition.x
@@ -55,6 +59,18 @@ PrefabInstance:
     - target: {fileID: 3033933179832952179, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5458927994843168632, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5458927994843168632, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      propertyPath: m_Color.g
+      value: 0.56717694
+      objectReference: {fileID: 0}
+    - target: {fileID: 5458927994843168632, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      propertyPath: m_Color.r
+      value: 0.036592092
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

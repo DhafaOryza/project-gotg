@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: e14a7e31cb97f71caacabee4a29e9767, type: 2}
     - target: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_Name
-      value: NPC_002
+      value: NPC_006
       objectReference: {fileID: 0}
     - target: {fileID: 3033933179832952179, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_LocalPosition.x
@@ -62,15 +62,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5458927994843168632, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_Color.b
-      value: 0
+      value: 0.2657396
       objectReference: {fileID: 0}
     - target: {fileID: 5458927994843168632, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_Color.g
-      value: 0.35798097
+      value: 0.50928164
       objectReference: {fileID: 0}
     - target: {fileID: 5458927994843168632, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       propertyPath: m_Color.r
-      value: 0.025269201
+      value: 0.2817973
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

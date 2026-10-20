@@ -5,14 +5,19 @@ public class PlayerUI : MonoBehaviour
 {
     public static PlayerUI Instance { get; set; }
 
-    [SerializeField] private PreparationUI preparationUI;
+    [SerializeField] private PreparationUI _preparationUI;
 
     [Header("Skill Panel")]
-    [SerializeField] private Transform skillContainer;
-    [SerializeField] private SkillUI skillUIPrefab;
+    [SerializeField] private Transform _skillContainer;
+    [SerializeField] private SkillUI _skillUIPrefab;
 
-    private SkillsManager skillsManager;
-    private PlayerController playerController;
+    [Header("Dialog System")]
+    [SerializeField] private ConversationUI _conversationUI;
+
+    private SkillsManager _skillsManager;
+    private PlayerController _playerController;
+
+    public ConversationUI DialogSystem => _conversationUI;
 
     void Awake()
     {
@@ -22,6 +27,7 @@ public class PlayerUI : MonoBehaviour
         }
         else if (Instance != this)
         {
+            Destroy(gameObject);
             return;
         }
     }
@@ -31,55 +37,45 @@ public class PlayerUI : MonoBehaviour
         InitializeUI();
     }
 
+    /// <summary>
+    /// Initializes all core user interface components at game start.
+    /// </summary>
     public void InitializeUI()
     {
-        if (preparationUI == null) preparationUI = Object.FindFirstObjectByType<PreparationUI>();
+        if (_preparationUI == null) _preparationUI = Object.FindFirstObjectByType<PreparationUI>();
+        if (_conversationUI == null) _conversationUI = Object.FindFirstObjectByType<ConversationUI>();
 
-        if (preparationUI != null) preparationUI.gameObject.SetActive(false);
-        if (skillContainer != null) skillContainer.gameObject.SetActive(false);
+        if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
+        if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
     }
 
     public void InitializeSkillUI()
     {
-        skillsManager = GameManager.Instance?.skillsManager;
-        playerController = GameManager.Instance?.playerController;
+        _skillsManager = GameManager.Instance?.skillsManager;
+        _playerController = GameManager.Instance?.playerController;
 
-        if (skillsManager == null || playerController == null || skillUIPrefab == null || skillContainer == null)
+        if (_skillsManager == null || _playerController == null || _skillUIPrefab == null || _skillContainer == null)
             return;
 
-        var skills = skillsManager.choosenSkills;
+        var skills = _skillsManager.choosenSkills;
         var keys = new List<KeyCode>
         {
-            playerController.skill1,
-            playerController.skill2,
-            playerController.skill3,
-            playerController.skill4,
+            _playerController.skill1,
+            _playerController.skill2,
+            _playerController.skill3,
+            _playerController.skill4,
         };
 
         for (int i = 0; i < skills.Count && i < keys.Count; i++)
         {
-            SkillUI currentSkill = Instantiate(skillUIPrefab, skillContainer);
+            SkillUI currentSkill = Instantiate(_skillUIPrefab, _skillContainer);
             currentSkill.Setup(skills[i].icon, keys[i].ToString());
         }
     }
 
-    public void OpenPreparationUI()
-    {
-        preparationUI.gameObject.SetActive(true);
-    }
+    public void OpenPreparationUI() => _preparationUI?.gameObject.SetActive(true);
+    public void ClosePreparationUI() => _preparationUI?.gameObject.SetActive(false);
 
-    public void ClosePreparationUI()
-    {
-        preparationUI.gameObject.SetActive(false);
-    }
-
-    public void OpenSkillUI()
-    {
-        skillContainer.gameObject.SetActive(true);
-    }
-
-    public void CloseSkillUI()
-    {
-        skillContainer.gameObject.SetActive(false);
-    }
+    public void OpenSkillUI() => _skillContainer?.gameObject.SetActive(true);
+    public void CloseSkillUI() => _skillContainer?.gameObject.SetActive(false);
 }
