@@ -26,6 +26,12 @@ public class PreparationUI : MonoBehaviour
     void OnEnable()
     {
         Initialize();
+        GameManager.Instance.skillsManager.OnChosenSkillsChanged += RedrawPrepareSkill;
+    }
+
+    void OnDisable()
+    {
+        GameManager.Instance.skillsManager.OnChosenSkillsChanged -= RedrawPrepareSkill;
     }
 
     void Initialize()
@@ -129,7 +135,7 @@ public class PreparationUI : MonoBehaviour
             SlotUI slot = Instantiate(slotUIPrefab, skillSlotContainer);
 
             string key = i < keys.Count ? keys[i].ToString() : "";
-            slot.Initialize(key, i < chosen.Count ? chosen[i] : null);
+            slot.Initialize(key, skillsManager.GetSkill(i), i);
         }
     }
 

@@ -7,9 +7,22 @@ public class SkillUI : MonoBehaviour
     [SerializeField] private Image skillIcon;
     [SerializeField] private TextMeshProUGUI txtKey;
 
-    public void Setup(Sprite icon, string textKey)
+    [SerializeField] private GameObject none;
+
+    public void Setup(string keyBind, SkillDataSO currentSkill = null)
     {
-        skillIcon.sprite = icon;
-        txtKey.text = textKey;
+        txtKey.text = keyBind;
+
+        if (currentSkill == null)
+        {
+            skillIcon.gameObject.SetActive(false);
+            none.SetActive(true);
+            return;
+        }
+
+        skillIcon.sprite = currentSkill.icon;
+
+        skillIcon.gameObject.SetActive(true);
+        none.SetActive(false);
     }
 }

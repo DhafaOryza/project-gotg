@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class BuildingBase : MonoBehaviour, IDamageable
+public class BuildingBase : MonoBehaviour, IDamageable, IHealthSource
 {
     public BuildingDataSO buildingData;
 
@@ -12,6 +12,10 @@ public class BuildingBase : MonoBehaviour, IDamageable
 
     public bool IsDestroy { get; protected set; }
 
+    public int CurrentHealth => currentHealth;
+    public int MaxHealth => maxHealth;
+
+
     public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
 
@@ -19,6 +23,11 @@ public class BuildingBase : MonoBehaviour, IDamageable
     {
         maxHealth = CalcMaxHP();
         currentHealth = maxHealth;
+    }
+
+    void OnValidate()
+    {
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
     public virtual void TakeDamage(int amount)

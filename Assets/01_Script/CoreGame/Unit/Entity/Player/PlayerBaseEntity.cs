@@ -46,28 +46,33 @@ public class PlayerBaseEntity : BaseEntity
         }
     }
 
+    // Satu runtime per slot, termasuk slot kosong (null), supaya indeks skillRuntime
+    // selalu sejajar dengan equippedSkills (slot 2 = tombol E walau slot 0 dan 1 kosong).
     private void InitializeSkillRuntimes()
     {
         skillRuntime.Clear();
+
+        if (equippedSkills == null) return;
+
         foreach (var skill in equippedSkills)
         {
-            if (skill != null)
-            {
-                skillRuntime.Add(new SkillRuntimeData(skill));
-            }
+            skillRuntime.Add(new SkillRuntimeData(skill));
         }
     }
 
     public void RedrawSkill()
     {
-        if (equippedSkills != null || equippedSkills.Count > 0)
+        var skillsManager = GameManager.Instance?.skillsManager;
+        if (skillsManager == null)
         {
-            equippedSkills.Clear();
+            Debug.LogWarning($"[{name}] RedrawSkill: skillsManager tidak ditemukan, loadout tidak diperbarui.");
+            return;
         }
 
-        var skillsManager = GameManager.Instance?.skillsManager;
-
-        equippedSkills = skillsManager.choosenSkills;
+        // SALIN list-nya (jangan di-assign langsung). Kalau equippedSkills menunjuk list yang sama
+        // dengan skillsManager.choosenSkills, pemanggilan RedrawSkill berikutnya akan menjalankan
+        // equippedSkills.Clear() dan ikut menghapus pilihan skill di SkillsManager.
+        equippedSkills = new List<SkillDataSO>(skillsManager.choosenSkills);
 
         InitializeSkillRuntimes();
     }
