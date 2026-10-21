@@ -12,6 +12,9 @@ public class NightController : MonoBehaviour
     private List<NightWaveDataSO> nightWaves = new List<NightWaveDataSO>();
     private bool isInitialized;
 
+    // True selama transisi siang -> malam berjalan; mencegah StartNight terpanggil dua kali.
+    private bool isStartingNight;
+
     public int CurrentNightIndex => currentNightIndex;
 
     public void Initialize()
@@ -54,20 +57,71 @@ public class NightController : MonoBehaviour
             return;
         }
 
+        if (isStartingNight) return;
+
+        var gameManager = GameManager.Instance;
+        var playerUI = gameManager?.playerUI;
+        var spawner = gameManager?.levelSpawnerManager;
+
+        // Langsung (sebelum transisi): tutup panel dan kunci semua interaksi,
+        // supaya tidak ada yang bisa diklik atau di-interact selama layar bertransisi.
+        playerUI?.ClosePreparationUI();
+        spawner?.SetAllInteractable(false);
+
+        var transition = playerUI != null ? playerUI.DayTransition : null;
+
+        if (transition == null)
+        {
+            // Tanpa DayTransitionUI: jalankan semuanya langsung.
+            SwitchWorldToNight();
+            BeginWaves();
+            return;
+        }
+
+        isStartingNight = true;
+
+        bool started = transition.Play(
+            $"Night {currentNightIndex + 1}",
+            onMidpoint: SwitchWorldToNight,   // layar tertutup penuh: ganti dunia di sini
+            onComplete: () =>
+            {
+                isStartingNight = false;
+                BeginWaves();                 // layar sudah terang: baru musuh mulai muncul
+            });
+
+        // Transisi menolak (sedang berjalan): jangan biarkan flag tertahan.
+        if (!started)
+            isStartingNight = false;
+    }
+
+    // Dijalankan di pertengahan transisi, saat layar tertutup penuh.
+    private void SwitchWorldToNight()
+    {
+        var gameManager = GameManager.Instance;
+        if (gameManager == null) return;
+
+        var currentPlayer = gameManager.levelSpawnerManager?.GetCurrentPlayer();
+        if (currentPlayer != null)
+            currentPlayer.RedrawSkill();
+
+        var playerUI = gameManager.playerUI;
+        if (playerUI != null)
+        {
+            playerUI.InitializeSkillUI();
+            playerUI.OpenSkillUI();
+        }
+
+        gameManager.levelSpawnerManager?.DespawnAllNPC();
+
+        gameManager.envController?.SwitchToNight();
+    }
+
+    // Dijalankan setelah transisi selesai: wave dimulai saat player sudah bisa melihat layar.
+    private void BeginWaves()
+    {
+        if (waveController == null) return;
+
         waveController.StartNight(currentNightWave);
-
-        var currentPlayer = GameManager.Instance?.levelSpawnerManager.GetCurrentPlayer();
-        currentPlayer.RedrawSkill();
-
-        var playerUI = GameManager.Instance?.playerUI;
-        playerUI.InitializeSkillUI();
-        playerUI.OpenSkillUI();
-        
-        playerUI.ClosePreparationUI();
-
-        // Set all Interactable Object to false
-        var spawner = GameManager.Instance?.levelSpawnerManager;
-        spawner.SetAllInteractable(false);
     }
 
     private void HandleNightCompleted()

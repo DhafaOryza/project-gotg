@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public SkillsManager skillsManager;
     public CinemachineCamera cinemachine;
     public PlayerUI playerUI;
+    public EnvController envController;
 
     private bool hasInitialized = false;
 
@@ -63,6 +64,7 @@ public class GameManager : MonoBehaviour
         if (skillsManager == null) skillsManager = Object.FindFirstObjectByType<SkillsManager>();
         if (cinemachine == null) cinemachine = Object.FindFirstObjectByType<CinemachineCamera>();
         if (playerUI == null) playerUI = Object.FindFirstObjectByType<PlayerUI>();
+        if (envController == null) envController = Object.FindFirstObjectByType<EnvController>();
 
         // Initliaze The Manager;
         if (poolManager != null) poolManager.Initialize();

@@ -31,6 +31,7 @@ public class LevelSpawnerManager : MonoBehaviour
     private PoolManager poolManager;
     private PlayerBaseEntity player;
     private GranaryBase granary;
+    private List<NPCBaseEntity> NPCs = new List<NPCBaseEntity>();
     private CinemachineCamera cinemachine;
 
     public void Initialize()
@@ -75,6 +76,8 @@ public class LevelSpawnerManager : MonoBehaviour
             if (config.NpcPoolId != null && config.SpawnPosition != null)
             {
                 var spawnedNPC = poolManager.Spawn(config.NpcPoolId, config.SpawnPosition.position, Quaternion.identity);
+
+                NPCs.Add(spawnedNPC.GetComponent<NPCBaseEntity>());
 
                 if (spawnedNPC == null)
                 {
@@ -147,6 +150,7 @@ public class LevelSpawnerManager : MonoBehaviour
 
     public PlayerBaseEntity GetCurrentPlayer() { return player; }
     public GranaryBase GetCurrentGranary() { return granary; }
+    public List<NPCBaseEntity> GetAllNPC() { return NPCs; }
 
     public void SetAllInteractable(bool currentFlag)
     {
@@ -156,6 +160,16 @@ public class LevelSpawnerManager : MonoBehaviour
         {
             if (behaviour is IInteractable interactable)
                 interactable.SetInteractable(currentFlag);
+        }
+    }
+
+    public void DespawnAllNPC()
+    {
+        var poolManager = GameManager.Instance?.poolManager;
+
+        foreach (var npc in NPCs)
+        {
+            poolManager.Despawn(npc.gameObject);
         }
     }
 

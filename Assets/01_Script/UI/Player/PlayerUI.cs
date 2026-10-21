@@ -25,6 +25,9 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private HealthUI _healthUI;
     [SerializeField] private SkillTreeUI _skillTreeUI;
 
+    [Header("Transition")]
+    [SerializeField] private DayTransitionUI dayTransition;
+
     private SkillsManager _skillsManager;
     private PlayerController _playerController;
     private PlayerBaseEntity player;
@@ -35,6 +38,7 @@ public class PlayerUI : MonoBehaviour
     public ShopUI ShopUI => _shopUI;
     public HealthUI HealthUI => _healthUI;
     public SkillTreeUI SkillTreeUI => _skillTreeUI;
+    public DayTransitionUI DayTransition => dayTransition;
 
     void Awake()
     {
@@ -94,6 +98,7 @@ public class PlayerUI : MonoBehaviour
         if (_healthUI == null) _healthUI = Object.FindFirstObjectByType<HealthUI>();
         if (_shopUI == null) _shopUI = Object.FindFirstObjectByType<ShopUI>();
         if (_skillTreeUI == null) _skillTreeUI = Object.FindFirstObjectByType<SkillTreeUI>();
+        if (dayTransition == null) dayTransition = Object.FindFirstObjectByType<DayTransitionUI>();
 
         if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
         if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
