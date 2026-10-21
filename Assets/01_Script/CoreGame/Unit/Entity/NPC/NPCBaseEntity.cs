@@ -16,7 +16,10 @@ public class NPCBaseEntity : BaseEntity, IInteractable
 
     public virtual void Interact(PlayerBaseEntity player)
     {
-        Debug.Log($"[NPCBaseEntity] Interacting with NPC Role: {(_npcData != null ? _npcData.NpcRole.ToString() : "Unknown")}");
+        if (_npcData != null && !_npcData.IsInteractable)
+        {
+            return;
+        }
 
         ConversationUI conversationUI = PlayerUI.Instance != null ? PlayerUI.Instance.ConversationUI : null;
         if (conversationUI == null)

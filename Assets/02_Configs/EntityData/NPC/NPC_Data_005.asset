@@ -18,8 +18,9 @@ MonoBehaviour:
   skillCooldownMultiplier: 1
   moveSpeed: 5
   _npcId: NPC_005
-  _npcName: 
-  _npcRole: 0
+  _npcName: Pedagang Keliling
+  _npcRole: 3
+  _isInteractable: 1
   _dialogueLines:
   - "Lorem Ipsum is standard dummy text used in the graphic design, publishing, and
     web development industries to preview layouts and visual mockups without distracting

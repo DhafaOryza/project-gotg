@@ -6,9 +6,9 @@ public class NPCPriest : NPCBaseEntity
     {
         base.OnConversationEnded();
 
-        if (PlayerUI.Instance != null && PlayerUI.Instance.GranaryUI != null)
+        if (PlayerUI.Instance != null && PlayerUI.Instance.HealthUI != null)
         {
-            PlayerUI.Instance.GranaryUI.gameObject.SetActive(true);
+            PlayerUI.Instance.HealthUI.gameObject.SetActive(true);
         }
     }
 }

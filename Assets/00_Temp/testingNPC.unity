@@ -553,7 +553,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &186913390
 RectTransform:
   m_ObjectHideFlags: 0
@@ -625,7 +625,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GranaryUI
   _granaryMainPanel: {fileID: 346846694}
-  _targetNpcId: NPC_004
 --- !u!1 &206638779
 GameObject:
   m_ObjectHideFlags: 0
@@ -1102,12 +1101,12 @@ GameObject:
   - component: {fileID: 329877072}
   - component: {fileID: 329877071}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: Health Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &329877070
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1294,12 +1293,12 @@ GameObject:
   - component: {fileID: 346846697}
   - component: {fileID: 346846696}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: Granary Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &346846695
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2111,6 +2110,37 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!1 &525948910
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 525948911}
+  m_Layer: 0
+  m_Name: 'Spawner (Clone) '
+  m_TagString: Untagged
+  m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &525948911
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525948910}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.88, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1463377987}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &528461975
 GameObject:
   m_ObjectHideFlags: 0
@@ -2872,12 +2902,12 @@ GameObject:
   - component: {fileID: 723787328}
   - component: {fileID: 723787327}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: SkillTree Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &723787326
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3096,12 +3126,12 @@ GameObject:
   - component: {fileID: 747963532}
   - component: {fileID: 747963531}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: Shop Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &747963530
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5254,7 +5284,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthUI
   _healthMainPanel: {fileID: 0}
-  _targetNpcId: NPC_003
 --- !u!114 &1436001422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5500,6 +5529,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1249475507}
+  - {fileID: 525948911}
   - {fileID: 1795514844}
   - {fileID: 165658911}
   - {fileID: 1194182043}
@@ -5628,7 +5658,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -408.25952, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -6023,7 +6053,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1585950940
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6095,7 +6125,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuardUI
   _skillTreeMainPanel: {fileID: 723787325}
-  _targetNpcId: NPC_006
 --- !u!1 &1602023409
 GameObject:
   m_ObjectHideFlags: 0
@@ -6841,7 +6870,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1779193904
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6913,7 +6942,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MerchantUI
   _shopMainPanel: {fileID: 747963529}
-  _targetNpcId: NPC_003
 --- !u!1 &1795514843
 GameObject:
   m_ObjectHideFlags: 0
@@ -7407,6 +7435,8 @@ MonoBehaviour:
   buildingId: {fileID: 11400000, guid: d66b91fa9498d774197853dfd1fab5ab, type: 2}
   spawnBuildingPosition: {fileID: 1621246156}
   npcSpawnConfigs:
+  - _npcPoolId: {fileID: 11400000, guid: 64481313693e3f5f2b994ab123dd6409, type: 2}
+    _spawnPosition: {fileID: 525948911}
   - _npcPoolId: {fileID: 11400000, guid: 73cdcf6dc0f13fd25858bf527e027aac, type: 2}
     _spawnPosition: {fileID: 1249475507}
   - _npcPoolId: {fileID: 11400000, guid: 4ecc62a68a264f6f5ac1e895d8551203, type: 2}
@@ -7759,7 +7789,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1973894867
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7831,7 +7861,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PriestUI
   _healthMainPanel: {fileID: 329877069}
-  _targetNpcId: NPC_003
 --- !u!1 &2035140762
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,6 +20,7 @@ MonoBehaviour:
   _npcId: NPC_001
   _npcName: Warga Desa
   _npcRole: 0
+  _isInteractable: 0
   _dialogueLines:
   - "Lorem Ipsum is standard dummy text used in the graphic design, publishing, and
     web development industries to preview layouts and visual mockups without distracting
