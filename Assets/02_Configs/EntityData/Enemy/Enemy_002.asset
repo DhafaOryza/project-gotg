@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Enemy_002
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
   _faction: 2
-  baseVitality: 10
+  baseVitality: 1
   hpPerVitality: 170
   skillCooldownMultiplier: 1
   moveSpeed: 1.5
