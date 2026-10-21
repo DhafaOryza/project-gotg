@@ -23,39 +23,63 @@ public class PreparationUI : MonoBehaviour
 
     private NightController nightController;
 
+    // Listener tombol didaftarkan SEKALI di Awake. Sebelumnya didaftarkan di Initialize() yang
+    // dipanggil setiap OnEnable, sehingga tiap panel dibuka listener-nya bertambah (aksi terpanggil berkali-kali).
+    void Awake()
+    {
+        if (btnPreparation != null) btnPreparation.onClick.AddListener(HandlePreparationButton);
+        if (btnExploreWorld != null) btnExploreWorld.onClick.AddListener(HandleExploreWorldButton);
+        if (btnStartNight != null) btnStartNight.onClick.AddListener(HandleStartNightButton);
+        if (btnPrepareBack != null) btnPrepareBack.onClick.AddListener(HandleBackPreparationButton);
+    }
+
+    void OnDestroy()
+    {
+        if (btnPreparation != null) btnPreparation.onClick.RemoveListener(HandlePreparationButton);
+        if (btnExploreWorld != null) btnExploreWorld.onClick.RemoveListener(HandleExploreWorldButton);
+        if (btnStartNight != null) btnStartNight.onClick.RemoveListener(HandleStartNightButton);
+        if (btnPrepareBack != null) btnPrepareBack.onClick.RemoveListener(HandleBackPreparationButton);
+    }
+
     void OnEnable()
     {
         Initialize();
-        GameManager.Instance.skillsManager.OnChosenSkillsChanged += RedrawPrepareSkill;
+
+        var skillsManager = GameManager.Instance?.skillsManager;
+        if (skillsManager != null)
+            skillsManager.OnChosenSkillsChanged += RedrawPrepareSkill;
     }
 
     void OnDisable()
     {
-        GameManager.Instance.skillsManager.OnChosenSkillsChanged -= RedrawPrepareSkill;
+        var skillsManager = GameManager.Instance?.skillsManager;
+        if (skillsManager != null)
+            skillsManager.OnChosenSkillsChanged -= RedrawPrepareSkill;
     }
 
     void Initialize()
     {
-        if (nightController == null) nightController = GameManager.Instance?.nightController;
-
-        // Button
-        if (btnPreparation != null) btnPreparation.onClick.AddListener(HandlePreparationButton);
-        if (btnExploreWorld != null) btnExploreWorld.onClick.AddListener(HandleExploreWorldButton);
-        if (btnStartNight != null) btnStartNight.onClick.AddListener(HandleStartNightButton);
-
         // Night Counter
         HandleNightCounter();
 
-        // Prepare Skill Panel
+        // Prepare Skill Panel selalu mulai tertutup
         if (preparationSkillPanel != null) preparationSkillPanel.SetActive(false);
-        if (btnPrepareBack != null) btnPrepareBack.onClick.AddListener(HandleBackPreparationButton);
+    }
+
+    private NightController GetNightController()
+    {
+        if (nightController == null)
+            nightController = GameManager.Instance?.nightController;
+
+        return nightController;
     }
 
     private void HandleNightCounter()
     {
-        if (txtNightCounter == null || nightController == null) return;
+        var controller = GetNightController();
+        if (txtNightCounter == null || controller == null) return;
 
-        txtNightCounter.text = $"Night {nightController.CurrentNightIndex + 1}";
+        txtNightCounter.text = $"Night {controller.CurrentNightIndex + 1}";
     }
 
     private void HandlePreparationButton()
@@ -70,14 +94,26 @@ public class PreparationUI : MonoBehaviour
         preparationSkillPanel.SetActive(false);
     }
 
+    // Tutup panel Preparation lewat PlayerUI, supaya sign interact granary yang tadi
+    // disembunyikan ikut muncul lagi. Fallback: tutup langsung kalau PlayerUI tidak ada.
     private void HandleExploreWorldButton()
     {
-        gameObject.SetActive(false);
+        if (PlayerUI.Instance != null)
+            PlayerUI.Instance.ClosePreparationUI();
+        else
+            gameObject.SetActive(false);
     }
 
     private void HandleStartNightButton()
     {
-        nightController.StartNight();
+        var controller = GetNightController();
+        if (controller == null)
+        {
+            Debug.LogError("PreparationUI: NightController tidak ditemukan di GameManager.", this);
+            return;
+        }
+
+        controller.StartNight();
     }
 
     #region Prepare Skill Panel
@@ -127,8 +163,6 @@ public class PreparationUI : MonoBehaviour
         };
 
         ClearSkillSlot();
-
-        var chosen = skillsManager.choosenSkills;
 
         for (int i = 0; i < skillsManager.maxSkills; i++)
         {

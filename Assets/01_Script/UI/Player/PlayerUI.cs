@@ -5,29 +5,26 @@ public class PlayerUI : MonoBehaviour
 {
     public static PlayerUI Instance { get; set; }
 
+    [Header("Player Profile")]
+    [SerializeField] private HealthBar playerHealthBar;
+    [SerializeField] private HealthBar granaryHealthBar;
+
+    [Header("Preparation")]
     [SerializeField] private PreparationUI _preparationUI;
 
     [Header("Skill Panel")]
     [SerializeField] private Transform _skillContainer;
     [SerializeField] private SkillUI _skillUIPrefab;
 
-    [Header("Conversation UI")]
+    [Header("Dialog System")]
     [SerializeField] private ConversationUI _conversationUI;
-
-    [Header("Role Specific UIs")]
-    [SerializeField] private HealthUI _healthUI;
-    [SerializeField] private GranaryUI _granaryUI;
-    [SerializeField] private ShopUI _shopUI;
-    [SerializeField] private SkillTreeUI _skillTreeUI;
 
     private SkillsManager _skillsManager;
     private PlayerController _playerController;
+    private PlayerBaseEntity player;
+    private GranaryBase _granary;
 
-    public ConversationUI ConversationUI => _conversationUI;
-    public HealthUI HealthUI => _healthUI;
-    public GranaryUI GranaryUI => _granaryUI;
-    public ShopUI ShopUI => _shopUI;
-    public SkillTreeUI SkillTreeUI => _skillTreeUI;
+    public ConversationUI DialogSystem => _conversationUI;
 
     void Awake()
     {
@@ -47,6 +44,35 @@ public class PlayerUI : MonoBehaviour
         InitializeUI();
     }
 
+    void OnEnable()
+    {
+        if (_granary != null)
+            _granary.OnInteract += OpenPreparationUI;
+    }
+
+    void OnDisable()
+    {
+        if (_granary != null)
+            _granary.OnInteract -= OpenPreparationUI;
+    }
+
+    /// <summary>
+    /// Sambungkan event OnInteract milik granary ke PreparationUI.
+    /// Dipanggil oleh GranaryBase saat Start (atau oleh PlayerUI.Start untuk granary yang sudah ada).
+    /// </summary>
+    public void BindGranary(GranaryBase granary)
+    {
+        if (_granary == granary) return;
+
+        if (_granary != null)
+            _granary.OnInteract -= OpenPreparationUI;
+
+        _granary = granary;
+
+        if (_granary != null && isActiveAndEnabled)
+            _granary.OnInteract += OpenPreparationUI;
+    }
+
     /// <summary>
     /// Initializes all core user interface components at game start.
     /// </summary>
@@ -54,17 +80,29 @@ public class PlayerUI : MonoBehaviour
     {
         if (_preparationUI == null) _preparationUI = Object.FindFirstObjectByType<PreparationUI>();
         if (_conversationUI == null) _conversationUI = Object.FindFirstObjectByType<ConversationUI>();
-        if (_healthUI == null) _healthUI = Object.FindFirstObjectByType<HealthUI>();
-        if (_granaryUI == null) _granaryUI = Object.FindFirstObjectByType<GranaryUI>();
-        if (_shopUI == null) _shopUI = Object.FindFirstObjectByType<ShopUI>();
-        if (_skillTreeUI == null) _skillTreeUI = Object.FindFirstObjectByType<SkillTreeUI>();
 
         if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
         if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
-        if (_healthUI != null) _healthUI.gameObject.SetActive(false);
-        if (_granaryUI != null) _granaryUI.gameObject.SetActive(false);
-        if (_shopUI != null) _shopUI.gameObject.SetActive(false);
-        if (_skillTreeUI != null) _skillTreeUI.gameObject.SetActive(false);
+
+        if (_granary == null)
+        {
+            var granary = GameManager.Instance?.levelSpawnerManager?.GetCurrentGranary();
+            if (granary != null) BindGranary(granary);
+        }
+
+        if (player == null)
+        {
+            var currentPlayer = GameManager.Instance?.levelSpawnerManager?.GetCurrentPlayer();
+            player = currentPlayer;
+        }
+
+        InitializeHealthBar();
+    }
+
+    public void InitializeHealthBar()
+    {
+        playerHealthBar.Initialize(player);
+        granaryHealthBar.Initialize(_granary);
     }
 
     public void InitializeSkillUI()
@@ -92,7 +130,14 @@ public class PlayerUI : MonoBehaviour
     }
 
     public void OpenPreparationUI() => _preparationUI?.gameObject.SetActive(true);
-    public void ClosePreparationUI() => _preparationUI?.gameObject.SetActive(false);
+
+    public void ClosePreparationUI()
+    {
+        _preparationUI?.gameObject.SetActive(false);
+
+        if (_granary != null)
+            _granary.ResumeSign();
+    }
 
     public void OpenSkillUI() => _skillContainer?.gameObject.SetActive(true);
     public void CloseSkillUI() => _skillContainer?.gameObject.SetActive(false);

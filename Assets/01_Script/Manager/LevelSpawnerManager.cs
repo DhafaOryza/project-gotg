@@ -15,27 +15,27 @@ public struct NPCSpawnConfig
 public class LevelSpawnerManager : MonoBehaviour
 {
     [Header("Player")]
-    [SerializeField] private PoolIdSO _playerId;
-    [SerializeField] private Transform _spawnPlayerPosition;
+    [SerializeField] private PoolIdSO playerId;
+    [SerializeField] private Transform spawnPlayerPosition;
 
     [Header("Building")]
-    [SerializeField] private PoolIdSO _buildingId;
-    [SerializeField] private Transform _spawnBuildingPosition;
+    [SerializeField] private PoolIdSO buildingId;
+    [SerializeField] private Transform spawnBuildingPosition;
 
     [Header("NPC Spawning")]
-    [SerializeField] private List<NPCSpawnConfig> _npcSpawnConfigs = new List<NPCSpawnConfig>();
+    [SerializeField] private List<NPCSpawnConfig> npcSpawnConfigs = new List<NPCSpawnConfig>();
 
     [Header("Enemy")]
-    [SerializeField] private List<Transform> _enemySpawnPositions = new List<Transform>();
+    [SerializeField] private List<Transform> enemySpawnPositions = new List<Transform>();
 
-    private PoolManager _poolManager;
-    private PlayerBaseEntity _player;
-    private GranaryBase _granary;
-    private CinemachineCamera _cinemachine;
+    private PoolManager poolManager;
+    private PlayerBaseEntity player;
+    private GranaryBase granary;
+    private CinemachineCamera cinemachine;
 
     public void Initialize()
     {
-        _poolManager = GameManager.Instance?.poolManager;
+        poolManager = GameManager.Instance?.poolManager;
 
         SpawnPlayer();
         SpawnBuilding();
@@ -44,23 +44,23 @@ public class LevelSpawnerManager : MonoBehaviour
 
     private void SpawnPlayer()
     {
-        if (_playerId == null || _spawnPlayerPosition == null) return;
+        if (playerId == null || spawnPlayerPosition == null) return;
 
-        var currentPlayer = _poolManager.Spawn(_playerId, _spawnPlayerPosition.position, Quaternion.identity);
-        _player = currentPlayer.GetComponent<PlayerBaseEntity>();
+        var currentPlayer = poolManager.Spawn(playerId, spawnPlayerPosition.position, Quaternion.identity);
+        player = currentPlayer.GetComponent<PlayerBaseEntity>();
 
-        _cinemachine = GameManager.Instance?.cinemachine;
-        if (_cinemachine == null) return;
+        cinemachine = GameManager.Instance?.cinemachine;
+        if (cinemachine == null) return;
 
-        _cinemachine.Target = new CameraTarget { TrackingTarget = _player.transform };
+        cinemachine.Target = new CameraTarget { TrackingTarget = player.transform };
     }
 
     private void SpawnBuilding()
     {
-        if (_buildingId == null || _spawnBuildingPosition == null) return;
+        if (buildingId == null || spawnBuildingPosition == null) return;
 
-        var currentGranary = _poolManager.Spawn(_buildingId, _spawnBuildingPosition.position, Quaternion.identity);
-        _granary = currentGranary.GetComponent<GranaryBase>();
+        var currentGranary = poolManager.Spawn(buildingId, spawnBuildingPosition.position, Quaternion.identity);
+        granary = currentGranary.GetComponent<GranaryBase>();
     }
 
     /// <summary>
@@ -68,13 +68,13 @@ public class LevelSpawnerManager : MonoBehaviour
     /// </summary>
     private void SpawnNPCs()
     {
-        if (_poolManager == null || _npcSpawnConfigs == null) return;
+        if (poolManager == null || npcSpawnConfigs == null) return;
 
-        foreach (var config in _npcSpawnConfigs)
+        foreach (var config in npcSpawnConfigs)
         {
             if (config.NpcPoolId != null && config.SpawnPosition != null)
             {
-                var spawnedNPC = _poolManager.Spawn(config.NpcPoolId, config.SpawnPosition.position, Quaternion.identity);
+                var spawnedNPC = poolManager.Spawn(config.NpcPoolId, config.SpawnPosition.position, Quaternion.identity);
 
                 if (spawnedNPC == null)
                 {
@@ -85,7 +85,7 @@ public class LevelSpawnerManager : MonoBehaviour
                     Debug.Log($"[LevelSpawnerManager] Berhasil spawn NPC: {spawnedNPC.name} di posisi {config.SpawnPosition.position}");
                 }
             }
-            
+
         }
     }
 
@@ -102,19 +102,19 @@ public class LevelSpawnerManager : MonoBehaviour
 
         for (int i = 0; i < spawnCount; i++)
         {
-            Transform position = _enemySpawnPositions[Random.Range(0, _enemySpawnPositions.Count)];
+            Transform position = enemySpawnPositions[Random.Range(0, enemySpawnPositions.Count)];
             if (position == null) continue;
 
             PoolIdSO enemyId = wave.enemyIds[Random.Range(0, wave.enemyIds.Count)];
             if (enemyId == null) continue;
 
-            _poolManager.Spawn(enemyId, position.position, Quaternion.identity);
+            poolManager.Spawn(enemyId, position.position, Quaternion.identity);
         }
     }
 
     private bool IsSpawnValid(NightWaveDataSO.WaveEnemy wave)
     {
-        if (_poolManager == null)
+        if (poolManager == null)
         {
             Debug.LogWarning("[LevelSpawnerManager] PoolManager not ready.");
             return false;
@@ -126,7 +126,7 @@ public class LevelSpawnerManager : MonoBehaviour
             return false;
         }
 
-        if (_enemySpawnPositions == null || _enemySpawnPositions.Count == 0)
+        if (enemySpawnPositions == null || enemySpawnPositions.Count == 0)
         {
             Debug.LogWarning("[LevelSpawnerManager] Enemy spawn positions are empty.");
             return false;
@@ -145,8 +145,19 @@ public class LevelSpawnerManager : MonoBehaviour
 
     #region Public API
 
-    public PlayerBaseEntity GetCurrentPlayer() => _player;
-    public GranaryBase GetCurrentGranary() => _granary;
+    public PlayerBaseEntity GetCurrentPlayer() { return player; }
+    public GranaryBase GetCurrentGranary() { return granary; }
+
+    public void SetAllInteractable(bool currentFlag)
+    {
+        var behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+        foreach (var behaviour in behaviours)
+        {
+            if (behaviour is IInteractable interactable)
+                interactable.SetInteractable(currentFlag);
+        }
+    }
 
     #endregion
 }

@@ -93,7 +93,6 @@ public class PlayerController : MonoBehaviour
             
         }
     }
-    
 
     private void Update()
     {
@@ -377,8 +376,6 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
-
-
     // Input: jalan di Input System baru maupun yang lama.
 
 #region  Input helper
@@ -400,14 +397,6 @@ public class PlayerController : MonoBehaviour
     return Input.GetMouseButtonDown(1);
 #endif 
     }
-//     private bool ReadMouseDown()
-//     {
-// #if ENABLE_INPUT_SYSTEM
-//         return Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame;
-// #else
-//         return Input.GetMouseButtonDown(1);
-// #endif
-//     }
 
    private bool ReadRightMouseHeld()
     {

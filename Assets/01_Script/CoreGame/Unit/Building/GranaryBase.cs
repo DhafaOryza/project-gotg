@@ -1,3 +1,5 @@
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -5,6 +7,7 @@ public class GranaryBase : BuildingBase, IInteractable
 {
     [Header("Reference")]
     [SerializeField] private GameObject Sign;
+    [SerializeField] private TextMeshPro txtSign;
 
     [Header("Interaction")]
     [Tooltip("Jarak (sumbu X dan Y) dari bangunan di mana sign muncul.")]
@@ -15,10 +18,24 @@ public class GranaryBase : BuildingBase, IInteractable
     private PlayerBaseEntity player;
     private bool signVisible;
 
+    // Setelah berhasil di-interact, sign disembunyikan dan baru boleh muncul lagi
+    // setelah player keluar dari jangkauan lalu mendekat lagi, atau setelah ResumeSign() dipanggil.
+    private bool signSuppressed;
+
+    /// <summary>Dipicu saat granary berhasil di-interact. Didengarkan oleh PlayerUI.</summary>
+    public event Action OnInteract;
+
     void Start()
     {
         if (Sign != null) Sign.SetActive(false);
         signVisible = false;
+
+        UpdateSignText();
+
+        // Daftarkan diri ke PlayerUI supaya event OnInteract tersambung ke PreparationUI.
+        // Dilakukan di Start (bukan Awake) agar PlayerUI.Instance sudah pasti terisi.
+        if (PlayerUI.Instance != null)
+            PlayerUI.Instance.BindGranary(this);
     }
 
     void Update()
@@ -34,7 +51,13 @@ public class GranaryBase : BuildingBase, IInteractable
             }
         }
 
-        bool shouldShow = isInteractable && player.CanAct && IsPlayerInRange();
+        bool inRange = IsPlayerInRange();
+
+        // Player sudah menjauh: sign boleh muncul lagi pada kedatangan berikutnya.
+        if (!inRange)
+            signSuppressed = false;
+
+        bool shouldShow = isInteractable && player.CanAct && inRange && !signSuppressed;
         SetSign(shouldShow);
     }
 
@@ -50,22 +73,52 @@ public class GranaryBase : BuildingBase, IInteractable
     {
         if (Sign == null || signVisible == visible) return;
 
+        // Teks tombol diperbarui tepat sebelum sign muncul: aman dari urutan Start antar objek
+        // dan ikut berubah kalau tombol interact diganti di Inspector.
+        if (visible) UpdateSignText();
+
         Sign.SetActive(visible);
         signVisible = visible;
     }
 
-    public void StartNight()
+    private void UpdateSignText()
     {
-        isInteractable = false;
-        SetSign(false);
+        if (txtSign == null) return;
+
+        var playerController = GameManager.Instance?.playerController;
+        if (playerController == null) return;
+
+        txtSign.text = playerController.interact.ToString();
+    }
+
+    // Implementasi IInteractable.SetInteractable: dipakai SetAllInteractable.
+    public void SetInteractable(bool value)
+    {
+        isInteractable = value;
+
+        if (!value)
+            SetSign(false);
+    }
+
+    /// <summary>
+    /// Izinkan sign muncul lagi (mis. setelah PreparationUI ditutup). Sign baru benar-benar tampil
+    /// kalau player masih di dalam jangkauan dan granary masih interactable.
+    /// </summary>
+    public void ResumeSign()
+    {
+        signSuppressed = false;
     }
 
     public void Interact(PlayerBaseEntity player)
     {
         if (!isInteractable) return;
 
-        // TODO: logika interaksi lumbung (buka UI, ambil makanan, dst.)
-        GameManager.Instance?.playerUI.OpenPreparationUI();
+        // Interaksi berhasil: sembunyikan sign dan tahan sampai PreparationUI ditutup / player menjauh.
+        signSuppressed = true;
+        SetSign(false);
+
+        // "?." wajib: kalau belum ada yang mendengarkan event, Invoke langsung akan NullReferenceException.
+        OnInteract?.Invoke();
         Debug.Log($"[{name}] Interact oleh {player.name}");
     }
 
