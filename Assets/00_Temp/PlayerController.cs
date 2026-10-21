@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -12,6 +13,12 @@ public class PlayerController : MonoBehaviour
 
     [Header("Optional")]
     [SerializeField] private GameObject clickMarkerPrefab;
+
+    [Header ("Ghost Preview & Snapping Settings")]
+    [SerializeField] private float snapSearchRadius = 2.5f; 
+    [SerializeField] private LayerMask enemyLayer;          
+    private SkillGhostPreview currentGhost;
+    private readonly Collider[] snapBuffer = new Collider[8];
 
     [Header ("Skill Settings & AttackPoint")]
     [Range(0.05f, 1f)]
@@ -227,6 +234,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+#region  Aiming System
     private void StartAiming(int slotIndex)
     {
         isAiming = true;
@@ -235,14 +243,19 @@ public class PlayerController : MonoBehaviour
 
         Time.timeScale = slowMoScale;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
+
+        var skilldata = playerEntity.GetEquippedSkillData(slotIndex);
+        if (skilldata != null)
+            SpawnGhost(skilldata);
     }
 
     private void CalculateAimDirection()
     {
         if (!TryGetMouseWorldPosition(out Vector3 mouseworldpos)) return;
+        SkillDataSO skillData = playerEntity.GetEquippedSkillData(activeAimSlot);
+        if (skillData == null) return;
 
         float mouseDirectionX = mouseworldpos.x - playerRb.position.x;
-
         if (attackPoint != null && attackPoint != playerObject.transform)
         {
             Vector3 localpos = attackPoint.localPosition;
@@ -253,8 +266,40 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector3 origin = attackPoint != null ? attackPoint.position : playerRb.position;
-        Vector2 dir = new Vector2(mouseworldpos.x - origin.x, mouseworldpos.y - origin.y);
+        Vector3 finalGhostPosition;
 
+        //Snapping Ghost Skill
+        bool isSingleTarget = (skillData.targetMode == TargetMode.SINGLE_TARGET);
+        Transform snappedEnemy = null;
+
+        if (isSingleTarget)
+        {
+            int hitCount = Physics.OverlapSphereNonAlloc(mouseworldpos, snapSearchRadius, snapBuffer, enemyLayer);
+            float minsqrtDist = float.MaxValue;
+
+            for (int i = 0; i < hitCount ; i++)
+            {
+                var enemyEntity = snapBuffer[i].GetComponentInParent<BaseEntity>();
+                if (enemyEntity != null && enemyEntity != playerEntity && !enemyEntity.IsDead)
+                {
+
+                    float distanceToOrigin = Vector3.Distance(origin, snapBuffer[i].transform.position);
+                    if (distanceToOrigin <= skillData.maxRange)
+                    {
+
+                        float sqrDistToMouse = (snapBuffer[i].transform.position - mouseworldpos).sqrMagnitude;
+                        if (sqrDistToMouse < minsqrtDist)
+                        {
+                            minsqrtDist = sqrDistToMouse;
+                            snappedEnemy = snapBuffer[i].transform;
+                        }
+                    }
+                }
+            }
+        }
+
+        Vector3 targetPoint = (snappedEnemy != null) ? snappedEnemy.position : mouseworldpos;
+        Vector2 dir = new Vector2(mouseworldpos.x - origin.x, mouseworldpos.y - origin.y);
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
         if (angle < 0f)
@@ -262,33 +307,55 @@ public class PlayerController : MonoBehaviour
 
         float rad = angle * Mathf.Deg2Rad;
         currentAimDirection = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)).normalized;
+
+        if (snappedEnemy != null)
+            finalGhostPosition = snappedEnemy.position;
+        else
+            finalGhostPosition = origin + (Vector3)(currentAimDirection * skillData.maxRange);
+
+        if (currentGhost != null)
+        {
+            Quaternion ghostRotation = Quaternion.Euler(0f, 0f, angle);
+            currentGhost.SetPositionandRotation(finalGhostPosition, ghostRotation);
+        }
     }
 
     private void ExecuteActiveSkill()
     {
         int slot = activeAimSlot;
+        DestroyGhost();
         ResetTimeScale();
         isAiming = false;
         activeAimSlot = -1;
-
-        // if (attackPoint != null)
-        // {
-        //     Debug.Log($"<color=cyan>[EXECUTE] Nama AttackPoint: {attackPoint.name} | World Pos: {attackPoint.position} | Local Pos: {attackPoint.localPosition}</color>");
-        // }
-        // else
-        // {
-        //     Debug.LogError("[EXECUTE] attackPoint bernilai NULL!");
-        // }
-
         playerEntity.TryUseSkill(slot, attackPoint, currentAimDirection);
     }
 
     private void CancelAiming()
     {
+        DestroyGhost();
         ResetTimeScale();
         isAiming = false;
         activeAimSlot = -1;
     }
+
+    private void SpawnGhost(SkillDataSO data)
+    {
+        if (data.ghostPreviewPrefab == null) return;
+
+        GameObject ghostGO = Instantiate(data.ghostPreviewPrefab, attackPoint.position, Quaternion.identity);
+        currentGhost = ghostGO.GetComponent<SkillGhostPreview>();
+    }
+
+    private void DestroyGhost()
+    {
+        if (currentGhost != null)
+        {
+            Destroy(currentGhost.gameObject);
+            currentGhost = null;
+        }
+    }
+
+#endregion
 
     private void ResetTimeScale()
     {

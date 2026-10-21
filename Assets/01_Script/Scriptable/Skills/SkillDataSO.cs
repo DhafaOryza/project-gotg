@@ -40,6 +40,7 @@ public class SkillDataSO : ScriptableObject
 
     [Header("Visual Prefabs")]
     public GameObject skillPrefab;
+    public GameObject ghostPreviewPrefab;
 
     public bool Activate(PlayerBaseEntity user, Transform attackPoint, Vector2 aimDirection)
     {

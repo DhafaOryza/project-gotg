@@ -29,3 +29,4 @@ MonoBehaviour:
   maxRange: 2
   HitboxSize: {x: 2, y: 2, z: 1}
   skillPrefab: {fileID: 4207328673673525399, guid: 86b3eba05849fa44baf23404adca7508, type: 3}
+  ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
