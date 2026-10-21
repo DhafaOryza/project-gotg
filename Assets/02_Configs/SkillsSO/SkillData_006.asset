@@ -26,7 +26,7 @@ MonoBehaviour:
   targetType: 0
   cooldown: 3
   skillColor: {r: 1, g: 1, b: 1, a: 1}
-  maxRange: 2
+  maxRange: 3
   HitboxSize: {x: 2, y: 2, z: 1}
   skillPrefab: {fileID: 8946592561061051195, guid: b2fcb1da6d2d2684f9c1caf10eb674e5, type: 3}
-  ghostPreviewPrefab: {fileID: 7836781342000382809, guid: 923997bc754d85e49b531d20a8215065, type: 3}
+  ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
