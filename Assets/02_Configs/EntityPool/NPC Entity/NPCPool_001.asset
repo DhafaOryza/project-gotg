@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1365a4ec2648ab479de0a24dbfaa65b, type: 3}
+  m_Name: NPCPool_001
+  m_EditorClassIdentifier: Assembly-CSharp::PoolDataSO
+  poolId: {fileID: 11400000, guid: 64481313693e3f5f2b994ab123dd6409, type: 2}
+  prefab: {fileID: 3927949830090874156, guid: 93a1e49aa54f9c0b089524550a24a4f0, type: 3}
+  initialSize: 5
+  isExpandable: 1

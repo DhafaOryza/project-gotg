@@ -2,36 +2,53 @@ using UnityEngine;
 
 public class NPCBaseEntity : BaseEntity, IInteractable
 {
-    [Header("Interaction Settings")]
-    [SerializeField] private float interactionRadius = 2f;
+    [SerializeField] private float _interactionRadius = 2f;
 
-    public float InteractionRadius => interactionRadius;
+    public float InteractionRadius => _interactionRadius;
     
-    private NPCDataSO npcData;
+    protected NPCDataSO _npcData;
 
     protected override void Awake()
     {
         base.Awake();
-        npcData = entityData as NPCDataSO;
+        _npcData = entityData as NPCDataSO;
     }
 
-    public void Interact(PlayerBaseEntity player)
+    public virtual void Interact(PlayerBaseEntity player)
     {
-        if (PlayerUI.Instance != null && npcData != null)
+        if (_npcData != null && !_npcData.IsInteractable)
         {
-            PlayerUI.Instance.DialogSystem.StartNPCDialog(npcData, () =>
-            {
-                if (npcData.assignedQuest != null && GameManager.Instance != null && GameManager.Instance.questManager != null)
-                {
-                    GameManager.Instance.questManager.RequestSpecificQuest(npcData.assignedQuest);
-                }
-            });
+            return;
+        }
+
+        ConversationUI conversationUI = PlayerUI.Instance != null ? PlayerUI.Instance.ConversationUI : null;
+        if (conversationUI == null)
+        {
+            conversationUI = Object.FindFirstObjectByType<ConversationUI>();
+        }
+        
+        if (conversationUI != null && _npcData != null)
+        {
+            conversationUI.StartNPCDialog(_npcData, OnConversationEnded);
+        }
+    }
+
+    protected virtual void OnConversationEnded()
+    {
+        if (_npcData.AssignedQuest != null && GameManager.Instance != null && GameManager.Instance.questManager != null)
+        {
+            GameManager.Instance.questManager.RequestSpecificQuest(_npcData.AssignedQuest);
+        }
+
+        if (PlayerUI.Instance != null && _npcData != null)
+        {
+            PlayerUI.Instance.HandleNpcRolePanel(_npcData.NpcRole);
         }
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, interactionRadius);
+        Gizmos.DrawWireSphere(transform.position, _interactionRadius);
     }
 }

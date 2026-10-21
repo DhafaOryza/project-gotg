@@ -82,12 +82,12 @@ public class ConversationUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Starts dialogue session specifically using NPCDataSO.
+    /// Starts dialogue session specifically using NPCDataSO properties.
     /// </summary>
     public void StartNPCDialog(NPCDataSO npcData, Action onComplete = null)
     {
         if (npcData == null) return;
-        StartDialog(npcData.npcName, npcData.npcPortrait, npcData.dialogueLines, onComplete);
+        StartDialog(npcData.NpcName, npcData.NpcPortrait, npcData.DialogueLines, onComplete);
     }
 
     private void ShowCurrentLine()
