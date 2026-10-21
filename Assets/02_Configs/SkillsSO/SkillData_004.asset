@@ -13,20 +13,20 @@ MonoBehaviour:
   m_Name: SkillData_004
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: 004
-  displayName: Hay Bale Roll
+  displayName: Axe Throw
   description: 
   baseValue: 10
   tier: 1
   typeRange: 1
   skillType: 0
-  targetMode: 1
+  targetMode: 0
   isProjectile: 1
   icon: {fileID: 0}
   locked: 0
   targetType: 0
   cooldown: 3
   skillColor: {r: 0.02641511, g: 0.020748325, b: 0.003339268, a: 1}
-  maxRange: 10
+  maxRange: 8
   HitboxSize: {x: 2, y: 2, z: 1}
   skillPrefab: {fileID: 8946592561061051195, guid: 54a0636354ee996469f397d139e27860, type: 3}
   ghostPreviewPrefab: {fileID: 7836781342000382809, guid: 923997bc754d85e49b531d20a8215065, type: 3}

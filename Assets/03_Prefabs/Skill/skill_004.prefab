@@ -79,4 +79,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillProjectile
   speed: 8
   lifetime: 10
-  piercing: 1
+  piercing: 0

@@ -13,20 +13,20 @@ MonoBehaviour:
   m_Name: SkillData_003
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: 003
-  displayName: 'Heavy Hoe  '
+  displayName: 'Pitchfork Throw  '
   description: 
   baseValue: 10
   tier: 1
-  typeRange: 0
+  typeRange: 1
   skillType: 0
-  targetMode: 1
+  targetMode: 0
   isProjectile: 0
   icon: {fileID: 0}
   locked: 0
   targetType: 0
   cooldown: 3
   skillColor: {r: 0.2981131, g: 0.2981131, b: 0.2981131, a: 1}
-  maxRange: 2
+  maxRange: 8
   HitboxSize: {x: 2, y: 2, z: 1}
   skillPrefab: {fileID: 8946592561061051195, guid: ed171b276cf00cf40a891b7942e49a23, type: 3}
-  ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
+  ghostPreviewPrefab: {fileID: 7836781342000382809, guid: 923997bc754d85e49b531d20a8215065, type: 3}

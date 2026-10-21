@@ -13,20 +13,20 @@ MonoBehaviour:
   m_Name: SkillData_002
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: 002
-  displayName: 'Axe Throw  '
+  displayName: Heavy Hoe
   description: 
   baseValue: 15
   tier: 1
-  typeRange: 1
+  typeRange: 0
   skillType: 0
-  targetMode: 0
+  targetMode: 1
   isProjectile: 1
   icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   locked: 0
   targetType: 0
   cooldown: 3
   skillColor: {r: 1, g: 1, b: 1, a: 1}
-  maxRange: 8
+  maxRange: 2
   HitboxSize: {x: 2, y: 2, z: 1}
   skillPrefab: {fileID: 8946592561061051195, guid: 4fee0c23e61edf84d9f4bceb8c67beb5, type: 3}
-  ghostPreviewPrefab: {fileID: 7836781342000382809, guid: 923997bc754d85e49b531d20a8215065, type: 3}
+  ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}

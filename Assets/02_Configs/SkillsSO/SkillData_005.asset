@@ -13,15 +13,20 @@ MonoBehaviour:
   m_Name: SkillData_005
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: 005
-  displayName: Attack_005
+  displayName: 'Woodcutter Swing  '
   description: 
-  baseValue: 0
+  baseValue: 40
+  tier: 1
   typeRange: 0
   skillType: 0
-  tier: 1
+  targetMode: 1
+  isProjectile: 0
   icon: {fileID: 0}
   locked: 0
-  targetType: 1
+  targetType: 0
   cooldown: 3
   skillColor: {r: 1, g: 1, b: 1, a: 1}
-  skillPrefab: {fileID: 0}
+  maxRange: 3
+  HitboxSize: {x: 2, y: 2, z: 1}
+  skillPrefab: {fileID: 8946592561061051195, guid: 2e843b269412ee44aabf1376d58465b8, type: 3}
+  ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}

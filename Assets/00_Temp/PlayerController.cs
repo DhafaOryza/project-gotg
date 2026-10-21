@@ -266,39 +266,6 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector3 origin = attackPoint != null ? attackPoint.position : playerRb.position;
-        Vector3 finalGhostPosition;
-
-        //Snapping Ghost Skill
-        bool isSingleTarget = (skillData.targetMode == TargetMode.SINGLE_TARGET);
-        Transform snappedEnemy = null;
-
-        if (isSingleTarget)
-        {
-            int hitCount = Physics.OverlapSphereNonAlloc(mouseworldpos, snapSearchRadius, snapBuffer, enemyLayer);
-            float minsqrtDist = float.MaxValue;
-
-            for (int i = 0; i < hitCount ; i++)
-            {
-                var enemyEntity = snapBuffer[i].GetComponentInParent<BaseEntity>();
-                if (enemyEntity != null && enemyEntity != playerEntity && !enemyEntity.IsDead)
-                {
-
-                    float distanceToOrigin = Vector3.Distance(origin, snapBuffer[i].transform.position);
-                    if (distanceToOrigin <= skillData.maxRange)
-                    {
-
-                        float sqrDistToMouse = (snapBuffer[i].transform.position - mouseworldpos).sqrMagnitude;
-                        if (sqrDistToMouse < minsqrtDist)
-                        {
-                            minsqrtDist = sqrDistToMouse;
-                            snappedEnemy = snapBuffer[i].transform;
-                        }
-                    }
-                }
-            }
-        }
-
-        Vector3 targetPoint = (snappedEnemy != null) ? snappedEnemy.position : mouseworldpos;
         Vector2 dir = new Vector2(mouseworldpos.x - origin.x, mouseworldpos.y - origin.y);
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
@@ -307,16 +274,12 @@ public class PlayerController : MonoBehaviour
 
         float rad = angle * Mathf.Deg2Rad;
         currentAimDirection = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)).normalized;
-
-        if (snappedEnemy != null)
-            finalGhostPosition = snappedEnemy.position;
-        else
-            finalGhostPosition = origin + (Vector3)(currentAimDirection * skillData.maxRange);
-
         if (currentGhost != null)
         {
+            Vector3 ghostPosition = origin + (Vector3)(currentAimDirection * skillData.maxRange);
             Quaternion ghostRotation = Quaternion.Euler(0f, 0f, angle);
-            currentGhost.SetPositionandRotation(finalGhostPosition, ghostRotation);
+
+            currentGhost.SetPositionandRotation(ghostPosition, ghostRotation);
         }
     }
 

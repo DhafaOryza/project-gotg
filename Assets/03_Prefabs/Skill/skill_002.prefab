@@ -55,28 +55,5 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4207328673673525399, guid: 86b3eba05849fa44baf23404adca7508, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: -5817681550095330871}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86b3eba05849fa44baf23404adca7508, type: 3}
---- !u!1 &8946592561061051195 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4207328673673525399, guid: 86b3eba05849fa44baf23404adca7508, type: 3}
-  m_PrefabInstance: {fileID: 5065355148903187372}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &-5817681550095330871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8946592561061051195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2022cdec966f4924ba2f92f2b12429a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SkillProjectile
-  speed: 8
-  lifetime: 3
-  piercing: 0
