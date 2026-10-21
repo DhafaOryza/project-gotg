@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: 009
   displayName: 'Shovel Bash  '
   description: 
-  baseValue: 30
+  baseValue: 80
   tier: 1
   typeRange: 0
   skillType: 0
@@ -24,7 +24,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   locked: 0
   targetType: 0
-  cooldown: 3
+  cooldown: 2
   skillColor: {r: 1, g: 1, b: 1, a: 1}
   maxRange: 2
   HitboxSize: {x: 2, y: 2, z: 1}

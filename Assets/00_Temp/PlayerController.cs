@@ -14,11 +14,8 @@ public class PlayerController : MonoBehaviour
     [Header("Optional")]
     [SerializeField] private GameObject clickMarkerPrefab;
 
-    [Header ("Ghost Preview & Snapping Settings")]
-    [SerializeField] private float snapSearchRadius = 2.5f; 
-    [SerializeField] private LayerMask enemyLayer;          
+    [Header ("Ghost Preview & Snapping Settings")]        
     private SkillGhostPreview currentGhost;
-    private readonly Collider[] snapBuffer = new Collider[8];
 
     [Header ("Skill Settings & AttackPoint")]
     [Range(0.05f, 1f)]

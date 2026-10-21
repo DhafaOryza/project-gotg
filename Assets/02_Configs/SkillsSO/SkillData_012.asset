@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: 012
   displayName: Grain Bomb
   description: 
-  baseValue: 30
+  baseValue: 80
   tier: 1
   typeRange: 1
   skillType: 0
@@ -24,7 +24,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   locked: 0
   targetType: 0
-  cooldown: 3
+  cooldown: 4
   skillColor: {r: 1, g: 1, b: 1, a: 1}
   maxRange: 8
   HitboxSize: {x: 2, y: 2, z: 1}

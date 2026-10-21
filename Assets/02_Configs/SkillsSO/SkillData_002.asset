@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: 002
   displayName: Heavy Hoe
   description: 
-  baseValue: 15
+  baseValue: 90
   tier: 1
   typeRange: 0
   skillType: 0
@@ -24,7 +24,7 @@ MonoBehaviour:
   icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   locked: 0
   targetType: 0
-  cooldown: 3
+  cooldown: 1.5
   skillColor: {r: 1, g: 1, b: 1, a: 1}
   maxRange: 2
   HitboxSize: {x: 2, y: 2, z: 1}

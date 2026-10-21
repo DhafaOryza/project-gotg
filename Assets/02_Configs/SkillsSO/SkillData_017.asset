@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: 017
   displayName: 'Falling Log  '
   description: 
-  baseValue: 30
+  baseValue: 120
   tier: 1
   typeRange: 1
   skillType: 0

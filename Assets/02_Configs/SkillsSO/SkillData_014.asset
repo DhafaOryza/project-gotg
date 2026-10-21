@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: 014
   displayName: Cart Crash
   description: 
-  baseValue: 30
+  baseValue: 120
   tier: 1
   typeRange: 1
   skillType: 0

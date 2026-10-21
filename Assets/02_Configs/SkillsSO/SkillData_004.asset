@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: 004
   displayName: Axe Throw
   description: 
-  baseValue: 10
+  baseValue: 120
   tier: 1
   typeRange: 1
   skillType: 0
