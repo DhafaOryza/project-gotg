@@ -7,11 +7,13 @@ public class SkillRuntimeData
 {
     public SkillDataSO skilldata;
     public float RemainingCooldown;
+    public float TotalCooldown {get; private set;}
 
     public SkillRuntimeData(SkillDataSO data)
     {
         skilldata = data;
         RemainingCooldown = 0f;
+        TotalCooldown = data != null ? data.cooldown : 0f;
     }
 
     public bool isOnCooldown => RemainingCooldown > 0;
@@ -26,6 +28,7 @@ public class SkillRuntimeData
     }
     public void StartCooldown(float duration)
     {
+        TotalCooldown = duration;
         RemainingCooldown = duration;
     }
 }

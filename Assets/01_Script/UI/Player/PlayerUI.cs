@@ -168,6 +168,11 @@ public class PlayerUI : MonoBehaviour
         if (_skillsManager == null || _playerController == null || _skillUIPrefab == null || _skillContainer == null)
             return;
 
+        foreach (Transform child in _skillContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        
         var skills = _skillsManager.choosenSkills;
         var keys = new List<KeyCode>
         {
@@ -180,7 +185,7 @@ public class PlayerUI : MonoBehaviour
         for (int i = 0; i < skills.Count && i < keys.Count; i++)
         {
             SkillUI currentSkill = Instantiate(_skillUIPrefab, _skillContainer);
-            currentSkill.Setup(keys[i].ToString(), skills[i]);
+            currentSkill.Setup(i, keys[i].ToString(), skills[i]);
         }
     }
 
