@@ -1,0 +1,22 @@
+public enum NpcRole
+{
+    Villager,         // Warga Desa (NPC_001, NPC_002)[cite: 40, 41]
+    Priest,           // Penyembuh / Priest (NPC_003)[cite: 41]
+    GranaryKeeper,    // Perawat Lumbung / Tukang Granary (NPC_004)[cite: 41]
+    Merchant,         // Pedagang Keliling (NPC_005)[cite: 41]
+    Guard,            // Penjaga Desa / Prajurit Patroli (NPC_006)[cite: 41]
+    Farmer,           // Petani (NPC_007)[cite: 41]
+    Hunter,           // Pemburu (NPC_008)[cite: 42]
+    Child,            // Anak Desa (NPC_009)[cite: 42]
+    Elder,            // Tetua Desa / Village Elder (NPC_010)[cite: 42]
+    GateGuard,        // Penjaga Gerbang (NPC_011)[cite: 42]
+    Carpenter,        // Tukang Kayu (NPC_012)[cite: 42]
+    Blacksmith,       // Pandai Besi (NPC_013)[cite: 42]
+    Cook,             // Koki Desa (NPC_014)[cite: 42]
+    Worker,           // Pembawa Barang / Delivery (NPC_015)[cite: 42]
+    AnimalKeeper,     // Peternak (NPC_016)[cite: 43]
+    WaterCarrier,     // Pengumpul Air (NPC_017)[cite: 43]
+    Shepherd,         // Penggembala (NPC_018)[cite: 43]
+    Traveler,         // Musafir (NPC_019)[cite: 43]
+    Wanderer          // Pengelana (NPC_020)[cite: 43]
+}

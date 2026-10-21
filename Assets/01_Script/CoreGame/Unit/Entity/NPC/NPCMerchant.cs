@@ -6,9 +6,9 @@ public class NPCMerchant : NPCBaseEntity
     {
         base.OnConversationEnded();
 
-        if (PlayerUI.Instance != null && PlayerUI.Instance.GranaryUI != null)
+        if (PlayerUI.Instance != null && PlayerUI.Instance.ShopUI != null)
         {
-            PlayerUI.Instance.GranaryUI.gameObject.SetActive(true);
+            PlayerUI.Instance.ShopUI.gameObject.SetActive(true);
         }
     }
 }

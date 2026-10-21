@@ -16,7 +16,7 @@ public class NPCBaseEntity : BaseEntity, IInteractable
 
     public virtual void Interact(PlayerBaseEntity player)
     {
-        Debug.Log($"[NPCBaseEntity] Interacting with NPC: {(_npcData != null ? _npcData.NpcName : name)}");
+        Debug.Log($"[NPCBaseEntity] Interacting with NPC Role: {(_npcData != null ? _npcData.NpcRole.ToString() : "Unknown")}");
 
         ConversationUI conversationUI = PlayerUI.Instance != null ? PlayerUI.Instance.ConversationUI : null;
         if (conversationUI == null)
@@ -35,6 +35,11 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         if (_npcData.AssignedQuest != null && GameManager.Instance != null && GameManager.Instance.questManager != null)
         {
             GameManager.Instance.questManager.RequestSpecificQuest(_npcData.AssignedQuest);
+        }
+
+        if (PlayerUI.Instance != null && _npcData != null)
+        {
+            PlayerUI.Instance.HandleNpcRolePanel(_npcData.NpcRole);
         }
     }
 

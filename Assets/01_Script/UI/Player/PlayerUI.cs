@@ -19,12 +19,22 @@ public class PlayerUI : MonoBehaviour
     [Header("Dialog System")]
     [SerializeField] private ConversationUI _conversationUI;
 
+    [Header("Role NPC Panels")]
+    [SerializeField] private GranaryUI _granaryUI;
+    [SerializeField] private ShopUI _shopUI;
+    [SerializeField] private HealthUI _healthUI;
+    [SerializeField] private SkillTreeUI _skillTreeUI;
+
     private SkillsManager _skillsManager;
     private PlayerController _playerController;
     private PlayerBaseEntity player;
     private GranaryBase _granary;
 
-    public ConversationUI DialogSystem => _conversationUI;
+    public ConversationUI ConversationUI => _conversationUI;
+    public GranaryUI GranaryUI => _granaryUI;
+    public ShopUI ShopUI => _shopUI;
+    public HealthUI HealthUI => _healthUI;
+    public SkillTreeUI SkillTreeUI => _skillTreeUI;
 
     void Awake()
     {
@@ -80,9 +90,15 @@ public class PlayerUI : MonoBehaviour
     {
         if (_preparationUI == null) _preparationUI = Object.FindFirstObjectByType<PreparationUI>();
         if (_conversationUI == null) _conversationUI = Object.FindFirstObjectByType<ConversationUI>();
+        if (_granaryUI == null) _granaryUI = Object.FindFirstObjectByType<GranaryUI>();
+        if (_healthUI == null) _healthUI = Object.FindFirstObjectByType<HealthUI>();
+        if (_shopUI == null) _shopUI = Object.FindFirstObjectByType<ShopUI>();
+        if (_skillTreeUI == null) _skillTreeUI = Object.FindFirstObjectByType<SkillTreeUI>();
 
         if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
         if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
+        
+        CloseAllRolePanels();
 
         if (_granary == null)
         {
@@ -97,6 +113,45 @@ public class PlayerUI : MonoBehaviour
         }
 
         InitializeHealthBar();
+    }
+
+    /// <summary>
+    /// Closes all role-specific UI panels.
+    /// </summary>
+    public void CloseAllRolePanels()
+    {
+        CloseHealthUI();
+        CloseGranaryUI();
+        CloseShopUI();
+        CloseSkillTreeUI();
+    }
+
+    /// <summary>
+    /// Opens the corresponding panel automatically based on the NPC's Role enum.
+    /// </summary>
+    public void HandleNpcRolePanel(NpcRole role)
+    {
+        CloseAllRolePanels();
+
+        switch (role)
+        {
+            case NpcRole.Priest:
+                if (_healthUI != null) _healthUI.gameObject.SetActive(true);
+                break;
+            case NpcRole.GranaryKeeper:
+                if (_granaryUI != null) _granaryUI.gameObject.SetActive(true);
+                break;
+            case NpcRole.Merchant:
+                if (_shopUI != null) _shopUI.gameObject.SetActive(true);
+                break;
+            case NpcRole.Guard:
+            case NpcRole.GateGuard:
+                if (_skillTreeUI != null) _skillTreeUI.gameObject.SetActive(true);
+                break;
+            default:
+                // Villager, Farmer, dll. tidak membuka panel khusus
+                break;
+        }
     }
 
     public void InitializeHealthBar()
@@ -139,6 +194,23 @@ public class PlayerUI : MonoBehaviour
             _granary.ResumeSign();
     }
 
+    public void OpenHealthUI() => _healthUI?.gameObject.SetActive(true);
+    public void CloseHealthUI() => _healthUI?.gameObject.SetActive(false);
+
+    public void OpenGranaryUI() => _granaryUI?.gameObject.SetActive(true);
+    public void CloseGranaryUI() => _granaryUI?.gameObject.SetActive(false);
+
+    public void OpenShopUI() => _shopUI?.gameObject.SetActive(true);
+    public void CloseShopUI() => _shopUI?.gameObject.SetActive(false);
+
+    public void OpenSkillTreeUI() => _skillTreeUI?.gameObject.SetActive(true);
+    public void CloseSkillTreeUI() => _skillTreeUI?.gameObject.SetActive(false);
+
     public void OpenSkillUI() => _skillContainer?.gameObject.SetActive(true);
     public void CloseSkillUI() => _skillContainer?.gameObject.SetActive(false);
+
+    internal void HandleNpcRolePanel(string npcId)
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -625,6 +625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GranaryUI
   _granaryMainPanel: {fileID: 346846694}
+  _targetNpcId: NPC_004
 --- !u!1 &206638779
 GameObject:
   m_ObjectHideFlags: 0
@@ -5211,6 +5212,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1436001420}
+  - component: {fileID: 1436001422}
+  - component: {fileID: 1436001421}
   m_Layer: 0
   m_Name: Player Profile
   m_TagString: Untagged
@@ -5238,6 +5241,37 @@ RectTransform:
   m_AnchoredPosition: {x: 217.3, y: -65}
   m_SizeDelta: {x: 400, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1436001421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436001419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf50eaecc9981736db40f118fbdafe0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthUI
+  _healthMainPanel: {fileID: 0}
+  _targetNpcId: NPC_003
+--- !u!114 &1436001422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436001419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4566b4c924d003340a47364f72000f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBar
+  currentHp: {fileID: 233097618}
+  ghostHp: {fileID: 1509251816}
+  hpText: {fileID: 1453166371}
+  ghostDelay: 0.4
+  ghostSpeed: 0.6
 --- !u!1 &1453166369
 GameObject:
   m_ObjectHideFlags: 0
@@ -6060,7 +6094,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 542c52964d0eb4a9583bdfc9dff4729b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuardUI
-  _granaryMainPanel: {fileID: 723787325}
+  _skillTreeMainPanel: {fileID: 723787325}
+  _targetNpcId: NPC_006
 --- !u!1 &1602023409
 GameObject:
   m_ObjectHideFlags: 0
@@ -6877,7 +6912,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00000c1609d9950d0b3b8457f0577d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MerchantUI
-  _granaryMainPanel: {fileID: 747963529}
+  _shopMainPanel: {fileID: 747963529}
+  _targetNpcId: NPC_003
 --- !u!1 &1795514843
 GameObject:
   m_ObjectHideFlags: 0
@@ -7366,11 +7402,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c046ac3f0c7bff47bdb77b7dd8a8650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelSpawnerManager
-  _playerId: {fileID: 11400000, guid: b300f120ed88abc438426b5ea497e3d5, type: 2}
-  _spawnPlayerPosition: {fileID: 854498144}
-  _buildingId: {fileID: 11400000, guid: d66b91fa9498d774197853dfd1fab5ab, type: 2}
-  _spawnBuildingPosition: {fileID: 1621246156}
-  _npcSpawnConfigs:
+  playerId: {fileID: 11400000, guid: b300f120ed88abc438426b5ea497e3d5, type: 2}
+  spawnPlayerPosition: {fileID: 854498144}
+  buildingId: {fileID: 11400000, guid: d66b91fa9498d774197853dfd1fab5ab, type: 2}
+  spawnBuildingPosition: {fileID: 1621246156}
+  npcSpawnConfigs:
   - _npcPoolId: {fileID: 11400000, guid: 73cdcf6dc0f13fd25858bf527e027aac, type: 2}
     _spawnPosition: {fileID: 1249475507}
   - _npcPoolId: {fileID: 11400000, guid: 4ecc62a68a264f6f5ac1e895d8551203, type: 2}
@@ -7379,7 +7415,7 @@ MonoBehaviour:
     _spawnPosition: {fileID: 165658911}
   - _npcPoolId: {fileID: 11400000, guid: 9eecd977cb9f2d3c5972709f15bc6c90, type: 2}
     _spawnPosition: {fileID: 1194182043}
-  _enemySpawnPositions:
+  enemySpawnPositions:
   - {fileID: 1175602554}
   - {fileID: 72186967}
   - {fileID: 717337548}
@@ -7794,7 +7830,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf50eaecc9981736db40f118fbdafe0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PriestUI
-  _granaryMainPanel: {fileID: 329877069}
+  _healthMainPanel: {fileID: 329877069}
+  _targetNpcId: NPC_003
 --- !u!1 &2035140762
 GameObject:
   m_ObjectHideFlags: 0
@@ -7917,13 +7954,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0a7933d8ec240647b362b71c7e56c31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
+  playerHealthBar: {fileID: 1436001422}
+  granaryHealthBar: {fileID: 1436001422}
   _preparationUI: {fileID: 68443352}
   _skillContainer: {fileID: 651034799}
   _skillUIPrefab: {fileID: 1385810770}
   _conversationUI: {fileID: 83099238}
-  _healthUI: {fileID: 1973894870}
   _granaryUI: {fileID: 186913393}
   _shopUI: {fileID: 1779193907}
+  _healthUI: {fileID: 1973894870}
   _skillTreeUI: {fileID: 1585950943}
 --- !u!1 &2041560273
 GameObject:
@@ -8508,6 +8547,10 @@ PrefabInstance:
     - target: {fileID: 5980864608406539134, guid: aea3efd3677af7146b6fbdd2c9b825a3, type: 3}
       propertyPath: m_Name
       value: SkillUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980864608406539134, guid: aea3efd3677af7146b6fbdd2c9b825a3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9216562127022782137, guid: aea3efd3677af7146b6fbdd2c9b825a3, type: 3}
       propertyPath: m_Pivot.x

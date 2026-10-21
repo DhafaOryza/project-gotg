@@ -2,25 +2,19 @@ using UnityEngine;
 
 public class HealthUI : MonoBehaviour
 {
-    // Di masa depan, Anda bisa menambahkan variabel khusus untuk Granary di sini
-    [SerializeField] private GameObject _granaryMainPanel;
+    [SerializeField] private GameObject _healthMainPanel;
 
     private void OnEnable()
     {
         Initialize();
     }
 
-    /// <summary>
-    /// Initializes the granary UI components and data.
-    /// </summary>
     public void Initialize()
     {
-        if (_granaryMainPanel != null)
+        if (_healthMainPanel != null)
         {
-            _granaryMainPanel.SetActive(true);
+            _healthMainPanel.SetActive(true);
         }
-        
-        Debug.Log("[GranaryUI] Initialized successfully.");
     }
 
     public void CloseUI()

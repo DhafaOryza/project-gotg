@@ -17,7 +17,9 @@ MonoBehaviour:
   hpPerVitality: 170
   skillCooldownMultiplier: 1
   moveSpeed: 5
+  _npcId: NPC_005
   _npcName: 
+  _npcRole: 0
   _dialogueLines:
   - "Lorem Ipsum is standard dummy text used in the graphic design, publishing, and
     web development industries to preview layouts and visual mockups without distracting
@@ -25,5 +27,4 @@ MonoBehaviour:
     of letters, making it appear like readable English and allowing viewers to focus
     on the visual structure rather than the text itself. \n\n"
   _npcPortrait: {fileID: 0}
-  _npcRole: 3
   _assignedQuest: {fileID: 0}
