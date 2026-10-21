@@ -15,5 +15,7 @@ MonoBehaviour:
   consumableId: 001
   displayName: Item_001
   icon: {fileID: 0}
+  consumableType: 0
   description: 
   maxStack: 5
+  baseValue: 5
