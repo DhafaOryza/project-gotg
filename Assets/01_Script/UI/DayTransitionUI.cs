@@ -3,15 +3,30 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
+/// <summary>Jenis transisi: menentukan panel teks mana yang ditampilkan.</summary>
+public enum DayTransitionType
+{
+    Night,  // siang -> malam (sebelum combat), memakai panel Night
+    Day     // malam -> siang (setelah combat, menang atau kalah), memakai panel Day
+}
+
 /// <summary>
-/// Transisi siang -> malam: layar menggelap, di tengah (layar sedang tertutup penuh) onMidpoint dijalankan,
-/// lalu teks "Night N" muncul sebentar, dan layar terang kembali.
+/// Transisi layar: layar menggelap, di tengah (layar sedang tertutup penuh) onMidpoint dijalankan,
+/// lalu teks panel Night atau Day muncul sebentar, dan layar terang kembali.
 /// </summary>
 public class DayTransitionUI : MonoBehaviour
 {
+    [Header("Curtain")]
     [SerializeField] CanvasGroup canvasGroup;
+
+    [Header("Night Panel (siang -> malam)")]
     [SerializeField] CanvasGroup nightGroupCanvas;
     [SerializeField] TextMeshProUGUI nightText;
+
+    [Header("Day Panel (malam -> siang)")]
+    [Tooltip("Kalau kosong, transisi Day memakai panel Night sebagai cadangan.")]
+    [SerializeField] CanvasGroup dayGroupCanvas;
+    [SerializeField] TextMeshProUGUI dayText;
 
     [Header("Timing (detik)")]
     [SerializeField] private float fadeInDuration = 0.8f;
@@ -38,12 +53,18 @@ public class DayTransitionUI : MonoBehaviour
         ResetVisuals();
     }
 
-    /// <summary>
-    /// Mulai transisi. onMidpoint dipanggil saat layar tertutup penuh (tempat paling aman untuk
-    /// mengganti dunia/lingkungan). onComplete dipanggil setelah layar terang lagi.
-    /// Return false kalau transisi sedang berjalan (panggilan diabaikan).
-    /// </summary>
+    /// <summary>Transisi siang -> malam (panel Night). Dipertahankan agar pemanggil lama tetap jalan.</summary>
     public bool Play(string label, Action onMidpoint, Action onComplete = null)
+    {
+        return Play(DayTransitionType.Night, label, onMidpoint, onComplete);
+    }
+
+    /// <summary>
+    /// Mulai transisi. type menentukan panel teks (Night / Day). onMidpoint dipanggil saat layar
+    /// tertutup penuh (tempat paling aman untuk mengganti dunia/lingkungan). onComplete dipanggil
+    /// setelah layar terang lagi. Return false kalau transisi sedang berjalan (panggilan diabaikan).
+    /// </summary>
+    public bool Play(DayTransitionType type, string label, Action onMidpoint, Action onComplete = null)
     {
         if (IsPlaying) return false;
 
@@ -51,17 +72,32 @@ public class DayTransitionUI : MonoBehaviour
         if (!gameObject.activeInHierarchy)
             gameObject.SetActive(true);
 
-        playRoutine = StartCoroutine(PlayRoutine(label, onMidpoint, onComplete));
+        playRoutine = StartCoroutine(PlayRoutine(type, label, onMidpoint, onComplete));
         return true;
     }
 
-    private IEnumerator PlayRoutine(string label, Action onMidpoint, Action onComplete)
+    private IEnumerator PlayRoutine(DayTransitionType type, string label, Action onMidpoint, Action onComplete)
     {
         IsPlaying = true;
         ResetVisuals();
 
-        if (nightText != null)
-            nightText.text = label;
+        // Pilih panel teks sesuai jenis transisi (Day jatuh ke panel Night kalau panel Day belum diisi).
+        CanvasGroup textGroup;
+        TextMeshProUGUI textLabel;
+
+        if (type == DayTransitionType.Day && dayGroupCanvas != null)
+        {
+            textGroup = dayGroupCanvas;
+            textLabel = dayText;
+        }
+        else
+        {
+            textGroup = nightGroupCanvas;
+            textLabel = nightText;
+        }
+
+        if (textLabel != null)
+            textLabel.text = label;
 
         // Layar menerima klik selama transisi supaya UI di bawahnya tidak bisa ditekan.
         if (canvasGroup != null)
@@ -78,11 +114,11 @@ public class DayTransitionUI : MonoBehaviour
         if (midpointDelay > 0f)
             yield return new WaitForSecondsRealtime(midpointDelay);
 
-        // 3) Teks malam muncul, tertahan, lalu hilang
-        yield return Fade(nightGroupCanvas, 0f, 1f, textFadeDuration);
+        // 3) Teks panel muncul, tertahan, lalu hilang
+        yield return Fade(textGroup, 0f, 1f, textFadeDuration);
         if (textHoldDuration > 0f)
             yield return new WaitForSecondsRealtime(textHoldDuration);
-        yield return Fade(nightGroupCanvas, 1f, 0f, textFadeDuration);
+        yield return Fade(textGroup, 1f, 0f, textFadeDuration);
 
         // 4) Layar terang kembali
         yield return Fade(canvasGroup, 1f, 0f, fadeOutDuration);
@@ -143,5 +179,8 @@ public class DayTransitionUI : MonoBehaviour
 
         if (nightGroupCanvas != null)
             nightGroupCanvas.alpha = 0f;
+
+        if (dayGroupCanvas != null)
+            dayGroupCanvas.alpha = 0f;
     }
 }

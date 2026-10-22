@@ -8,11 +8,54 @@ public class WaveController : MonoBehaviour
     [SerializeField] private int currentWaveIndex = 0;
     [SerializeField] private NightWaveDataSO waveData; // data night yang sedang dijalankan
 
+    [Tooltip("Seberapa sering (detik) sisa musuh dicek setelah semua wave selesai.")]
+    [SerializeField] private float enemyCheckInterval = 0.5f;
+
     private Coroutine nightRoutine;
+
+    // Bangunan yang kalau hancur berarti kalah (lumbung). Didengarkan lewat event OnDied.
+    private BuildingBase loseTarget;
+
+    // Pengaman supaya ResultUI hanya muncul sekali per night (menang dan kalah bisa saling berdekatan).
+    private bool nightEnded;
 
     // ---------- Runtime state & events ----------
     public bool IsWaveRunning { get; private set; }
     public float WaveTimeRemaining { get; private set; }
+
+    /// <summary>True saat semua wave sudah habis tapi player masih harus membersihkan musuh yang tersisa.</summary>
+    public bool IsClearingEnemies { get; private set; }
+
+    /// <summary>Dipicu saat fase "bersihkan sisa musuh" dimulai (mis. untuk menampilkan petunjuk di UI).</summary>
+    public event Action OnEnemyClearPhaseStarted;
+
+    private void SubscribeLoseCondition()
+    {
+        UnsubscribeLoseCondition();
+
+        var granary = GameManager.Instance?.levelSpawnerManager?.GetCurrentGranary();
+        if (granary == null)
+        {
+            Debug.LogWarning("[WaveController] Granary tidak ditemukan, kondisi kalah tidak aktif.");
+            return;
+        }
+
+        loseTarget = granary;
+        loseTarget.OnDied += HandleGranaryDied;
+    }
+
+    private void UnsubscribeLoseCondition()
+    {
+        if (loseTarget != null)
+            loseTarget.OnDied -= HandleGranaryDied;
+
+        loseTarget = null;
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeLoseCondition();
+    }
 
     #region Night / Wave Control
 
@@ -31,12 +74,19 @@ public class WaveController : MonoBehaviour
 
         if (!IsNightValid()) return;
 
+        nightEnded = false;
+        IsClearingEnemies = false;
+        SubscribeLoseCondition();
+
         nightRoutine = StartCoroutine(NightRoutine());
     }
 
     /// <summary>Hentikan night sebelum waktunya (mis. game over).</summary>
     public void StopWave()
     {
+        UnsubscribeLoseCondition();
+        IsClearingEnemies = false;
+
         if (!IsWaveRunning) return;
 
         if (nightRoutine != null) StopCoroutine(nightRoutine);
@@ -51,12 +101,25 @@ public class WaveController : MonoBehaviour
         // jalankan wave satu per satu sampai waveEnemies habis
         while (currentWaveIndex < waveData.waveEnemies.Count)
         {
-            yield return StartCoroutine(WaveRoutine(currentWaveIndex));
+            // Di-yield langsung (bukan StartCoroutine) supaya StopCoroutine(nightRoutine)
+            // ikut menghentikan wave yang sedang berjalan.
+            yield return WaveRoutine(currentWaveIndex);
             currentWaveIndex++;
         }
 
-        IsWaveRunning = false;
-        nightRoutine = null;
+        // Waktu semua wave habis. ResultUI BELUM muncul: player harus membersihkan musuh yang tersisa.
+        IsClearingEnemies = true;
+        WaveTimeRemaining = 0f;
+        OnEnemyClearPhaseStarted?.Invoke();
+
+        var wait = new WaitForSeconds(enemyCheckInterval);
+        while (spawner != null && spawner.GetAliveEnemyCount() > 0)
+            yield return wait;
+
+        IsClearingEnemies = false;
+
+        // Tidak ada musuh tersisa dan lumbung masih bertahan: menang.
+        HandleEndWave(NightResult.Clear);
     }
 
     private IEnumerator WaveRoutine(int waveIndex)
@@ -77,7 +140,6 @@ public class WaveController : MonoBehaviour
             float dt = Time.deltaTime;
             WaveTimeRemaining = Mathf.Max(0f, WaveTimeRemaining - dt);
             spawnTimer -= dt;
-
         }
     }
 
@@ -107,6 +169,43 @@ public class WaveController : MonoBehaviour
         }
 
         return true;
+    }
+
+    #endregion
+
+    #region End of Night (Clear / Lose)
+
+    /// <summary>
+    /// Satu pintu untuk mengakhiri night, baik menang maupun kalah.
+    /// Menghentikan wave yang masih berjalan lalu menampilkan ResultUI sesuai hasilnya.
+    /// </summary>
+    private void HandleEndWave(NightResult result)
+    {
+        if (nightEnded) return;
+        nightEnded = true;
+
+        UnsubscribeLoseCondition();
+
+        // Kalah di tengah wave / saat membersihkan musuh: hentikan semuanya.
+        if (nightRoutine != null)
+        {
+            StopCoroutine(nightRoutine);
+            nightRoutine = null;
+        }
+        IsWaveRunning = false;
+        IsClearingEnemies = false;
+
+        Debug.Log($"[WaveController] Night berakhir: {result}");
+
+        var playerUI = PlayerUI.Instance;
+        if (playerUI != null)
+            playerUI.OpenResultUI(result);
+    }
+
+    // Dipicu BuildingBase.OnDied saat HP lumbung mencapai 0.
+    private void HandleGranaryDied()
+    {
+        HandleEndWave(NightResult.Lose);
     }
 
     #endregion

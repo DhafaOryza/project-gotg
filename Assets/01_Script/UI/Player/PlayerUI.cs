@@ -29,6 +29,9 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private HealthUI _healthUI;
     [SerializeField] private SkillTreeUI _skillTreeUI;
 
+    [Header("Result")]
+    [SerializeField] private ResultUI _resultUI;
+
     [Header("Transition")]
     [SerializeField] private DayTransitionUI dayTransition;
 
@@ -44,6 +47,7 @@ public class PlayerUI : MonoBehaviour
     public ShopUI ShopUI => _shopUI;
     public HealthUI HealthUI => _healthUI;
     public SkillTreeUI SkillTreeUI => _skillTreeUI;
+    public ResultUI ResultUI => _resultUI;
     public DayTransitionUI DayTransition => dayTransition;
     public NPCDataSO NpcData => _npcData;
 
@@ -105,6 +109,8 @@ public class PlayerUI : MonoBehaviour
         if (_healthUI == null) _healthUI = Object.FindFirstObjectByType<HealthUI>();
         if (_shopUI == null) _shopUI = Object.FindFirstObjectByType<ShopUI>();
         if (_skillTreeUI == null) _skillTreeUI = Object.FindFirstObjectByType<SkillTreeUI>();
+        if (_resultUI == null) _resultUI = Object.FindFirstObjectByType<ResultUI>();
+        if (_resultUI == null) _resultUI = Object.FindFirstObjectByType<ResultUI>(FindObjectsInactive.Include);
         if (dayTransition == null) dayTransition = Object.FindFirstObjectByType<DayTransitionUI>();
 
         if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
@@ -201,7 +207,7 @@ public class PlayerUI : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        
+
         var skills = _skillsManager.choosenSkills;
         var keys = new List<KeyCode>
         {
@@ -252,6 +258,18 @@ public class PlayerUI : MonoBehaviour
             _consumableRadialUI.SyncWithManager();
     }
     public void CloseConsumableUI() => _consumableRadialContainer?.gameObject.SetActive(false);
+    public void OpenResultUI(NightResult result)
+    {
+        if (_resultUI == null)
+        {
+            Debug.LogWarning("[PlayerUI] ResultUI tidak ditemukan di scene.");
+            return;
+        }
+
+        _resultUI.gameObject.SetActive(true);
+        _resultUI.Show(result);
+    }
+    public void CloseResultUI() => _resultUI?.gameObject.SetActive(false);
 
     internal void HandleNpcRolePanel(string npcId)
     {

@@ -1,21 +1,23 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Menyimpan data night (urutan, night yang sedang terpilih) dan memulai wave.
+/// Alur siang/malam (transisi, NPC, env, interactable) sekarang diatur GameManager lewat GameState.
+/// </summary>
 public class NightController : MonoBehaviour
 {
     [SerializeField] private int currentNightIndex = 0;
     [SerializeField] private NightWaveDataSO currentNightWave;
-    [SerializeField] private bool autoStartNextNight = false;
 
     private WaveController waveController;
     private List<NightWaveDataSO> nightWaves = new List<NightWaveDataSO>();
     private bool isInitialized;
 
-    // True selama transisi siang -> malam berjalan; mencegah StartNight terpanggil dua kali.
-    private bool isStartingNight;
-
     public int CurrentNightIndex => currentNightIndex;
+    public NightWaveDataSO CurrentNightWave => currentNightWave;
+    public bool IsInitialized => isInitialized;
+    public bool HasNextNight => currentNightIndex + 1 < nightWaves.Count;
 
     public void Initialize()
     {
@@ -43,12 +45,10 @@ public class NightController : MonoBehaviour
         isInitialized = true;
     }
 
-    private void OnDestroy()
-    {
-        
-    }
-
-    /// <summary>Mulai night yang sedang terpilih (currentNightWave).</summary>
+    /// <summary>
+    /// Pintu masuk lama (mis. dari PreparationUI). Sekarang hanya meneruskan ke state machine:
+    /// GameManager.SetState(Combat) yang menjalankan seluruh alurnya.
+    /// </summary>
     public void StartNight()
     {
         if (!isInitialized)
@@ -57,94 +57,45 @@ public class NightController : MonoBehaviour
             return;
         }
 
-        if (isStartingNight) return;
+        GameManager.Instance?.SetState(GameState.Combat);
+    }
 
-        var gameManager = GameManager.Instance;
-        var playerUI = gameManager?.playerUI;
-        var spawner = gameManager?.levelSpawnerManager;
+    /// <summary>Dipanggil GameManager setelah transisi selesai: wave dimulai saat layar sudah terang.</summary>
+    public void BeginWaves()
+    {
+        if (waveController == null)
+            waveController = GameManager.Instance?.waveController;
 
-        // Langsung (sebelum transisi): tutup panel dan kunci semua interaksi,
-        // supaya tidak ada yang bisa diklik atau di-interact selama layar bertransisi.
-        playerUI?.ClosePreparationUI();
-        spawner?.SetAllInteractable(false);
-
-        var transition = playerUI != null ? playerUI.DayTransition : null;
-
-        if (transition == null)
+        if (waveController == null)
         {
-            // Tanpa DayTransitionUI: jalankan semuanya langsung.
-            SwitchWorldToNight();
-            BeginWaves();
+            Debug.LogWarning("[NightController] WaveController tidak ditemukan, wave tidak dimulai.");
             return;
         }
-
-        isStartingNight = true;
-
-        bool started = transition.Play(
-            $"Night {currentNightIndex + 1}",
-            onMidpoint: SwitchWorldToNight,   // layar tertutup penuh: ganti dunia di sini
-            onComplete: () =>
-            {
-                isStartingNight = false;
-                BeginWaves();                 // layar sudah terang: baru musuh mulai muncul
-            });
-
-        // Transisi menolak (sedang berjalan): jangan biarkan flag tertahan.
-        if (!started)
-            isStartingNight = false;
-    }
-
-    // Dijalankan di pertengahan transisi, saat layar tertutup penuh.
-    private void SwitchWorldToNight()
-    {
-        var gameManager = GameManager.Instance;
-        if (gameManager == null) return;
-
-        var currentPlayer = gameManager.levelSpawnerManager?.GetCurrentPlayer();
-        if (currentPlayer != null)
-            currentPlayer.RedrawSkill();
-
-        var playerUI = gameManager.playerUI;
-        if (playerUI != null)
-        {
-            playerUI.InitializeSkillUI();
-            playerUI.OpenSkillUI();
-            playerUI.OpenConsumableUI();
-        }
-
-        gameManager.levelSpawnerManager?.DespawnAllNPC();
-
-        gameManager.envController?.SwitchToNight();
-    }
-
-    // Dijalankan setelah transisi selesai: wave dimulai saat player sudah bisa melihat layar.
-    private void BeginWaves()
-    {
-        if (waveController == null) return;
 
         waveController.StartNight(currentNightWave);
     }
 
-    private void HandleNightCompleted()
+    /// <summary>
+    /// Naik ke night berikutnya. Return false kalau sudah di night terakhir (indeks tidak berubah).
+    /// </summary>
+    public bool ProceedToNextNight()
     {
-        Debug.Log($"[NightController] Night {currentNightIndex} selesai, menunggu player menekan Continue.");
-    }
-
-    public void ProceedToNextNight()
-    {
-        int nextIndex = currentNightIndex + 1;
-
-        if (nextIndex >= nightWaves.Count)
+        if (!HasNextNight)
         {
             Debug.Log("[NightController] Semua night sudah selesai.");
-            return;
+            return false;
         }
 
-        currentNightIndex = nextIndex;
+        currentNightIndex++;
         SelectNight(currentNightIndex);
+        return true;
+    }
 
-        if (autoStartNextNight)
-            StartNight();
+    /// <summary>Kembali ke night pertama (dipakai saat kalah kalau restartFromFirstNightOnLose aktif).</summary>
+    public void ResetProgress()
+    {
+        currentNightIndex = 0;
+        SelectNight(currentNightIndex);
     }
 
     private bool SelectNight(int index)

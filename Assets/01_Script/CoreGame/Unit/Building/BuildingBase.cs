@@ -28,6 +28,11 @@ public class BuildingBase : MonoBehaviour, IDamageable, IHealthSource
     void OnValidate()
     {
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        if (currentHealth <= 0)
+        {
+            Destroy();
+        }
     }
 
     public virtual void TakeDamage(int amount)
@@ -45,6 +50,13 @@ public class BuildingBase : MonoBehaviour, IDamageable, IHealthSource
     {
         IsDestroy = true;
         OnDied?.Invoke();
+    }
+
+    public virtual void ResetState()
+    {
+        IsDestroy = false;
+        currentHealth = maxHealth;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
     #region Helper

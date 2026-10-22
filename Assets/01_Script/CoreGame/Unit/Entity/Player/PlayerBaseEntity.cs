@@ -112,7 +112,7 @@ public class PlayerBaseEntity : BaseEntity
         Debug.Log($"[{name}] Player berhasil Revive dengan {currentHealth} HP ({reviveHpPercentage * 100}% HP)!");
     }
 
-    public bool TryUseSkill(int slotIndex, Transform attackPoint , Vector2 aimDirection)
+    public bool TryUseSkill(int slotIndex, Transform attackPoint, Vector2 aimDirection)
     {
         if (!CanAct) return false;
 
@@ -144,6 +144,14 @@ public class PlayerBaseEntity : BaseEntity
             return skillRuntime[slotIndex].RemainingCooldown;
 
         return 0f;
+    }
+
+    public override void ResetState()
+    {
+        IsKnockDown = false;
+        currentReviveTimer = 0f;
+
+        base.ResetState();
     }
 
     /// <summary>
