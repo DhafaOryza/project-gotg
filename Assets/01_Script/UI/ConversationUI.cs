@@ -21,35 +21,21 @@ public class ConversationUI : MonoBehaviour
     private bool _isTyping;
     private Action _onDialogCompletedCallback;
 
-    private void OnEnable()
-    {
-        Initialize();
-    }
-
     private void Update()
     {
-        if (_dialogPanel != null && _dialogPanel.activeSelf && Input.GetMouseButtonDown(0))
+        if (gameObject.activeSelf && _dialogPanel != null && _dialogPanel.activeSelf && Input.GetMouseButtonDown(0))
         {
             OnContinueClicked();
         }
     }
 
-    /// <summary>
-    /// Initializes the conversation UI components on enable.
-    /// </summary>
-    private void Initialize()
-    {
-        if (_dialogPanel != null)
-        {
-            _dialogPanel.SetActive(false);
-        }
-    }
-
-    /// <summary>
-    /// Starts a general dialogue session with speaker info and lines.
-    /// </summary>
     public void StartDialog(string speakerName, Sprite speakerPortrait, string[] lines, Action onComplete = null)
     {
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+        }
+
         if (lines == null || lines.Length == 0)
         {
             onComplete?.Invoke();
@@ -81,9 +67,6 @@ public class ConversationUI : MonoBehaviour
         ShowCurrentLine();
     }
 
-    /// <summary>
-    /// Starts dialogue session specifically using NPCDataSO properties.
-    /// </summary>
     public void StartNPCDialog(NPCDataSO npcData, Action onComplete = null)
     {
         if (npcData == null) return;
@@ -112,9 +95,6 @@ public class ConversationUI : MonoBehaviour
         _isTyping = false;
     }
 
-    /// <summary>
-    /// Handles progression to the next line or skips the typewriter effect on click.
-    /// </summary>
     public void OnContinueClicked()
     {
         if (_isTyping)

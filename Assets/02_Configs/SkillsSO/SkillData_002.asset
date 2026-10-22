@@ -16,7 +16,10 @@ MonoBehaviour:
   displayName: Heavy Hoe
   description: 
   baseValue: 90
-  tier: 1
+  currentLevel: 1
+  maxLevel: 5
+  upgradeCost: 500
+  tier: 2
   typeRange: 0
   skillType: 0
   targetMode: 1

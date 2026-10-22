@@ -16,6 +16,9 @@ MonoBehaviour:
   displayName: 'Hay Bale Drop  '
   description: 
   baseValue: 150
+  currentLevel: 1
+  maxLevel: 5
+  upgradeCost: 500
   tier: 1
   typeRange: 1
   skillType: 0

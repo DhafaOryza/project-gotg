@@ -1,46 +1,63 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class SkillNodeSlot : MonoBehaviour
 {
-    [Header("UI Components")]
     [SerializeField] private Image _iconImage;
+    [SerializeField] private TextMeshProUGUI _nameText;
+    [SerializeField] private TextMeshProUGUI _descriptionText;
     [SerializeField] private TextMeshProUGUI _costText;
     [SerializeField] private Button _slotButton;
-    [SerializeField] private GameObject _lockOverlay;
+    [SerializeField] private Image _selectedBorder;
+    [SerializeField] private GameObject _lockOverlayObject;
+
+    private SkillDataSO _skillData;
+    private System.Action<SkillDataSO, SkillNodeSlot> _onSelectedCallback;
+
+    // Public properties using lambda syntax
+    public SkillDataSO SkillData => _skillData;
+    public GameObject LockOverlayObject => _lockOverlayObject;
 
     /// <summary>
-    /// Setups the visual components of the skill slot.
+    /// Sets up the skill slot UI components and lock visual state.
     /// </summary>
-    public void SetupSlot(Sprite icon, int cost, bool isLocked)
+    public void SetupSlot(SkillDataSO skillData, System.Action<SkillDataSO, SkillNodeSlot> onSelected)
     {
-        if (_iconImage != null && icon != null)
-        {
-            _iconImage.sprite = icon;
-        }
+        _skillData = skillData;
+        _onSelectedCallback = onSelected;
 
-        if (_costText != null)
-        {
-            _costText.text = cost.ToString();
-        }
+        if (_iconImage != null) 
+            _iconImage.sprite = skillData.icon;
 
-        SetLockedState(isLocked);
-    }
+        if (_nameText != null) 
+            _nameText.text = skillData.displayName;
 
-    /// <summary>
-    /// Updates the locked visual state and button interactability.
-    /// </summary>
-    public void SetLockedState(bool isLocked)
-    {
-        if (_lockOverlay != null)
-        {
-            _lockOverlay.SetActive(isLocked);
-        }
+        if (_nameText != null) 
+            _nameText.text = skillData.description;
+
+        if (_costText != null) 
+            _costText.text = skillData.baseValue.ToString();
+
+        // Update lock visual overlay
+        UpdateLockVisual(skillData.locked);
 
         if (_slotButton != null)
         {
-            _slotButton.interactable = !isLocked;
+            _slotButton.onClick.RemoveAllListeners();
+            _slotButton.onClick.AddListener(() => _onSelectedCallback?.Invoke(_skillData, this));
+        }
+    }
+
+    /// <summary>
+    /// Updates the visibility of the lock overlay based on lock status.
+    /// </summary>
+    public void UpdateLockVisual(bool isLocked)
+    {
+        if (_lockOverlayObject != null)
+        {
+            _lockOverlayObject.SetActive(isLocked);
         }
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+
 public enum SkillTargetType
 {
     Enemy,      
@@ -9,15 +10,20 @@ public enum SkillTargetType
 [CreateAssetMenu(fileName = "NewSkillData", menuName = "Data/Skill/Skill Data")]
 public class SkillDataSO : ScriptableObject
 {
-    [Header ("General Info")]
+    [Header("General Info")]
     public string skillId;
     public string displayName;
     [TextArea] public string description;
     public int baseValue;
 
-    [Header("skill Tier & Type")]
+    [Header("UI Progression & Level")]
+    public int currentLevel = 1;
+    public int maxLevel = 5;
+    public int upgradeCost = 500;
+
+    [Header("Skill Tier & Type")]
     [Range(1, 4)]
-    public int tier;
+    public int tier = 1;
     public TypeRange typeRange;
     public SkillType skillType;
     public TargetMode targetMode;
@@ -26,7 +32,7 @@ public class SkillDataSO : ScriptableObject
     [Header("UI & Visual")]
     public Sprite icon;
 
-    [Header("Progession Default")]
+    [Header("Progression Default")]
     public bool locked = true;
 
     [Header("Targeting & Cooldown")]
@@ -34,13 +40,27 @@ public class SkillDataSO : ScriptableObject
     public float cooldown = 3f;
     public Color skillColor = Color.white;
 
-    [Header ("Range hitbox")]
+    [Header("Range hitbox")]
     public float maxRange = 2f;
-    public Vector3 HitboxSize = new Vector3(2f,2f,1f);
+    public Vector3 HitboxSize = new Vector3(2f, 2f, 1f);
 
     [Header("Visual Prefabs")]
     public GameObject skillPrefab;
     public GameObject ghostPreviewPrefab;
+
+    public bool IsLocked => locked;
+
+    /// <summary>
+    /// Fungsi untuk menaikkan level skill saat tombol Upgrade ditekan di UI.
+    /// </summary>
+    public void LevelUp()
+    {
+        if (currentLevel < maxLevel)
+        {
+            currentLevel++;
+            // Anda bisa menambahkan penyesuaian harga atau stat di sini jika diperlukan
+        }
+    }
 
     public bool Activate(PlayerBaseEntity user, Transform attackPoint, Vector2 aimDirection)
     {
@@ -63,7 +83,6 @@ public class SkillDataSO : ScriptableObject
                 projectile.Setup(user, baseValue, maxRange, isAOE);
             }
             return true;
-
         }
 
         Vector3 boxCenter = spawnPos + (Vector3)(aimDirection.normalized * (maxRange * 0.5f));
@@ -88,7 +107,6 @@ public class SkillDataSO : ScriptableObject
                 }
             }
 
-            
             closestTarget?.TakeDamage(baseValue);
         }
         else
@@ -102,5 +120,19 @@ public class SkillDataSO : ScriptableObject
         }
     
         return true;
+    }
+    
+    /// <summary>
+    /// Checks if this skill can be unlocked based on the previous tier's progress.
+    /// </summary>
+    public bool CanUnlock(GameSessionData sessionData)
+    {
+        if (tier == 1) return true; // Tier 1 is always unlocked by default
+
+        int targetTier = tier - 1;
+        // Contoh syarat: minimal ada 1 skill yang terbuka di tier sebelumnya
+        int unlockedPreviousTierCount = sessionData.skills.FindAll(s => s != null && s.tier == targetTier && !s.locked).Count;
+
+        return unlockedPreviousTierCount >= 1; // Ubah angka sesuai kebutuhan (misal: 10 dari 100)
     }
 }

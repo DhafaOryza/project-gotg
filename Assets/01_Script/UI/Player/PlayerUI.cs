@@ -32,6 +32,7 @@ public class PlayerUI : MonoBehaviour
     private PlayerController _playerController;
     private PlayerBaseEntity player;
     private GranaryBase _granary;
+    private NPCDataSO _npcData;
 
     public ConversationUI ConversationUI => _conversationUI;
     public GranaryUI GranaryUI => _granaryUI;
@@ -39,6 +40,7 @@ public class PlayerUI : MonoBehaviour
     public HealthUI HealthUI => _healthUI;
     public SkillTreeUI SkillTreeUI => _skillTreeUI;
     public DayTransitionUI DayTransition => dayTransition;
+    public NPCDataSO NpcData => _npcData;
 
     void Awake()
     {
@@ -151,7 +153,11 @@ public class PlayerUI : MonoBehaviour
                 break;
             case NpcRole.Guard:
             case NpcRole.GateGuard:
-                if (_skillTreeUI != null) _skillTreeUI.gameObject.SetActive(true);
+                if (_skillTreeUI != null)
+                {
+                    _skillTreeUI.Initialize();
+                    _skillTreeUI.gameObject.SetActive(true);
+                }
                 break;
             default:
                 // Villager, Farmer, dll. tidak membuka panel khusus
