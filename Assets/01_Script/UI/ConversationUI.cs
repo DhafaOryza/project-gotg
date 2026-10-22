@@ -21,35 +21,18 @@ public class ConversationUI : MonoBehaviour
     private bool _isTyping;
     private Action _onDialogCompletedCallback;
 
-    private void OnEnable()
-    {
-        Initialize();
-    }
-
     private void Update()
     {
-        if (_dialogPanel != null && _dialogPanel.activeSelf && Input.GetMouseButtonDown(0))
+        if (gameObject.activeSelf && _dialogPanel != null && _dialogPanel.activeSelf && Input.GetMouseButtonDown(0))
         {
             OnContinueClicked();
         }
     }
 
-    /// <summary>
-    /// Initializes the conversation UI components on enable.
-    /// </summary>
-    private void Initialize()
-    {
-        if (_dialogPanel != null)
-        {
-            _dialogPanel.SetActive(false);
-        }
-    }
-
-    /// <summary>
-    /// Starts a general dialogue session with speaker info and lines.
-    /// </summary>
     public void StartDialog(string speakerName, Sprite speakerPortrait, string[] lines, Action onComplete = null)
     {
+        if (!gameObject.activeSelf) gameObject.SetActive(true);
+
         if (lines == null || lines.Length == 0)
         {
             onComplete?.Invoke();
@@ -64,26 +47,15 @@ public class ConversationUI : MonoBehaviour
 
         if (_portraitImage != null)
         {
-            if (speakerPortrait != null)
-            {
-                _portraitImage.sprite = speakerPortrait;
-                _portraitImage.gameObject.SetActive(true);
-            }
-            else
-            {
-                _portraitImage.gameObject.SetActive(false);
-            }
+            _portraitImage.gameObject.SetActive(speakerPortrait != null);
+            if (speakerPortrait != null) _portraitImage.sprite = speakerPortrait;
         }
 
-        if (_dialogPanel != null)
-            _dialogPanel.SetActive(true);
+        if (_dialogPanel != null) _dialogPanel.SetActive(true);
 
         ShowCurrentLine();
     }
 
-    /// <summary>
-    /// Starts dialogue session specifically using NPCDataSO properties.
-    /// </summary>
     public void StartNPCDialog(NPCDataSO npcData, Action onComplete = null)
     {
         if (npcData == null) return;
@@ -92,9 +64,7 @@ public class ConversationUI : MonoBehaviour
 
     private void ShowCurrentLine()
     {
-        if (_typingCoroutine != null)
-            StopCoroutine(_typingCoroutine);
-
+        if (_typingCoroutine != null) StopCoroutine(_typingCoroutine);
         _typingCoroutine = StartCoroutine(TypeLineRoutine(_currentLines[_currentLineIndex]));
     }
 
@@ -112,16 +82,11 @@ public class ConversationUI : MonoBehaviour
         _isTyping = false;
     }
 
-    /// <summary>
-    /// Handles progression to the next line or skips the typewriter effect on click.
-    /// </summary>
     public void OnContinueClicked()
     {
         if (_isTyping)
         {
-            if (_typingCoroutine != null)
-                StopCoroutine(_typingCoroutine);
-
+            if (_typingCoroutine != null) StopCoroutine(_typingCoroutine);
             _dialogueText.text = _currentLines[_currentLineIndex];
             _isTyping = false;
             return;
@@ -141,9 +106,9 @@ public class ConversationUI : MonoBehaviour
 
     private void EndDialog()
     {
-        if (_dialogPanel != null)
-            _dialogPanel.SetActive(false);
+        if (_dialogPanel != null) _dialogPanel.SetActive(false);
 
+        // Panggil callback untuk melanjutkan proses setelah dialog selesai
         Action callback = _onDialogCompletedCallback;
         _onDialogCompletedCallback = null;
         callback?.Invoke();

@@ -36,6 +36,8 @@ public class PlayerUI : MonoBehaviour
     private PlayerController _playerController;
     private PlayerBaseEntity player;
     private GranaryBase _granary;
+    private NPCDataSO _npcData;
+    private NPCBaseEntity _activeNpc;
 
     public ConversationUI ConversationUI => _conversationUI;
     public GranaryUI GranaryUI => _granaryUI;
@@ -43,6 +45,7 @@ public class PlayerUI : MonoBehaviour
     public HealthUI HealthUI => _healthUI;
     public SkillTreeUI SkillTreeUI => _skillTreeUI;
     public DayTransitionUI DayTransition => dayTransition;
+    public NPCDataSO NpcData => _npcData;
 
     void Awake()
     {
@@ -126,24 +129,17 @@ public class PlayerUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Closes all role-specific UI panels.
+    /// Opens the corresponding panel automatically based on the NPC data profile and tracks the active NPC.
     /// </summary>
-    public void CloseAllRolePanels()
-    {
-        CloseHealthUI();
-        CloseGranaryUI();
-        CloseShopUI();
-        CloseSkillTreeUI();
-    }
-
-    /// <summary>
-    /// Opens the corresponding panel automatically based on the NPC's Role enum.
-    /// </summary>
-    public void HandleNpcRolePanel(NpcRole role)
+    public void HandleNpcRolePanel(NPCDataSO npcData, NPCBaseEntity npc = null)
     {
         CloseAllRolePanels();
 
-        switch (role)
+        if (npcData == null) return;
+
+        _activeNpc = npc; // Simpan referensi NPC
+
+        switch (npcData.NpcRole)
         {
             case NpcRole.Priest:
                 if (_healthUI != null) _healthUI.gameObject.SetActive(true);
@@ -156,11 +152,34 @@ public class PlayerUI : MonoBehaviour
                 break;
             case NpcRole.Guard:
             case NpcRole.GateGuard:
-                if (_skillTreeUI != null) _skillTreeUI.gameObject.SetActive(true);
+                if (_skillTreeUI != null)
+                {
+                    _skillTreeUI.Initialize(npcData);
+                    _skillTreeUI.gameObject.SetActive(true);
+                }
                 break;
             default:
-                // Villager, Farmer, dll. tidak membuka panel khusus
+                _activeNpc?.ResumeWandering();
+                _activeNpc = null;
                 break;
+        }
+    }
+
+    /// <summary>
+    /// Closes all role-specific UI panels and resumes active NPC wandering.
+    /// </summary>
+    public void CloseAllRolePanels()
+    {
+        CloseHealthUI();
+        CloseGranaryUI();
+        CloseShopUI();
+        CloseSkillTreeUI();
+
+        // Ketika semua panel ditutup, NPC diizinkan bergerak kembali
+        if (_activeNpc != null)
+        {
+            _activeNpc.ResumeWandering();
+            _activeNpc = null;
         }
     }
 
@@ -198,6 +217,7 @@ public class PlayerUI : MonoBehaviour
             currentSkill.Setup(i, keys[i].ToString(), skills[i]);
         }
     }
+
 
     public void OpenPreparationUI() => _preparationUI?.gameObject.SetActive(true);
 
