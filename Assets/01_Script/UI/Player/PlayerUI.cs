@@ -134,33 +134,38 @@ public class PlayerUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Opens the corresponding panel automatically based on the NPC's Role enum.
+    /// Opens the corresponding panel automatically based on the full NPC data profile.
     /// </summary>
-    public void HandleNpcRolePanel(NpcRole role)
+    public void HandleNpcRolePanel(NPCDataSO npcData)
     {
         CloseAllRolePanels();
 
-        switch (role)
+        if (npcData == null) return;
+
+        switch (npcData.NpcRole)
         {
             case NpcRole.Priest:
                 if (_healthUI != null) _healthUI.gameObject.SetActive(true);
                 break;
+
             case NpcRole.GranaryKeeper:
                 if (_granaryUI != null) _granaryUI.gameObject.SetActive(true);
                 break;
+
             case NpcRole.Merchant:
                 if (_shopUI != null) _shopUI.gameObject.SetActive(true);
                 break;
+
             case NpcRole.Guard:
             case NpcRole.GateGuard:
                 if (_skillTreeUI != null)
                 {
-                    _skillTreeUI.Initialize();
+                    _skillTreeUI.SetNPCData(npcData);
                     _skillTreeUI.gameObject.SetActive(true);
                 }
                 break;
+
             default:
-                // Villager, Farmer, dll. tidak membuka panel khusus
                 break;
         }
     }

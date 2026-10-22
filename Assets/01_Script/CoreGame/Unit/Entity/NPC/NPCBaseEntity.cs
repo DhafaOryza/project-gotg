@@ -35,14 +35,14 @@ public class NPCBaseEntity : BaseEntity, IInteractable
 
     protected virtual void OnConversationEnded()
     {
-        if (_npcData.AssignedQuest != null && GameManager.Instance != null && GameManager.Instance.questManager != null)
+        if (_npcData.AssignedQuest != null && GameManager.Instance?.questManager != null)
         {
             GameManager.Instance.questManager.RequestSpecificQuest(_npcData.AssignedQuest);
         }
 
         if (PlayerUI.Instance != null && _npcData != null)
         {
-            PlayerUI.Instance.HandleNpcRolePanel(_npcData.NpcRole);
+            PlayerUI.Instance.HandleNpcRolePanel(_npcData);
         }
     }
 

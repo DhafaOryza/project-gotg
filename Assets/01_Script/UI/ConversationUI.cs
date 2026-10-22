@@ -31,10 +31,7 @@ public class ConversationUI : MonoBehaviour
 
     public void StartDialog(string speakerName, Sprite speakerPortrait, string[] lines, Action onComplete = null)
     {
-        if (!gameObject.activeSelf)
-        {
-            gameObject.SetActive(true);
-        }
+        if (!gameObject.activeSelf) gameObject.SetActive(true);
 
         if (lines == null || lines.Length == 0)
         {
@@ -50,19 +47,11 @@ public class ConversationUI : MonoBehaviour
 
         if (_portraitImage != null)
         {
-            if (speakerPortrait != null)
-            {
-                _portraitImage.sprite = speakerPortrait;
-                _portraitImage.gameObject.SetActive(true);
-            }
-            else
-            {
-                _portraitImage.gameObject.SetActive(false);
-            }
+            _portraitImage.gameObject.SetActive(speakerPortrait != null);
+            if (speakerPortrait != null) _portraitImage.sprite = speakerPortrait;
         }
 
-        if (_dialogPanel != null)
-            _dialogPanel.SetActive(true);
+        if (_dialogPanel != null) _dialogPanel.SetActive(true);
 
         ShowCurrentLine();
     }
@@ -75,9 +64,7 @@ public class ConversationUI : MonoBehaviour
 
     private void ShowCurrentLine()
     {
-        if (_typingCoroutine != null)
-            StopCoroutine(_typingCoroutine);
-
+        if (_typingCoroutine != null) StopCoroutine(_typingCoroutine);
         _typingCoroutine = StartCoroutine(TypeLineRoutine(_currentLines[_currentLineIndex]));
     }
 
@@ -99,9 +86,7 @@ public class ConversationUI : MonoBehaviour
     {
         if (_isTyping)
         {
-            if (_typingCoroutine != null)
-                StopCoroutine(_typingCoroutine);
-
+            if (_typingCoroutine != null) StopCoroutine(_typingCoroutine);
             _dialogueText.text = _currentLines[_currentLineIndex];
             _isTyping = false;
             return;
@@ -121,9 +106,9 @@ public class ConversationUI : MonoBehaviour
 
     private void EndDialog()
     {
-        if (_dialogPanel != null)
-            _dialogPanel.SetActive(false);
+        if (_dialogPanel != null) _dialogPanel.SetActive(false);
 
+        // Panggil callback untuk melanjutkan proses setelah dialog selesai
         Action callback = _onDialogCompletedCallback;
         _onDialogCompletedCallback = null;
         callback?.Invoke();

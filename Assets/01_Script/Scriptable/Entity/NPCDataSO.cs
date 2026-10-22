@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewNPCData", menuName = "Data/Entity/NPC Data")]
 public class NPCDataSO : EntityDataSO
 {
+    [Header ("NPC Information")]
     [SerializeField] private string _npcId;
     [SerializeField] private string _npcName;
     [SerializeField] private NpcRole _npcRole = NpcRole.Villager;

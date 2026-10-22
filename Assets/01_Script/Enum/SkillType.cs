@@ -6,5 +6,7 @@ public enum SkillType
     SUPPORT,
     DEFENSE,
     SUMMON,
-    BUFF
+    BUFF,
+    TRAP,
+    RECOVERY
 }

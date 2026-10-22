@@ -40,9 +40,6 @@ public class SkillTreeUI : MonoBehaviour
     public SkillDataSO SelectedSkillData => _selectedSkillData;
     public Button ExitButton => _exitButton;
 
-    /// <summary>
-    /// Sets the NPC data profile before the UI initializes.
-    /// </summary>
     public void SetNPCData(NPCDataSO npcData)
     {
         _npcData = npcData;

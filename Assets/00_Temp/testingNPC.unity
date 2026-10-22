@@ -524,6 +524,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeUI
   _skillTreeMainPanel: {fileID: 100790407}
+  _portraitImage: {fileID: 761500563}
+  _nameText: {fileID: 1051200410}
   _skillSlotPrefab: {fileID: 8141475785489813140, guid: 9c09996c1eedbcc91809f0b4da983d77, type: 3}
   _tierHeaderPrefab: {fileID: 645701305543114283, guid: 7c14179d12cba105c97ddcde68ede794, type: 3}
   _skillListContentContainer: {fileID: 925147036}
@@ -10739,6 +10741,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuardUI
   _skillTreeMainPanel: {fileID: 1585950939}
+  _portraitImage: {fileID: 0}
+  _nameText: {fileID: 0}
   _skillSlotPrefab: {fileID: 556888813759002099, guid: 9e9278d05bc4e1c40b6c74e46bd39fa2, type: 3}
   _tierHeaderPrefab: {fileID: 0}
   _skillListContentContainer: {fileID: 0}

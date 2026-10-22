@@ -19,7 +19,7 @@ MonoBehaviour:
   moveSpeed: 5
   _npcId: NPC_006
   _npcName: Prajurit Patroli
-  _npcRole: 4
+  _npcRole: 9
   _isInteractable: 1
   _dialogueLines:
   - "Lorem Ipsum is standard dummy text used in the graphic design, publishing, and
@@ -27,5 +27,5 @@ MonoBehaviour:
     from the design with meaningful content.  It has a more-or-less normal distribution
     of letters, making it appear like readable English and allowing viewers to focus
     on the visual structure rather than the text itself. \n\n"
-  _npcPortrait: {fileID: 0}
+  _npcPortrait: {fileID: -6181034784827623260, guid: 456535027886728e19dda52d47a7945c, type: 3}
   _assignedQuest: {fileID: 0}

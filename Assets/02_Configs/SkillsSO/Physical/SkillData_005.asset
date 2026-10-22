@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d1dcb79b353acc4581251a69d9381c4, type: 3}
+  m_Name: SkillData_005
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
+  skillId: SKL_005
+  displayName: 'Woodcutter Swing  '
+  description: 
+  baseValue: 180
+  currentLevel: 1
+  maxLevel: 5
+  upgradeCost: 500
+  tier: 1
+  typeRange: 0
+  skillType: 0
+  targetMode: 1
+  isProjectile: 0
+  icon: {fileID: 0}
+  locked: 0
+  targetType: 0
+  cooldown: 4
+  skillColor: {r: 1, g: 1, b: 1, a: 1}
+  maxRange: 3
+  HitboxSize: {x: 2, y: 2, z: 1}
+  skillPrefab: {fileID: 8946592561061051195, guid: 2e843b269412ee44aabf1376d58465b8, type: 3}
+  ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
