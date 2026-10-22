@@ -33,6 +33,7 @@ public class PlayerUI : MonoBehaviour
     private PlayerBaseEntity player;
     private GranaryBase _granary;
     private NPCDataSO _npcData;
+    private NPCBaseEntity _activeNpc;
 
     public ConversationUI ConversationUI => _conversationUI;
     public GranaryUI GranaryUI => _granaryUI;
@@ -123,7 +124,7 @@ public class PlayerUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Closes all role-specific UI panels.
+    /// Closes all role-specific UI panels and resumes active NPC wandering.
     /// </summary>
     public void CloseAllRolePanels()
     {
@@ -131,45 +132,52 @@ public class PlayerUI : MonoBehaviour
         CloseGranaryUI();
         CloseShopUI();
         CloseSkillTreeUI();
+
+        // Ketika semua panel ditutup, NPC diizinkan bergerak kembali
+        if (_activeNpc != null)
+        {
+            _activeNpc.ResumeWandering();
+            _activeNpc = null;
+        }
     }
 
     /// <summary>
-    /// Opens the corresponding panel automatically based on the full NPC data profile.
+    /// Opens the corresponding panel automatically based on the NPC data profile and tracks the active NPC.
     /// </summary>
-    public void HandleNpcRolePanel(NPCDataSO npcData)
+    public void HandleNpcRolePanel(NPCDataSO npcData, NPCBaseEntity npc = null)
     {
         CloseAllRolePanels();
 
         if (npcData == null) return;
+
+        _activeNpc = npc; // Simpan referensi NPC
 
         switch (npcData.NpcRole)
         {
             case NpcRole.Priest:
                 if (_healthUI != null) _healthUI.gameObject.SetActive(true);
                 break;
-
             case NpcRole.GranaryKeeper:
                 if (_granaryUI != null) _granaryUI.gameObject.SetActive(true);
                 break;
-
             case NpcRole.Merchant:
                 if (_shopUI != null) _shopUI.gameObject.SetActive(true);
                 break;
-
             case NpcRole.Guard:
             case NpcRole.GateGuard:
                 if (_skillTreeUI != null)
                 {
-                    // _skillTreeUI.SetNPCData(npcData);
                     _skillTreeUI.Initialize(npcData);
                     _skillTreeUI.gameObject.SetActive(true);
                 }
                 break;
-
             default:
+                _activeNpc?.ResumeWandering();
+                _activeNpc = null;
                 break;
         }
     }
+
 
     public void InitializeHealthBar()
     {
@@ -205,6 +213,7 @@ public class PlayerUI : MonoBehaviour
             currentSkill.Setup(i, keys[i].ToString(), skills[i]);
         }
     }
+
 
     public void OpenPreparationUI() => _preparationUI?.gameObject.SetActive(true);
 
