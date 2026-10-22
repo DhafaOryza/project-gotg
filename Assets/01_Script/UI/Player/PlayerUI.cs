@@ -16,6 +16,10 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private Transform _skillContainer;
     [SerializeField] private SkillUI _skillUIPrefab;
 
+    [Header("Consumable & Item Radial Menu")]
+    [SerializeField] private GameObject _consumableRadialContainer;
+    [SerializeField] private ConsumableRadialUI _consumableRadialUI;
+
     [Header("Dialog System")]
     [SerializeField] private ConversationUI _conversationUI;
 
@@ -102,6 +106,7 @@ public class PlayerUI : MonoBehaviour
 
         if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
         if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
+        if (_consumableRadialContainer != null) _consumableRadialContainer.gameObject.SetActive(false);
         
         CloseAllRolePanels();
 
@@ -218,6 +223,15 @@ public class PlayerUI : MonoBehaviour
 
     public void OpenSkillUI() => _skillContainer?.gameObject.SetActive(true);
     public void CloseSkillUI() => _skillContainer?.gameObject.SetActive(false);
+
+    public void OpenConsumableUI()
+    {
+        if (_consumableRadialContainer != null)
+            _consumableRadialContainer.gameObject.SetActive(true);
+        if (_consumableRadialUI != null)
+            _consumableRadialUI.SyncWithManager();
+    }
+    public void CloseConsumableUI() => _consumableRadialContainer?.gameObject.SetActive(false);
 
     internal void HandleNpcRolePanel(string npcId)
     {

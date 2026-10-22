@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public CinemachineCamera cinemachine;
     public PlayerUI playerUI;
     public EnvController envController;
+    public ConsumableAndItemManager consumableAndItemManager;
 
     private bool hasInitialized = false;
 
@@ -55,16 +56,17 @@ public class GameManager : MonoBehaviour
         hasInitialized = true;
 
         // Validation Object Manager
-        if (poolManager == null) poolManager = Object.FindFirstObjectByType<PoolManager>();
-        if (levelSpawnerManager == null) levelSpawnerManager = Object.FindFirstObjectByType<LevelSpawnerManager>();
-        if (nightController == null) nightController = Object.FindFirstObjectByType<NightController>();
+        if (poolManager == null) poolManager = Object.FindAnyObjectByType<PoolManager>();
+        if (levelSpawnerManager == null) levelSpawnerManager = Object.FindAnyObjectByType<LevelSpawnerManager>();
+        if (nightController == null) nightController = Object.FindAnyObjectByType<NightController>();
         if (waveController == null) waveController = Object.FindFirstObjectByType<WaveController>();
-        if (questManager == null) questManager = Object.FindFirstObjectByType<QuestManager>();
+        if (questManager == null) questManager = Object.FindAnyObjectByType<QuestManager>();
         if (playerController == null) playerController = Object.FindFirstObjectByType<PlayerController>();
         if (skillsManager == null) skillsManager = Object.FindFirstObjectByType<SkillsManager>();
-        if (cinemachine == null) cinemachine = Object.FindFirstObjectByType<CinemachineCamera>();
-        if (playerUI == null) playerUI = Object.FindFirstObjectByType<PlayerUI>();
-        if (envController == null) envController = Object.FindFirstObjectByType<EnvController>();
+        if (cinemachine == null) cinemachine = Object.FindAnyObjectByType<CinemachineCamera>();
+        if (playerUI == null) playerUI = Object.FindAnyObjectByType<PlayerUI>();
+        if (envController == null) envController = Object.FindAnyObjectByType<EnvController>();
+        if (consumableAndItemManager == null) consumableAndItemManager = Object.FindAnyObjectByType<ConsumableAndItemManager>();
 
         // Initliaze The Manager;
         if (poolManager != null) poolManager.Initialize();

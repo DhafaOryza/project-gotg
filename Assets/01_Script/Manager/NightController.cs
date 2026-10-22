@@ -109,6 +109,7 @@ public class NightController : MonoBehaviour
         {
             playerUI.InitializeSkillUI();
             playerUI.OpenSkillUI();
+            playerUI.OpenConsumableUI();
         }
 
         gameManager.levelSpawnerManager?.DespawnAllNPC();

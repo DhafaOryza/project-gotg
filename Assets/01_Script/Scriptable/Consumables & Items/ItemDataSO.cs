@@ -8,7 +8,7 @@ public enum ItemCategory
     GRANARY
 }
 
-[CreateAssetMenu(fileName = "NewItemData", menuName = "Data/Item Data/Item Data")]
+[CreateAssetMenu(fileName = "NewItemData", menuName = "Data/Item/Item Data")]
 public abstract class ItemDataSO : ScriptableObject
 {
     [Header("General Identity")]

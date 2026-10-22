@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: ConsumableData_001
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableDataSO
   consumableId: 001
-  displayName: Item_001
+  displayName: Heal Potion
   icon: {fileID: 21300000, guid: b761766bb8ba61548941f11f840bb8df, type: 3}
   consumableType: 0
   description: 
   maxStack: 5
-  baseValue: 5
+  baseValue: 100
