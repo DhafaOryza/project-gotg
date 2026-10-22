@@ -124,24 +124,6 @@ public class PlayerUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Closes all role-specific UI panels and resumes active NPC wandering.
-    /// </summary>
-    public void CloseAllRolePanels()
-    {
-        CloseHealthUI();
-        CloseGranaryUI();
-        CloseShopUI();
-        CloseSkillTreeUI();
-
-        // Ketika semua panel ditutup, NPC diizinkan bergerak kembali
-        if (_activeNpc != null)
-        {
-            _activeNpc.ResumeWandering();
-            _activeNpc = null;
-        }
-    }
-
-    /// <summary>
     /// Opens the corresponding panel automatically based on the NPC data profile and tracks the active NPC.
     /// </summary>
     public void HandleNpcRolePanel(NPCDataSO npcData, NPCBaseEntity npc = null)
@@ -178,6 +160,23 @@ public class PlayerUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Closes all role-specific UI panels and resumes active NPC wandering.
+    /// </summary>
+    public void CloseAllRolePanels()
+    {
+        CloseHealthUI();
+        CloseGranaryUI();
+        CloseShopUI();
+        CloseSkillTreeUI();
+
+        // Ketika semua panel ditutup, NPC diizinkan bergerak kembali
+        if (_activeNpc != null)
+        {
+            _activeNpc.ResumeWandering();
+            _activeNpc = null;
+        }
+    }
 
     public void InitializeHealthBar()
     {
