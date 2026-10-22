@@ -160,7 +160,8 @@ public class PlayerUI : MonoBehaviour
             case NpcRole.GateGuard:
                 if (_skillTreeUI != null)
                 {
-                    _skillTreeUI.SetNPCData(npcData);
+                    // _skillTreeUI.SetNPCData(npcData);
+                    _skillTreeUI.Initialize(npcData);
                     _skillTreeUI.gameObject.SetActive(true);
                 }
                 break;

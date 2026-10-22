@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d1dcb79b353acc4581251a69d9381c4, type: 3}
   m_Name: SkillData_060
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
-  skillId: SKL_059
-  displayName: Poison Crop
+  skillId: SKL_060
+  displayName: 'Meteor Potato '
   description: 
   baseValue: 120
   currentLevel: 1

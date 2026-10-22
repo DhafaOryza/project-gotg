@@ -40,21 +40,13 @@ public class SkillTreeUI : MonoBehaviour
     public SkillDataSO SelectedSkillData => _selectedSkillData;
     public Button ExitButton => _exitButton;
 
-    public void SetNPCData(NPCDataSO npcData)
-    {
-        _npcData = npcData;
-    }
-
-    private void OnEnable()
-    {
-        Initialize();
-    }
-
     /// <summary>
     /// Initializes the UI components without parameters and retrieves data from GameSessionData.
     /// </summary>
-    public void Initialize()
+    public void Initialize(NPCDataSO npcData)
     {
+        _npcData = npcData;
+
         if (_skillTreeMainPanel != null)
         {
             _skillTreeMainPanel.SetActive(true);
