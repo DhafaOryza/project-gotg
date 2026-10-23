@@ -34,6 +34,7 @@ public class PlayerUI : MonoBehaviour
 
     [Header("Transition")]
     [SerializeField] private DayTransitionUI dayTransition;
+    
 
     private SkillsManager _skillsManager;
     private PlayerController _playerController;

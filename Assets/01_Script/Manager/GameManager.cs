@@ -194,6 +194,7 @@ public class GameManager : MonoBehaviour
         {
             playerUI.InitializeSkillUI();
             playerUI.OpenSkillUI();
+            playerUI.OpenConsumableUI();
         }
 
         levelSpawnerManager.DespawnAllNPC();
@@ -220,6 +221,7 @@ public class GameManager : MonoBehaviour
     private void SwitchWorldToDay()
     {
         playerUI?.CloseSkillUI();
+        playerUI?.CloseConsumableUI();
 
         levelSpawnerManager.DespawnAllEnemy();
         levelSpawnerManager.SpawnNPCs();
@@ -250,6 +252,7 @@ public class GameManager : MonoBehaviour
     private void RestartWorld()
     {
         playerUI?.CloseSkillUI();
+        playerUI?.CloseConsumableUI();
 
         levelSpawnerManager.DespawnAllEnemy();
         levelSpawnerManager.ResetCharacters();    // player dan lumbung kembali dengan HP penuh
