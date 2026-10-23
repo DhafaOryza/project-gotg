@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4857949095186328740}
   - component: {fileID: 1636125935712273853}
   - component: {fileID: 2843187380360543424}
+  - component: {fileID: -731901283733307319}
   m_Layer: 9
   m_Name: NPC
   m_TagString: Untagged
@@ -101,7 +102,19 @@ MonoBehaviour:
   bonusMaxHP: 0
   currentHealth: 0
   _interactionRadius: 2
-  _canWander: 1
+--- !u!114 &-731901283733307319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2977259333405695452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d4d593c9bbc30dfcbdcf288d7711a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
+  _movementType: 0
   _moveSpeed: 2
   _wanderRadius: 5
   _minWaitTime: 2

@@ -41,6 +41,7 @@ public class PlayerUI : MonoBehaviour
     private PlayerBaseEntity player;
     private GranaryBase _granary;
     private NPCDataSO _npcData;
+    private NPCMovement _npcMovement;
     private NPCBaseEntity _activeNpc;
 
     public ConversationUI ConversationUI => _conversationUI;
@@ -136,26 +137,39 @@ public class PlayerUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Opens the corresponding panel automatically based on the NPC data profile and tracks the active NPC.
+    /// Opens the corresponding panel automatically based on the NPC data profile and tracks active movement.
     /// </summary>
-    public void HandleNpcRolePanel(NPCDataSO npcData, NPCBaseEntity npc = null)
+    public void HandleNpcRolePanel(NPCDataSO npcData, NPCMovement npcMovement, NPCBaseEntity npc = null)
     {
         CloseAllRolePanels();
 
         if (npcData == null) return;
 
-        _activeNpc = npc; // Simpan referensi NPC
+        _activeNpc = npc;
+        _npcMovement = npcMovement;
 
         switch (npcData.NpcRole)
         {
             case NpcRole.Priest:
-                if (_healthUI != null) _healthUI.gameObject.SetActive(true);
+                if (_healthUI != null)
+                {
+                    _healthUI.Initialize();
+                    _healthUI.gameObject.SetActive(true);   
+                }
                 break;
             case NpcRole.GranaryKeeper:
-                if (_granaryUI != null) _granaryUI.gameObject.SetActive(true);
+                if (_granaryUI != null)
+                {
+                    _granaryUI.Initialize();
+                    _granaryUI.gameObject.SetActive(true);
+                }
                 break;
             case NpcRole.Merchant:
-                if (_shopUI != null) _shopUI.gameObject.SetActive(true);
+                if (_shopUI != null) 
+                {
+                    _shopUI.Initialize();
+                    _shopUI.gameObject.SetActive(true);
+                }
                 break;
             case NpcRole.Guard:
             case NpcRole.GateGuard:
@@ -166,14 +180,18 @@ public class PlayerUI : MonoBehaviour
                 }
                 break;
             default:
-                _activeNpc?.ResumeWandering();
+                if (_npcMovement != null)
+                {
+                    _npcMovement.ResumeMovement();
+                }
                 _activeNpc = null;
+                _npcMovement = null;
                 break;
         }
     }
 
     /// <summary>
-    /// Closes all role-specific UI panels and resumes active NPC wandering.
+    /// Closes all role-specific UI panels and resumes active NPC movement.
     /// </summary>
     public void CloseAllRolePanels()
     {
@@ -182,10 +200,10 @@ public class PlayerUI : MonoBehaviour
         CloseShopUI();
         CloseSkillTreeUI();
 
-        // Ketika semua panel ditutup, NPC diizinkan bergerak kembali
-        if (_activeNpc != null)
+        if (_npcMovement != null)
         {
-            _activeNpc.ResumeWandering();
+            _npcMovement.ResumeMovement();
+            _npcMovement = null;
             _activeNpc = null;
         }
     }
