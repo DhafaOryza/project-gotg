@@ -8,6 +8,7 @@ public class GranaryBase : BuildingBase, IInteractable
     [Header("Reference")]
     [SerializeField] private GameObject Sign;
     [SerializeField] private TextMeshPro txtSign;
+    [SerializeField] private TextMeshPro txtBuildingName;
 
     [Header("Interaction")]
     [Tooltip("Jarak (sumbu X dan Y) dari bangunan di mana sign muncul.")]
@@ -28,9 +29,16 @@ public class GranaryBase : BuildingBase, IInteractable
     void Start()
     {
         if (Sign != null) Sign.SetActive(false);
+        if (txtBuildingName != null) txtBuildingName.enabled = false;
         signVisible = false;
 
         UpdateSignText();
+        UpdateBuildingName();
+
+        if (player == null)
+        {
+            player = GameManager.Instance?.levelSpawnerManager.GetCurrentPlayer();
+        }
 
         // Daftarkan diri ke PlayerUI supaya event OnInteract tersambung ke PreparationUI.
         // Dilakukan di Start (bukan Awake) agar PlayerUI.Instance sudah pasti terisi.
@@ -40,15 +48,11 @@ public class GranaryBase : BuildingBase, IInteractable
 
     void Update()
     {
-        // Player bisa baru di-spawn atau diganti, jadi dicari ulang kalau belum ada.
         if (player == null)
         {
-            player = GameManager.Instance?.levelSpawnerManager.GetCurrentPlayer();
-            if (player == null)
-            {
-                SetSign(false);
-                return;
-            }
+            SetSign(false);
+            SetName(false);
+            return;
         }
 
         bool inRange = IsPlayerInRange();
@@ -59,6 +63,7 @@ public class GranaryBase : BuildingBase, IInteractable
 
         bool shouldShow = isInteractable && player.CanAct && inRange && !signSuppressed;
         SetSign(shouldShow);
+        SetName(shouldShow);
     }
 
     private bool IsPlayerInRange()
@@ -91,13 +96,38 @@ public class GranaryBase : BuildingBase, IInteractable
         txtSign.text = playerController.interact.ToString();
     }
 
+    private void SetName(bool visible)
+    {
+        if (txtBuildingName == null) return;
+
+        if (visible) UpdateBuildingName();
+
+        txtBuildingName.enabled = visible;
+    }
+
+    private void UpdateBuildingName()
+    {
+        if (txtBuildingName == null) return;
+
+        var building = buildingData;
+        if (building == null) return;
+
+        var buildingName = building.nameBuilding;
+        if (buildingName == null) return;
+
+        txtBuildingName.text = $"{buildingName}";
+    }
+
     // Implementasi IInteractable.SetInteractable: dipakai SetAllInteractable.
     public void SetInteractable(bool value)
     {
         isInteractable = value;
 
         if (!value)
+        {
             SetSign(false);
+            SetName(false);
+        }
     }
 
     /// <summary>
@@ -116,6 +146,7 @@ public class GranaryBase : BuildingBase, IInteractable
         // Interaksi berhasil: sembunyikan sign dan tahan sampai PreparationUI ditutup / player menjauh.
         signSuppressed = true;
         SetSign(false);
+        SetName(false);
 
         // "?." wajib: kalau belum ada yang mendengarkan event, Invoke langsung akan NullReferenceException.
         OnInteract?.Invoke();

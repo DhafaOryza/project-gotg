@@ -12,5 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75d5e143a3ab4b549b03f25ef11e2ffa, type: 3}
   m_Name: BuildingData
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDataSO
+  nameBuilding: Granary
   baseVitality: 10
+  baseDefend: 5
   hpPerVitality: 170
+  additionalStats:
+  - {fileID: 11400000, guid: 7032810837fe68b4c834a196fc1793b6, type: 2}
+  - {fileID: 11400000, guid: 112fbe1b149bc7d479f18b1b20752254, type: 2}

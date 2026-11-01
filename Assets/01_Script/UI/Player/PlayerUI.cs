@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerUI : MonoBehaviour
 {
     public static PlayerUI Instance { get; set; }
+
+    [Header("Global Volume")]
+    [SerializeField] private Volume _globalVolumeUI;
 
     [Header("Player Profile")]
     [SerializeField] private HealthBar playerHealthBar;
@@ -24,9 +28,9 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private ConversationUI _conversationUI;
 
     [Header("Role NPC Panels")]
-    [SerializeField] private GranaryUI _granaryUI;
+    [SerializeField] private BuilderPanelUI _builderPanelUI;
     [SerializeField] private ShopUI _shopUI;
-    [SerializeField] private HealthUI _healthUI;
+    [SerializeField] private LevelAndStatsUI _statsStore;
     [SerializeField] private SkillTreeUI _skillTreeUI;
 
     [Header("Result")]
@@ -34,7 +38,7 @@ public class PlayerUI : MonoBehaviour
 
     [Header("Transition")]
     [SerializeField] private DayTransitionUI dayTransition;
-    
+
 
     private SkillsManager _skillsManager;
     private PlayerController _playerController;
@@ -45,9 +49,9 @@ public class PlayerUI : MonoBehaviour
     private NPCBaseEntity _activeNpc;
 
     public ConversationUI ConversationUI => _conversationUI;
-    public GranaryUI GranaryUI => _granaryUI;
+    public BuilderPanelUI BuilderPanel => _builderPanelUI;
     public ShopUI ShopUI => _shopUI;
-    public HealthUI HealthUI => _healthUI;
+    public LevelAndStatsUI StatsStore => _statsStore;
     public SkillTreeUI SkillTreeUI => _skillTreeUI;
     public ResultUI ResultUI => _resultUI;
     public DayTransitionUI DayTransition => dayTransition;
@@ -105,10 +109,12 @@ public class PlayerUI : MonoBehaviour
     /// </summary>
     public void InitializeUI()
     {
+        if (_globalVolumeUI == null) _globalVolumeUI = GetComponent<Volume>();
+
         if (_preparationUI == null) _preparationUI = Object.FindFirstObjectByType<PreparationUI>();
         if (_conversationUI == null) _conversationUI = Object.FindFirstObjectByType<ConversationUI>();
-        if (_granaryUI == null) _granaryUI = Object.FindFirstObjectByType<GranaryUI>();
-        if (_healthUI == null) _healthUI = Object.FindFirstObjectByType<HealthUI>();
+        if (_builderPanelUI == null) _builderPanelUI = Object.FindFirstObjectByType<BuilderPanelUI>();
+        if (_statsStore == null) _statsStore = Object.FindFirstObjectByType<LevelAndStatsUI>();
         if (_shopUI == null) _shopUI = Object.FindFirstObjectByType<ShopUI>();
         if (_skillTreeUI == null) _skillTreeUI = Object.FindFirstObjectByType<SkillTreeUI>();
         if (_resultUI == null) _resultUI = Object.FindFirstObjectByType<ResultUI>();
@@ -118,7 +124,7 @@ public class PlayerUI : MonoBehaviour
         if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
         if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
         if (_consumableRadialContainer != null) _consumableRadialContainer.gameObject.SetActive(false);
-        
+
         CloseAllRolePanels();
 
         if (_granary == null)
@@ -134,6 +140,12 @@ public class PlayerUI : MonoBehaviour
         }
 
         InitializeHealthBar();
+        InitializeVolume();
+    }
+
+    private void InitializeVolume()
+    {
+        DeactivateVolume();
     }
 
     /// <summary>
@@ -151,21 +163,21 @@ public class PlayerUI : MonoBehaviour
         switch (npcData.NpcRole)
         {
             case NpcRole.Priest:
-                if (_healthUI != null)
+                if (_statsStore != null)
                 {
-                    _healthUI.Initialize();
-                    _healthUI.gameObject.SetActive(true);   
+                    _statsStore.Initialize();
+                    _statsStore.gameObject.SetActive(true);
                 }
                 break;
             case NpcRole.GranaryKeeper:
-                if (_granaryUI != null)
+                if (_builderPanelUI != null)
                 {
-                    _granaryUI.Initialize();
-                    _granaryUI.gameObject.SetActive(true);
+                    _builderPanelUI.Initialize();
+                    _builderPanelUI.gameObject.SetActive(true);
                 }
                 break;
             case NpcRole.Merchant:
-                if (_shopUI != null) 
+                if (_shopUI != null)
                 {
                     _shopUI.Initialize();
                     _shopUI.gameObject.SetActive(true);
@@ -195,7 +207,7 @@ public class PlayerUI : MonoBehaviour
     /// </summary>
     public void CloseAllRolePanels()
     {
-        CloseHealthUI();
+        CloseStatsStore();
         CloseGranaryUI();
         CloseShopUI();
         CloseSkillTreeUI();
@@ -243,6 +255,19 @@ public class PlayerUI : MonoBehaviour
         }
     }
 
+    public void ActivateVolume()
+    {
+        if (_globalVolumeUI == null) return;
+
+        _globalVolumeUI.weight = 1f;
+    }
+
+    public void DeactivateVolume()
+    {
+        if (_globalVolumeUI == null) return;
+
+        _globalVolumeUI.weight = 0f;
+    }
 
     public void OpenPreparationUI() => _preparationUI?.gameObject.SetActive(true);
 
@@ -254,11 +279,11 @@ public class PlayerUI : MonoBehaviour
             _granary.ResumeSign();
     }
 
-    public void OpenHealthUI() => _healthUI?.gameObject.SetActive(true);
-    public void CloseHealthUI() => _healthUI?.gameObject.SetActive(false);
+    public void OpenStatsStore() => _statsStore?.gameObject.SetActive(true);
+    public void CloseStatsStore() => _statsStore?.gameObject.SetActive(false);
 
-    public void OpenGranaryUI() => _granaryUI?.gameObject.SetActive(true);
-    public void CloseGranaryUI() => _granaryUI?.gameObject.SetActive(false);
+    public void OpenGranaryUI() => _builderPanelUI?.gameObject.SetActive(true);
+    public void CloseGranaryUI() => _builderPanelUI?.gameObject.SetActive(false);
 
     public void OpenShopUI() => _shopUI?.gameObject.SetActive(true);
     public void CloseShopUI() => _shopUI?.gameObject.SetActive(false);

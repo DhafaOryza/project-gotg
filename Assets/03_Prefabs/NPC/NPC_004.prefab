@@ -81,6 +81,22 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 220739137447437845}
   m_SourcePrefab: {fileID: 100100000, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+--- !u!1 &81178549500941036 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2230371896159965724, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+  m_PrefabInstance: {fileID: 2293379056093331696}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &653584189024720609 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1639951566001853969, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+  m_PrefabInstance: {fileID: 2293379056093331696}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshPro
 --- !u!1 &3927949830090874156 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
@@ -101,4 +117,19 @@ MonoBehaviour:
   entityData: {fileID: 11400000, guid: e14a7e31cb97f71caacabee4a29e9767, type: 2}
   bonusMaxHP: 0
   currentHealth: 0
+  _interactSign: {fileID: 81178549500941036}
+  _txtSign: {fileID: 7948568335205139330}
+  _txtCharacterName: {fileID: 653584189024720609}
   _interactionRadius: 2
+  isInteractable: 1
+--- !u!114 &7948568335205139330 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8186775359267636082, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+  m_PrefabInstance: {fileID: 2293379056093331696}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshPro

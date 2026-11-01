@@ -105,6 +105,12 @@ MonoBehaviour:
   equippedConsumables: []
   reviveDuration: 60
   reviveHpPercentage: 0.15
+  additionals:
+  - {fileID: 11400000, guid: 5d24835972490404ab3b97b8289d378f, type: 2}
+  - {fileID: 11400000, guid: c62edd80439cc924d9b1fce29de2c937, type: 2}
+  - {fileID: 11400000, guid: d56ecd9cb3ea120418f0ab27e2dbf3f9, type: 2}
+  - {fileID: 11400000, guid: 3abb1a0544f32fd468d4d478ad1be554, type: 2}
+  - {fileID: 11400000, guid: e561f516c8031064e828dfce01e9d997, type: 2}
 --- !u!1 &3442747306973909323
 GameObject:
   m_ObjectHideFlags: 0

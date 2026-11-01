@@ -74,6 +74,32 @@ public class BaseEntity : MonoBehaviour, IDamageable, IHealthSource
         Die();
     }
 
+    #region Additional Stats
+
+    /// <summary>
+    /// Poin Vitality tambahan di luar entityData.baseVitality (dari AdditionalStatsSO).
+    /// Di-override oleh entity yang punya stat tambahan, mis. PlayerBaseEntity.
+    /// </summary>
+    protected virtual int GetAdditionalVitality() => 0;
+
+    /// <summary>
+    /// Hitung ulang max HP, mis. setelah stat tambahan berubah.
+    /// Max naik -> HP saat ini ikut naik sebesar selisihnya. Max turun -> HP dipotong sampai batas baru.
+    /// </summary>
+    public void RecalculateMaxHealth()
+    {
+        int previousMax = maxHealth;
+        maxHealth = CalcMaxHP();
+
+        if (maxHealth > previousMax && !IsDead)
+            currentHealth += maxHealth - previousMax;
+
+        currentHealth = Mathf.Min(currentHealth, maxHealth);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    #endregion
+
     #region Helper
 
     private int CalcMaxHP()
@@ -86,7 +112,9 @@ public class BaseEntity : MonoBehaviour, IDamageable, IHealthSource
             return 1;
         }
 
-        int baseHp = Mathf.Max(1, Mathf.RoundToInt(entityData.baseVitality * entityData.hpPerVitality) + bonusMaxHP);
+        // Vitality tambahan (AdditionalStatsSO) ikut dihitung ke max HP.
+        float vitality = entityData.baseVitality + GetAdditionalVitality();
+        int baseHp = Mathf.Max(1, Mathf.RoundToInt(vitality * entityData.hpPerVitality) + bonusMaxHP);
         return baseHp;
     }
 

@@ -39,7 +39,15 @@ public class BuildingBase : MonoBehaviour, IDamageable, IHealthSource
     {
         if (IsDestroy || amount <= 0) return;
 
-        currentHealth = Mathf.Max(0, currentHealth - amount);
+        float damage = buildingData != null
+            ? buildingData.GetDamageAfterDefense(amount)
+            : amount;
+
+        // Health is stored as an integer, so round the reduced damage to the nearest integer.
+        int finalDamage = Mathf.RoundToInt(damage);
+        if (finalDamage <= 0) return;
+
+        currentHealth = Mathf.Max(0, currentHealth - finalDamage);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
         if (currentHealth <= 0)
@@ -69,8 +77,8 @@ public class BuildingBase : MonoBehaviour, IDamageable, IHealthSource
             return 1;
         }
 
-        int baseHp = Mathf.Max(1, Mathf.RoundToInt(buildingData.baseVitality * buildingData.hpPerVitality) + bonusMaxHp);
-        return baseHp;
+        // MaxHealth includes base vitality and additional Vitality stats.
+        return Mathf.Max(1, Mathf.RoundToInt(buildingData.MaxHealth) + bonusMaxHp);
     }
 
     #endregion

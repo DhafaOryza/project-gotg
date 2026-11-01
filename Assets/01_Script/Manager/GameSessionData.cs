@@ -14,9 +14,6 @@ public class GameSessionData : MonoBehaviour
     [Header("Registry Data")]
     public Registry registryData;
 
-    [Header("Player Economy")]
-    public int PlayerCoin = 500;
-
     void Awake()
     {
         if (Instance == null)
@@ -49,13 +46,6 @@ public class GameSessionData : MonoBehaviour
 
         return gsd;
     }
-
-    #region Currency
-
-    public int GetPlayerCoins() => PlayerCoin;
-    public void SpendCoins(int amount) => PlayerCoin -= amount;
-
-    #endregion
 
     private void GetDataRegistry()
     {

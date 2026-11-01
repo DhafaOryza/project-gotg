@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public PlayerUI playerUI;
     public EnvController envController;
     public ConsumableAndItemManager consumableAndItemManager;
+    public CurrencyManager currencyManager;
 
     [Header("Game Flow")]
     [SerializeField] private GameState currentState = GameState.Starting;
@@ -87,6 +88,7 @@ public class GameManager : MonoBehaviour
         if (playerUI == null) playerUI = Object.FindAnyObjectByType<PlayerUI>();
         if (envController == null) envController = Object.FindAnyObjectByType<EnvController>();
         if (consumableAndItemManager == null) consumableAndItemManager = Object.FindAnyObjectByType<ConsumableAndItemManager>();
+        if (currencyManager == null) currencyManager = Object.FindFirstObjectByType<CurrencyManager>();
 
         // Initliaze The Manager; (spawn player, lumbung, dan NPC dengan HP penuh)
         if (poolManager != null) poolManager.Initialize();

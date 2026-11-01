@@ -121,7 +121,7 @@ public class SkillTreeUI : MonoBehaviour
             if (_tierHeaderPrefab != null)
             {
                 GameObject headerObj = Instantiate(_tierHeaderPrefab, _skillListContentContainer);
-                
+
                 TextMeshProUGUI headerText = headerObj.GetComponentInChildren<TextMeshProUGUI>();
                 if (headerText != null)
                 {
@@ -167,22 +167,22 @@ public class SkillTreeUI : MonoBehaviour
     {
         if (skill == null) return;
 
-        if (_detailIcon != null && skill.icon != null) 
+        if (_detailIcon != null && skill.icon != null)
             _detailIcon.sprite = skill.icon;
 
-        if (_detailNameText != null) 
+        if (_detailNameText != null)
             _detailNameText.text = skill.displayName;
 
-        if (_detailDescText != null) 
+        if (_detailDescText != null)
             _detailDescText.text = skill.description;
 
-        if (_detailCurrentStatText != null) 
+        if (_detailCurrentStatText != null)
             _detailCurrentStatText.text = $"Base Damage / Val: {skill.baseValue}";
 
-        if (_detailNextStatText != null) 
+        if (_detailNextStatText != null)
             _detailNextStatText.text = $"Tier: {skill.tier}";
 
-        if (_upgradeButtonCostText != null) 
+        if (_upgradeButtonCostText != null)
             _upgradeButtonCostText.text = skill.baseValue.ToString();
     }
 
@@ -194,12 +194,13 @@ public class SkillTreeUI : MonoBehaviour
         _selectedSkillData = _selectedSlot != null ? _selectedSlot.SkillData : null;
         if (_selectedSkillData == null) return;
 
-        GameSessionData sessionData = GameSessionData.GetOrCreate();
-        if (sessionData.GetPlayerCoins() >= _selectedSkillData.baseValue)
+        var currencyManager = GameManager.Instance?.currencyManager;
+
+        if (currencyManager.Money >= _selectedSkillData.baseValue)
         {
-            sessionData.SpendCoins(_selectedSkillData.baseValue);
+            currencyManager.SpendMoney(_selectedSkillData.baseValue);
             Debug.Log($"[SkillTreeUI] Successfully upgraded skill: {_selectedSkillData.displayName}");
-            
+
             UpdateDetailPanel(_selectedSkillData);
         }
         else

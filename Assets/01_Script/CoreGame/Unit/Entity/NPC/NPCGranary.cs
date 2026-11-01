@@ -6,9 +6,9 @@ public class NPCGranary : NPCBaseEntity
     {
         base.OnConversationEnded();
 
-        if (PlayerUI.Instance != null && PlayerUI.Instance.GranaryUI != null)
+        if (PlayerUI.Instance != null && PlayerUI.Instance.BuilderPanel != null)
         {
-            PlayerUI.Instance.GranaryUI.gameObject.SetActive(true);
+            PlayerUI.Instance.BuilderPanel.gameObject.SetActive(true);
         }
     }
 }

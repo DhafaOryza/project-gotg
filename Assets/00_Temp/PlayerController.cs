@@ -356,7 +356,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            var moveSpeed = playerEntity.entityData.moveSpeed;
+            var moveSpeed = playerEntity.MoveSpeed;
             vel.x = Mathf.Sign(delta) * moveSpeed;
         }
 
