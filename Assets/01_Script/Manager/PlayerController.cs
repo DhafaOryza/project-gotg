@@ -1,4 +1,3 @@
-using Unity.Mathematics;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
