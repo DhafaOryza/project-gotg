@@ -13,8 +13,6 @@ public class PlayerDataSO : EntityDataSO
 
     [Header ("Leveling Data")]
     [Min(1)] public int level = 1;
-    public int maxExp = 100;
-    public int currentExp;
 
     [Header("Character Level Up")]
     [Min(0)] [SerializeField] private int vitalityPerLevel = 1;
@@ -59,7 +57,6 @@ public class PlayerDataSO : EntityDataSO
         var runtimeCopy = Instantiate(this);
         runtimeCopy.isRuntimeCopy = true;
         runtimeCopy.level = 1;
-        runtimeCopy.currentExp = 0;
         runtimeCopy.additionalStats = new List<AdditionalStatsSO>();
 
         foreach (var stat in additionalStats)
