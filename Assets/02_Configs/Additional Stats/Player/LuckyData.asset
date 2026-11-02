@@ -18,5 +18,7 @@ MonoBehaviour:
   level: 1
   maxLevel: 5
   baseValue: 1
-  valuePerPoint: 1
+  valuePerPoint: 10
   maxTotalValue: 0
+  basePrice: 250
+  priceGrowth: 1.5
