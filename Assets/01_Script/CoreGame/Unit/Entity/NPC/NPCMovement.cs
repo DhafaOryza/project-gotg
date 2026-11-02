@@ -21,6 +21,9 @@ public class NPCMovement : MonoBehaviour
     public Vector3 StartPosition => _startPosition;
     public float WanderRadius => _wanderRadius;
 
+    // NPC Animations
+    public bool IsMoving => _isMoving;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -90,6 +93,8 @@ public class NPCMovement : MonoBehaviour
                 float randomX = Random.Range(-_wanderRadius, _wanderRadius);
                 _targetPosition = new Vector3(_startPosition.x + randomX, _startPosition.y, _startPosition.z);
 
+                FlipDirection(_targetPosition.x - transform.position.x);
+
                 _isMoving = true;
 
                 while (_isMoving && !_isPaused && Mathf.Abs(transform.position.x - _targetPosition.x) > 0.1f)
@@ -116,6 +121,27 @@ public class NPCMovement : MonoBehaviour
             {
                 yield return null;
             }
+        }
+    }
+
+    /// <summary>
+    /// Flips the character's facing direction based on movement direction (X-axis).
+    /// </summary>
+    private void FlipDirection(float directionX)
+    {
+        if(Mathf.Abs(directionX) > 0.01f)
+        {
+            Vector3 localSacle = transform.localScale;
+            if (directionX > 0)
+            {
+                localSacle.x = -Mathf.Abs(localSacle.x);
+            }
+            else
+            {
+                localSacle.x = Mathf.Abs(localSacle.x);
+            }
+            transform.localScale = localSacle;
+
         }
     }
 }
