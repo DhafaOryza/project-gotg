@@ -9,10 +9,10 @@ public class NPCAnimation : MonoBehaviour
 
     private void Awake()
     {
-        _animator = GetComponent<Animator>();
+        _animator = GetComponentInChildren<Animator>();
         _npcMovement = GetComponent<NPCMovement>();
 
-        if (_npcMovement == null)
+        if (_npcMovement == null || _animator == null)
         {
             Debug.LogWarning($"[NPCAnimation] NPCMovement component not found on {gameObject.name}!");
         }

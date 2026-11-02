@@ -93,7 +93,16 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3033933179832952179, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1443639149442873330}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8745152232162549141}
+    - targetCorrespondingSourceObject: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2280918499721334667}
+    - targetCorrespondingSourceObject: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5797918485139185966}
   m_SourcePrefab: {fileID: 100100000, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
 --- !u!1 &81178549500941036 stripped
 GameObject:
@@ -116,6 +125,62 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3033933179832952179, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
   m_PrefabInstance: {fileID: 2293379056093331696}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3927949830090874156 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+  m_PrefabInstance: {fileID: 2293379056093331696}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8745152232162549141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927949830090874156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d4d593c9bbc30dfcbdcf288d7711a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
+  _movementType: 0
+  _moveSpeed: 2
+  _wanderRadius: 5
+  _minWaitTime: 2
+  _maxWaitTime: 5
+--- !u!114 &2280918499721334667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927949830090874156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57e594f54fb2abe30a2384867886d407, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCPriest
+  entityData: {fileID: 11400000, guid: 122bf0d91286bc274b4701550d9ee3ab, type: 2}
+  bonusMaxHP: 0
+  currentHealth: 0
+  _interactSign: {fileID: 81178549500941036}
+  _txtSign: {fileID: 7948568335205139330}
+  _txtCharacterName: {fileID: 653584189024720609}
+  _interactionRadius: 2
+  isInteractable: 1
+--- !u!114 &5797918485139185966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927949830090874156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa8d0b495d706e80b1ebe10596235f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCAnimation
+  _animator: {fileID: 5203922244776102917}
+  _npcMovement: {fileID: 8745152232162549141}
 --- !u!114 &7948568335205139330 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8186775359267636082, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
@@ -230,73 +295,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3481459413893031585, guid: 074cfb4612dd17d418b6f7f2fc6f5504, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4366915272651241189}
-    - targetCorrespondingSourceObject: {fileID: 3481459413893031585, guid: 074cfb4612dd17d418b6f7f2fc6f5504, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3996397375269497770}
-    - targetCorrespondingSourceObject: {fileID: 3481459413893031585, guid: 074cfb4612dd17d418b6f7f2fc6f5504, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6013895196941152595}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 074cfb4612dd17d418b6f7f2fc6f5504, type: 3}
---- !u!1 &342502255249387409 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3481459413893031585, guid: 074cfb4612dd17d418b6f7f2fc6f5504, type: 3}
-  m_PrefabInstance: {fileID: 3787649438640523568}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4366915272651241189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 342502255249387409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d4d593c9bbc30dfcbdcf288d7711a43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
-  _movementType: 0
-  _moveSpeed: 2
-  _wanderRadius: 5
-  _minWaitTime: 2
-  _maxWaitTime: 5
---- !u!114 &3996397375269497770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 342502255249387409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57e594f54fb2abe30a2384867886d407, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCPriest
-  entityData: {fileID: 11400000, guid: 122bf0d91286bc274b4701550d9ee3ab, type: 2}
-  bonusMaxHP: 0
-  currentHealth: 0
-  _interactSign: {fileID: 81178549500941036}
-  _txtSign: {fileID: 7948568335205139330}
-  _txtCharacterName: {fileID: 653584189024720609}
-  _interactionRadius: 2
-  isInteractable: 1
---- !u!114 &6013895196941152595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 342502255249387409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aa8d0b495d706e80b1ebe10596235f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCAnimation
-  _animator: {fileID: 5203922244776102917}
-  _npcMovement: {fileID: 4366915272651241189}
 --- !u!4 &1443639149442873330 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2348830825333915330, guid: 074cfb4612dd17d418b6f7f2fc6f5504, type: 3}

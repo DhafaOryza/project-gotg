@@ -1199,9 +1199,6 @@ GameObject:
   - component: {fileID: 7518240805995330201}
   - component: {fileID: 698009808367188190}
   - component: {fileID: 2839516289276296021}
-  - component: {fileID: 2039653989736713532}
-  - component: {fileID: 994232004400737748}
-  - component: {fileID: 6541390981275225021}
   m_Layer: 0
   m_Name: Char_patrol soldier
   m_TagString: Untagged
@@ -1310,57 +1307,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2039653989736713532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2538300181028930329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aa8d0b495d706e80b1ebe10596235f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCAnimation
-  _animator: {fileID: 2839516289276296021}
-  _npcMovement: {fileID: 6541390981275225021}
---- !u!114 &994232004400737748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2538300181028930329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 206fdc653020326f8af6fbc783718b8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCGuard
-  entityData: {fileID: 11400000, guid: b3e21b5388f6fef22a28a1875027920f, type: 2}
-  bonusMaxHP: 0
-  currentHealth: 0
-  _interactSign: {fileID: 81178549500941036}
-  _txtSign: {fileID: 7948568335205139330}
-  _txtCharacterName: {fileID: 653584189024720609}
-  _interactionRadius: 2
-  isInteractable: 1
---- !u!114 &6541390981275225021
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2538300181028930329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d4d593c9bbc30dfcbdcf288d7711a43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
-  _movementType: 1
-  _moveSpeed: 2
-  _wanderRadius: 5
-  _minWaitTime: 2
-  _maxWaitTime: 5
 --- !u!1 &2584573584223799338
 GameObject:
   m_ObjectHideFlags: 0
@@ -3948,7 +3894,16 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3033933179832952179, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
       insertIndex: 0
       addedObject: {fileID: 3742987463136729978}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1081767642298972883}
+    - targetCorrespondingSourceObject: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5455323146360901936}
+    - targetCorrespondingSourceObject: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6863825222458051495}
   m_SourcePrefab: {fileID: 100100000, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
 --- !u!1 &81178549500941036 stripped
 GameObject:
@@ -3971,6 +3926,62 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3033933179832952179, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
   m_PrefabInstance: {fileID: 2293379056093331696}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3927949830090874156 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2977259333405695452, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
+  m_PrefabInstance: {fileID: 2293379056093331696}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1081767642298972883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927949830090874156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 206fdc653020326f8af6fbc783718b8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCGuard
+  entityData: {fileID: 11400000, guid: b3e21b5388f6fef22a28a1875027920f, type: 2}
+  bonusMaxHP: 0
+  currentHealth: 0
+  _interactSign: {fileID: 81178549500941036}
+  _txtSign: {fileID: 7948568335205139330}
+  _txtCharacterName: {fileID: 653584189024720609}
+  _interactionRadius: 2
+  isInteractable: 1
+--- !u!114 &5455323146360901936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927949830090874156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d4d593c9bbc30dfcbdcf288d7711a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
+  _movementType: 1
+  _moveSpeed: 2
+  _wanderRadius: 5
+  _minWaitTime: 2
+  _maxWaitTime: 5
+--- !u!114 &6863825222458051495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927949830090874156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa8d0b495d706e80b1ebe10596235f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCAnimation
+  _animator: {fileID: 2839516289276296021}
+  _npcMovement: {fileID: 5455323146360901936}
 --- !u!114 &7948568335205139330 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8186775359267636082, guid: 6aabe1aaf132b6aebb81a9c66c781932, type: 3}
