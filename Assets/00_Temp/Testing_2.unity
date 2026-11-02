@@ -2073,6 +2073,7 @@ MonoBehaviour:
   playerUI: {fileID: 2035140767}
   envController: {fileID: 138849069}
   consumableAndItemManager: {fileID: 1154509386}
+  currencyManager: {fileID: 0}
   currentState: 0
   restartFromFirstNightOnLose: 0
 --- !u!4 &329945953
@@ -11185,8 +11186,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf50eaecc9981736db40f118fbdafe0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PriestUI
-  _healthMainPanel: {fileID: 1335825967}
-  _exitButton: {fileID: 1087243501}
 --- !u!114 &1365352395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16085,6 +16084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0a7933d8ec240647b362b71c7e56c31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
+  _globalVolumeUI: {fileID: 0}
   playerHealthBar: {fileID: 667923857}
   granaryHealthBar: {fileID: 771817479}
   _preparationUI: {fileID: 68443352}
@@ -16093,9 +16093,9 @@ MonoBehaviour:
   _consumableRadialContainer: {fileID: 477767306}
   _consumableRadialUI: {fileID: 477767308}
   _conversationUI: {fileID: 1004403333}
-  _granaryUI: {fileID: 659798463}
+  _builderPanelUI: {fileID: 0}
   _shopUI: {fileID: 2006842450}
-  _healthUI: {fileID: 1365352394}
+  _statsStore: {fileID: 0}
   _skillTreeUI: {fileID: 622420959}
   _resultUI: {fileID: 1625419241}
   dayTransition: {fileID: 755990534}
