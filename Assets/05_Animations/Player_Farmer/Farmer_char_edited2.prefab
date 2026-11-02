@@ -3099,7 +3099,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrary
   m_Library: []
-  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: 48db3e3baef730b4ca89e2dc69d6bb10, type: 3}
+  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: 1a024b65e15807d479439ab80769237c, type: 3}
 --- !u!95 &2310819115820358902
 Animator:
   serializedVersion: 7
