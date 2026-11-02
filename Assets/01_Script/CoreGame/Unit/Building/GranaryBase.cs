@@ -93,7 +93,7 @@ public class GranaryBase : BuildingBase, IInteractable
         var playerController = GameManager.Instance?.playerController;
         if (playerController == null) return;
 
-        txtSign.text = playerController.interact.ToString();
+        txtSign.text = playerController.GetInteractDisplayName();
     }
 
     private void SetName(bool visible)

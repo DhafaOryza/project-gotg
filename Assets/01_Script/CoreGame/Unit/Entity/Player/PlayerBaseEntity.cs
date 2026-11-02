@@ -13,12 +13,19 @@ public class PlayerBaseEntity : BaseEntity
     [Header("Knockdown & Revive Configs")]
     [SerializeField] private float reviveDuration = 60f;
     [SerializeField] private float reviveHpPercentage = 0.15f;
+    [SerializeField, Min(0.1f)] private float attackEventFallbackTime = 1.5f;
 
     private List<SkillRuntimeData> skillRuntime = new List<SkillRuntimeData>();
     private float currentReviveTimer;
     private PlayerDataSO runtimePlayerData;
+    private PlayerAnimation playerAnimation;
+    private int pendingSkillSlot = -1;
+    private Transform pendingAttackPoint;
+    private Vector2 pendingSkillDirection;
+    private float pendingSkillTimer;
 
     public bool IsKnockDown { get; private set; }
+    public bool HasPendingSkill => pendingSkillSlot >= 0;
     public float CurrentReviveTimer => currentReviveTimer;
     public float ReviveDuration => reviveDuration;
     public bool CanAct => !IsDead && !IsKnockDown;
@@ -88,6 +95,7 @@ public class PlayerBaseEntity : BaseEntity
 
         base.Awake();
 
+        playerAnimation = GetComponentInChildren<PlayerAnimation>(true);
         InitializeSkillRuntimes();
     }
 
@@ -107,9 +115,20 @@ public class PlayerBaseEntity : BaseEntity
 
         if (IsKnockDown)
         {
+            ClearPendingSkill();
             currentReviveTimer -= deltaTime;
             if (currentReviveTimer <= 0f)
                 Revive();
+        }
+
+        if (pendingSkillSlot >= 0)
+        {
+            pendingSkillTimer -= deltaTime;
+            if (pendingSkillTimer <= 0f)
+            {
+                Debug.LogWarning("[PlayerBaseEntity] Attack Animation Event tidak terpanggil; skill dijalankan lewat fallback.", this);
+                ExecutePendingSkillFromAnimationEvent();
+            }
         }
     }
 
@@ -255,6 +274,46 @@ public class PlayerBaseEntity : BaseEntity
         runtime.StartCooldown(skill.cooldown * CooldownMultiplier);
 
         return true;
+    }
+
+    public bool RequestSkillWithAnimation(int slotIndex, Transform attackPoint, Vector2 aimDirection)
+    {
+        if (!CanAct || pendingSkillSlot >= 0 || slotIndex < 0 || slotIndex >= equippedSkills.Count)
+            return false;
+
+        if (equippedSkills[slotIndex] == null || GetSkillCooldownRemaining(slotIndex) > 0f)
+            return false;
+
+        pendingSkillSlot = slotIndex;
+        pendingAttackPoint = attackPoint;
+        pendingSkillDirection = aimDirection.sqrMagnitude > 0f ? aimDirection.normalized : Vector2.right;
+        pendingSkillTimer = attackEventFallbackTime;
+
+        if (playerAnimation == null || !playerAnimation.PlayAttack())
+            ExecutePendingSkillFromAnimationEvent();
+
+        return true;
+    }
+
+    public void ExecutePendingSkillFromAnimationEvent()
+    {
+        if (pendingSkillSlot < 0) return;
+
+        int slot = pendingSkillSlot;
+        Transform attackOrigin = pendingAttackPoint;
+        Vector2 direction = pendingSkillDirection;
+        ClearPendingSkill();
+
+        if (CanAct)
+            TryUseSkill(slot, attackOrigin, direction);
+    }
+
+    private void ClearPendingSkill()
+    {
+        pendingSkillSlot = -1;
+        pendingAttackPoint = null;
+        pendingSkillDirection = Vector2.zero;
+        pendingSkillTimer = 0f;
     }
 
     /// <summary>
