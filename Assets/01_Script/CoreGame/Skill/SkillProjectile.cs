@@ -18,16 +18,21 @@ public class SkillProjectile : MonoBehaviour
     private int _damage;
     private float _maxRange;
     private Vector3 _spawnPosition;
-    private bool _ispiercing;
+    private bool _isPiercing;
+    private bool _isLucky;
+    private GameObject _damageTextPrefab;
     private readonly HashSet<BaseEntity> alreadyHit = new HashSet<BaseEntity>();
 
-    public void Setup(BaseEntity owner, int damage, float maxRange, bool isAOE)
+    public void Setup(BaseEntity owner, int damage, float maxRange, bool isAOE ,bool isLucky = false, GameObject damageTextPrefab = null)
     {
         _owner = owner;
         _damage = damage;
         _maxRange = maxRange;
         _spawnPosition = transform.position;
-        _ispiercing = isAOE;
+        _isPiercing = isAOE;
+        _isLucky = isLucky;
+        _damageTextPrefab = damageTextPrefab;
+        alreadyHit.Clear();
     }
 
     private void Awake()
@@ -61,7 +66,15 @@ public class SkillProjectile : MonoBehaviour
 
         target.TakeDamage(_damage);
 
-        if (!piercing)
+        if (_damageTextPrefab != null)
+        {
+            Vector3 textspawnPos = target.transform.position + Vector3.up * 1.5f + new Vector3(Random.Range(0.3f, 0.3f), 0f, 0f);
+            GameObject textGO = Instantiate(_damageTextPrefab, textspawnPos, Quaternion.identity);
+            if (textGO.TryGetComponent(out FloatingDamageText floatText))
+                floatText.Setup(_damage, _isLucky);
+        }
+
+        if (!_isPiercing)
             Destroy(gameObject);
     }
 }

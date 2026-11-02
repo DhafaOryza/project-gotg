@@ -47,6 +47,7 @@ public class SkillDataSO : ScriptableObject
     [Header("Visual Prefabs")]
     public GameObject skillPrefab;
     public GameObject ghostPreviewPrefab;
+    public GameObject damageTextPrefab;
 
     public bool IsLocked => locked;
 
@@ -67,6 +68,13 @@ public class SkillDataSO : ScriptableObject
         Vector3 spawnPos = attackPoint != null ? attackPoint.position : user.transform.position;
         float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+        
+        bool isLucky = false;
+        int finalDamage = user != null ? user.CalculateDamageWithLucky(baseValue, out isLucky) : baseValue;
+        if (isLucky)
+        {
+            Debug.Log($"<color=yellow>[LUCKY CRITICAL!] Serangan {displayName} memicu Lucky! Damage: {baseValue} -> {finalDamage}</color>");
+        }
 
         if (isProjectile)
         {
@@ -80,7 +88,7 @@ public class SkillDataSO : ScriptableObject
             if (spawned.TryGetComponent(out SkillProjectile projectile))
             {
                 bool isAOE = (targetMode == TargetMode.AOE_TARGET);
-                projectile.Setup(user, baseValue, maxRange, isAOE);
+                projectile.Setup(user, finalDamage, maxRange, isAOE, isLucky, damageTextPrefab);
             }
             return true;
         }
@@ -107,7 +115,12 @@ public class SkillDataSO : ScriptableObject
                 }
             }
 
-            closestTarget?.TakeDamage(baseValue);
+            if (closestTarget != null)
+            {
+                closestTarget?.TakeDamage(finalDamage);
+                ShowDamageText(closestTarget.transform.position, finalDamage, isLucky);
+            }
+            
         }
         else
         {
@@ -115,11 +128,24 @@ public class SkillDataSO : ScriptableObject
             {
                 var target = hit.GetComponentInParent<BaseEntity>();
                 if (target != null && target != user && !(target is PlayerBaseEntity))
-                    target.TakeDamage(baseValue);
+                {
+                    target.TakeDamage(finalDamage);
+                    ShowDamageText(target.transform.position, finalDamage, isLucky);
+                }
             }
         }
     
         return true;
+    }
+
+    public void ShowDamageText(Vector3 targetPos, int damage, bool isLucky)
+    {
+        if (damageTextPrefab == null) return;
+        Vector3 spawnPos = targetPos + Vector3.up * 1.5f + new Vector3(Random.Range(-0.3f, 0.3f), 0f, 0f);
+        GameObject textGO = Instantiate(damageTextPrefab, spawnPos, Quaternion.identity);
+
+        if (textGO.TryGetComponent(out FloatingDamageText floatText))
+            floatText.Setup(damage, isLucky);
     }
     
     /// <summary>

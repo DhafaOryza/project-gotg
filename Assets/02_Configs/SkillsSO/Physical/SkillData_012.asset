@@ -33,3 +33,4 @@ MonoBehaviour:
   HitboxSize: {x: 2, y: 2, z: 1}
   skillPrefab: {fileID: 8946592561061051195, guid: 8dca788426b7b2346bc193e7af68e9e0, type: 3}
   ghostPreviewPrefab: {fileID: 7836781342000382809, guid: 923997bc754d85e49b531d20a8215065, type: 3}
+  damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}

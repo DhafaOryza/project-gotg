@@ -268,6 +268,15 @@ public class PlayerBaseEntity : BaseEntity
         return 0f;
     }
 
+    public int CalculateDamageWithLucky(int baseDamage, out bool isLucky)
+    {
+        if (PlayerData != null)
+            return PlayerData.CalculatedLuckyDamage(baseDamage, out isLucky);
+
+        isLucky = false;
+        return baseDamage;
+    }
+
     public override void ResetState()
     {
         IsKnockDown = false;

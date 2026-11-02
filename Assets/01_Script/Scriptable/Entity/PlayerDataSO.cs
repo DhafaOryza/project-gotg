@@ -43,7 +43,6 @@ public class PlayerDataSO : EntityDataSO
         float rawPrice = levelUpBasePrice * Mathf.Pow(levelUpPriceGrowth, CurrentLevel - 1);
         return Mathf.Max(0, Mathf.FloorToInt(rawPrice / PriceRounding + 0.5f) * PriceRounding);
     }
-
     public bool TryLevelUpCharacter()
     {
         if (IsCharacterMaxLevel) return false;
@@ -113,6 +112,20 @@ public class PlayerDataSO : EntityDataSO
         return AdditionalStatsSO.CalculateTotal(type, additionalStats);
     }
 
+    public int CalculatedLuckyDamage(int basedamage, out bool isLuckyHit)
+    {
+        float chance = GetLuckyStats();
+        float roll = Random.Range(0f, 100f);
+        if (roll <= chance)
+        {
+            isLuckyHit = true;
+            int bonusDamage = Mathf.RoundToInt(basedamage * 0.5f);
+            return basedamage + bonusDamage;
+        }
+        isLuckyHit = false;
+        return basedamage;
+    }
+
     #endregion
 
     #region Derived Values
@@ -122,6 +135,8 @@ public class PlayerDataSO : EntityDataSO
     {
         return GetAdditionalVitalityAtLevel(CurrentLevel);
     }
+
+    public float GetLuckyStats () => Mathf.Clamp(GetCalculatedStat(StatsType.Lucky), 0f, 100f);
 
     public int GetAdditionalVitalityAtLevel(int targetLevel)
     {
