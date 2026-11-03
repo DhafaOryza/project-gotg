@@ -127,16 +127,18 @@ public class BuildingBase : MonoBehaviour, IDamageable, IHealthSource
     }
 
     /// <summary>
-    /// Placeholder: levels up one additional stat of this building.
-    /// Raise the stat level here once the AdditionalStatsSO level up method is known,
-    /// then call RefreshMaxHealth() so a Vitality upgrade updates max health.
+    /// Levels up one additional stat of this building and recalculates max health.
+    /// Returns false if the stat does not belong to this building or is already at max level.
     /// </summary>
     public bool LevelUpAdditionalStat(AdditionalStatsSO stats)
     {
-        if (stats == null || stats.IsMaxLevel) return false;
+        if (IsDestroy || stats == null || buildingData == null) return false;
+        if (!buildingData.additionalStats.Contains(stats)) return false;
+        if (!stats.TryLevelUp()) return false;
 
-        Debug.LogWarning($"[{name}] LevelUpAdditionalStat is not implemented yet.");
-        return false;
+        // A Vitality upgrade changes buildingData.MaxHealth, so max health must be recalculated.
+        RefreshMaxHealth();
+        return true;
     }
 
     /// <summary>
