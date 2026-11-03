@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class NPCMovement : MonoBehaviour
+public class NPCMovement : MonoBehaviour, IPoolable
 {
     [SerializeField] private NpcMovementType _movementType = NpcMovementType.WANDERING;
     [SerializeField] private float _moveSpeed = 2f;
@@ -11,6 +11,7 @@ public class NPCMovement : MonoBehaviour
 
     private Vector3 _startPosition;
     private Vector3 _targetPosition;
+    private bool _hasStartPosition;
     private bool _isMoving;
     private bool _isPaused;
     private Coroutine _wanderCoroutine;
@@ -31,13 +32,45 @@ public class NPCMovement : MonoBehaviour
 
     private void Start()
     {
+        // NPCs placed directly in the scene are not pooled, so OnSpawn never runs for them.
+        if (!_hasStartPosition)
+            ResetMovement();
+    }
+
+    #region Pool
+
+    /// <summary>
+    /// Called by the pool when this NPC is taken out of the pool. Starts movement from a clean state.
+    /// </summary>
+    public void OnSpawn()
+    {
+        ResetMovement();
+    }
+
+    /// <summary>
+    /// Called by the pool right before this NPC is put back into the pool.
+    /// </summary>
+    public void OnDespawn()
+    {
+        StopWandering();
+    }
+
+    /// <summary>
+    /// Clears any leftover state, takes the current position as the wander center and starts wandering.
+    /// </summary>
+    private void ResetMovement()
+    {
+        StopWandering();
+
         _startPosition = transform.position;
+        _hasStartPosition = true;
+        _isPaused = false;
 
         if (_movementType == NpcMovementType.WANDERING)
-        {
             StartWandering();
-        }
     }
+
+    #endregion
 
     /// <summary>
     /// Starts the wandering coroutine loop.
@@ -45,6 +78,9 @@ public class NPCMovement : MonoBehaviour
     public void StartWandering()
     {
         if (_movementType != NpcMovementType.WANDERING) return;
+
+        // A coroutine cannot start on an inactive object. OnSpawn starts it again on the next spawn.
+        if (!isActiveAndEnabled) return;
 
         if (_wanderCoroutine != null)
         {
@@ -60,13 +96,7 @@ public class NPCMovement : MonoBehaviour
     public void PauseMovement()
     {
         _isPaused = true;
-        _isMoving = false;
-
-        if (_wanderCoroutine != null)
-        {
-            StopCoroutine(_wanderCoroutine);
-            _wanderCoroutine = null;
-        }
+        StopWandering();
     }
 
     /// <summary>
@@ -79,6 +109,17 @@ public class NPCMovement : MonoBehaviour
         {
             StartWandering();
         }
+    }
+
+    private void StopWandering()
+    {
+        if (_wanderCoroutine != null)
+        {
+            StopCoroutine(_wanderCoroutine);
+            _wanderCoroutine = null;
+        }
+
+        _isMoving = false;
     }
 
     /// <summary>
@@ -129,19 +170,18 @@ public class NPCMovement : MonoBehaviour
     /// </summary>
     private void FlipDirection(float directionX)
     {
-        if(Mathf.Abs(directionX) > 0.01f)
+        if (Mathf.Abs(directionX) > 0.01f)
         {
-            Vector3 localSacle = transform.localScale;
+            Vector3 localScale = transform.localScale;
             if (directionX > 0)
             {
-                localSacle.x = -Mathf.Abs(localSacle.x);
+                localScale.x = -Mathf.Abs(localScale.x);
             }
             else
             {
-                localSacle.x = Mathf.Abs(localSacle.x);
+                localScale.x = Mathf.Abs(localScale.x);
             }
-            transform.localScale = localSacle;
-
+            transform.localScale = localScale;
         }
     }
 }

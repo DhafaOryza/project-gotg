@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public EnvController envController;
     public ConsumableAndItemManager consumableAndItemManager;
     public CurrencyManager currencyManager;
+    public TrackerBattle trackerBattle;
 
     [Header("Game Flow")]
     [SerializeField] private GameState currentState = GameState.Starting;
@@ -89,11 +90,13 @@ public class GameManager : MonoBehaviour
         if (envController == null) envController = Object.FindAnyObjectByType<EnvController>();
         if (consumableAndItemManager == null) consumableAndItemManager = Object.FindAnyObjectByType<ConsumableAndItemManager>();
         if (currencyManager == null) currencyManager = Object.FindFirstObjectByType<CurrencyManager>();
+        if (trackerBattle == null) trackerBattle = Object.FindAnyObjectByType<TrackerBattle>();
 
         // Initliaze The Manager; (spawn player, lumbung, dan NPC dengan HP penuh)
         if (poolManager != null) poolManager.Initialize();
         if (levelSpawnerManager != null) levelSpawnerManager.Initialize();
         if (nightController != null) nightController.Initialize();
+        if (trackerBattle != null) trackerBattle.Initialize();
         if (questManager != null) questManager.Initialize();
         if (playerController != null) playerController.Setup();
     }

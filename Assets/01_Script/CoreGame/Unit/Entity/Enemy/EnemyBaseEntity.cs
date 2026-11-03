@@ -58,6 +58,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         if (IsDead) return;
 
         base.Die();
+        GameManager.Instance.trackerBattle?.RegisterEnemyKilled();
         ReturnToPool();
     }
 
@@ -65,6 +66,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     {
         ResetState();
         attackCooldownRemaining = 0f;
+        GameManager.Instance.trackerBattle?.RegisterEnemySpawned();
         AcquireTarget();
     }
 
