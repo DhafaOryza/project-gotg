@@ -73,6 +73,8 @@ public class NightController : MonoBehaviour
         }
 
         waveController.StartNight(currentNightWave);
+        
+        GameManager.Instance?.trackerBattle?.BeginBattle();
     }
 
     /// <summary>

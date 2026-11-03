@@ -8,7 +8,7 @@ public class BuilderPanelUI : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _backButton;
     [SerializeField] private Button _levelUpTabButton;
-    [SerializeField] private Button _statsTabButton;
+    // [SerializeField] private Button _statsTabButton;
 
     [Header("Panels")]
     [SerializeField] private GameObject _levelUpPanel;
@@ -39,14 +39,14 @@ public class BuilderPanelUI : MonoBehaviour
     {
         if (_backButton != null) _backButton.onClick.AddListener(CloseUI);
         if (_levelUpTabButton != null) _levelUpTabButton.onClick.AddListener(ShowLevelUpPanel);
-        if (_statsTabButton != null) _statsTabButton.onClick.AddListener(ShowStatsPanel);
+        // if (_statsTabButton != null) _statsTabButton.onClick.AddListener(ShowStatsPanel);
     }
 
     private void OnDestroy()
     {
         if (_backButton != null) _backButton.onClick.RemoveListener(CloseUI);
         if (_levelUpTabButton != null) _levelUpTabButton.onClick.RemoveListener(ShowLevelUpPanel);
-        if (_statsTabButton != null) _statsTabButton.onClick.RemoveListener(ShowStatsPanel);
+        // if (_statsTabButton != null) _statsTabButton.onClick.RemoveListener(ShowStatsPanel);
     }
 
     private void OnEnable()

@@ -16,6 +16,8 @@ public class BuildingBase : MonoBehaviour, IDamageable, IHealthSource
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
 
+    public event Action<int> OnDamaged;
+
     [Header("Level Up")]
     [SerializeField] private int _maxLevel = 5;
     [SerializeField] private int _healthPerLevel = 100;
@@ -70,8 +72,11 @@ public class BuildingBase : MonoBehaviour, IDamageable, IHealthSource
         int finalDamage = Mathf.RoundToInt(damage);
         if (finalDamage <= 0) return;
 
+        int dealtDamage = Mathf.Min(finalDamage, currentHealth);
+
         currentHealth = Mathf.Max(0, currentHealth - finalDamage);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        OnDamaged?.Invoke(dealtDamage);
 
         if (currentHealth <= 0)
             Destroy();
