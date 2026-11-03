@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 public class ConversationUI : MonoBehaviour
@@ -16,7 +15,6 @@ public class ConversationUI : MonoBehaviour
 
     [Header("Controller Input")]
     [SerializeField] private EventSystem _eventSystem;
-    [SerializeField] private InputSystemUIInputModule _uiInputModule;
 
     [Header("Typewriter Settings")]
     [SerializeField] private float _typingSpeed = 0.03f;
@@ -91,13 +89,10 @@ public class ConversationUI : MonoBehaviour
                 ? EventSystem.current
                 : FindFirstObjectByType<EventSystem>();
 
-        if (_uiInputModule == null && _eventSystem != null)
-            _uiInputModule = _eventSystem.GetComponent<InputSystemUIInputModule>();
-
-        if (_uiInputModule != null && !_navigationEventsSuppressed)
+        if (_eventSystem != null && !_navigationEventsSuppressed)
         {
-            _previousNavigationEvents = _uiInputModule.sendNavigationEvents;
-            _uiInputModule.sendNavigationEvents = false;
+            _previousNavigationEvents = _eventSystem.sendNavigationEvents;
+            _eventSystem.sendNavigationEvents = false;
             _navigationEventsSuppressed = true;
         }
 
@@ -111,8 +106,8 @@ public class ConversationUI : MonoBehaviour
 
     private void RestoreUIInputNavigation()
     {
-        if (_navigationEventsSuppressed && _uiInputModule != null)
-            _uiInputModule.sendNavigationEvents = _previousNavigationEvents;
+        if (_navigationEventsSuppressed && _eventSystem != null)
+            _eventSystem.sendNavigationEvents = _previousNavigationEvents;
 
         _navigationEventsSuppressed = false;
         _dialogInputPrepared = false;

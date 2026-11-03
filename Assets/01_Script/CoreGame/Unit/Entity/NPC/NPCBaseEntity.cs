@@ -154,7 +154,7 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         var conversationUI = PlayerUI.Instance?.ConversationUI;
         if (conversationUI == null) conversationUI = Object.FindFirstObjectByType<ConversationUI>();
 
-        if (conversationUI == null && _npcData == null) return;
+        if (conversationUI == null || _npcData == null) return;
 
         conversationUI.StartNPCDialog(_npcData, OnConversationEnded);
     }
