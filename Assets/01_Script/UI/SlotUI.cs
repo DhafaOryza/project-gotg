@@ -21,8 +21,20 @@ public class SlotUI : MonoBehaviour, IDropHandler
     {
         skillData = currentData;
         slotIndex = index;
-        keyBind.text = setKeyBind;
+        
 
+        if (keyBind != null)
+        {
+            bool hasKey = !string.IsNullOrEmpty(setKeyBind);
+            keyBind.gameObject.SetActive(hasKey);
+
+            if (keyBind.transform.parent != transform)
+                keyBind.transform.parent.gameObject.SetActive(hasKey);
+
+            if (hasKey)
+                keyBind.text = setKeyBind;
+        }
+        
         if (currentData != null)
         {
             info.SetActive(true);
