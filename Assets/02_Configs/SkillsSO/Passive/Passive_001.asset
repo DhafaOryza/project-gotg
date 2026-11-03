@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5e4700d4686054e88c3f3645a878eb, type: 3}
+  m_Name: Passive_001
+  m_EditorClassIdentifier: Assembly-CSharp::SkillPassiveSO
+  skillId: Passive_001
+  displayName: Heal Overtime
+  description: Heal Overtime After Killing An Enemy
+  baseValue: 0
+  currentLevel: 1
+  maxLevel: 5
+  upgradeCost: 500
+  tier: 1
+  typeRange: 0
+  skillType: 0
+  targetMode: 0
+  isProjectile: 0
+  executionType: 1
+  icon: {fileID: 3451928815304094928, guid: f678a4fe26f65bc4cb17a27190a3266e, type: 3}
+  locked: 0
+  targetType: 0
+  cooldown: 3
+  skillColor: {r: 1, g: 1, b: 1, a: 1}
+  maxRange: 2
+  HitboxSize: {x: 2, y: 2, z: 1}
+  skillPrefab: {fileID: 0}
+  ghostPreviewPrefab: {fileID: 0}
+  damageTextPrefab: {fileID: 0}
+  triggerType: 1
+  triggerChance: 100
+  duration: 5
+  effectValue: 15

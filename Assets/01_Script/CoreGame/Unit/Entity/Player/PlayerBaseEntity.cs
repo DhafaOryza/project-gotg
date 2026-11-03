@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ public class PlayerBaseEntity : BaseEntity
     private float currentReviveTimer;
     private PlayerDataSO runtimePlayerData;
     private PlayerAnimation playerAnimation;
+    private PlayerPassiveController passiveController;
     private int pendingSkillSlot = -1;
     private Transform pendingAttackPoint;
     private Vector2 pendingSkillDirection;
@@ -97,6 +99,7 @@ public class PlayerBaseEntity : BaseEntity
 
         playerAnimation = GetComponentInChildren<PlayerAnimation>(true);
         InitializeSkillRuntimes();
+        passiveController = GetComponent<PlayerPassiveController>();
     }
 
     private void OnDestroy()
@@ -215,9 +218,25 @@ public class PlayerBaseEntity : BaseEntity
         InitializeSkillRuntimes();
     }
 
+    public void RedrawConsumbale()
+    {
+        var consumableManager = GameManager.Instance?.consumableAndItemManager;
+        if (consumableManager == null)
+        {
+            Debug.LogWarning($"[{name}] RedrawConsumables: consumableAndItemManager tidak ditemukan.");
+            return;
+        }
+
+        equippedConsumables = new List<ConsumableDataSO>(consumableManager.chosenConsumables);
+
+    }
+
     public override void TakeDamage(int amount)
     {
         if (IsKnockDown || IsDead) return;
+
+        if (passiveController != null && passiveController.CheckDodgeTrigger())
+            return;
 
         // Defense mengurangi damage sebelum dihitung ke HP.
         base.TakeDamage(ApplyDefense(amount));
@@ -336,12 +355,15 @@ public class PlayerBaseEntity : BaseEntity
         return baseDamage;
     }
 
+    public void OnEnemyKilledByPlayer() => passiveController?.HandleEnemyKilled();
+
     public override void ResetState()
     {
         IsKnockDown = false;
         currentReviveTimer = 0f;
 
         base.ResetState();
+        passiveController?.StopAllPassiveEffect();
     }
 
     /// <summary>
@@ -356,6 +378,14 @@ public class PlayerBaseEntity : BaseEntity
     {
         if (slotIndex >= 0 && slotIndex < equippedSkills.Count)
             return equippedSkills[slotIndex];
+
+        return null;
+    }
+
+    public SkillDataSO GetEquippedPassiveSkill()
+    {
+        if (equippedSkills != null && equippedSkills.Count > SkillsManager.PassiveSlotIndex)
+            return equippedSkills[SkillsManager.PassiveSlotIndex];
 
         return null;
     }

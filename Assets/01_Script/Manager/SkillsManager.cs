@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SkillsManager : MonoBehaviour
 {
+    public const int PassiveSlotIndex = 4;
     public List<SkillDataSO> choosenSkills = new List<SkillDataSO>();
     public int maxSkills = 5;
 
@@ -20,7 +21,7 @@ public class SkillsManager : MonoBehaviour
         }
     }
 
-    public bool IsFull => FindEmptySlot() < 0;
+    public bool IsFull => FindEmptyActiveSlot() < 0;
 
     private void Awake()
     {
@@ -45,18 +46,46 @@ public class SkillsManager : MonoBehaviour
         EnsureSlotCount();
         if (choosenSkills.Contains(setSkill)) return false;
 
-        int empty = FindEmptySlot();
-        if (empty < 0) return false;
+        if (setSkill.executionType == SkillExecutionType.Passive)
+        {
+            if (choosenSkills[PassiveSlotIndex] != null) return false;
 
-        choosenSkills[empty] = setSkill;
-        NotifyChanged();
-        return true;
+            choosenSkills[PassiveSlotIndex] = setSkill;
+            NotifyChanged();
+            return true;
+        }
+        else
+        {
+            int empty = FindEmptyActiveSlot();
+            if (empty < 0) return false;
+
+            choosenSkills[empty] = setSkill;
+            NotifyChanged();
+            return true;
+        }
     }
 
     public bool EquipSkill(int slotIndex, SkillDataSO skill)
     {
         if (skill == null) return false;
         if (slotIndex < 0 || slotIndex >= maxSkills) return false;
+
+        if (slotIndex == PassiveSlotIndex)
+        {
+            if (skill.executionType != SkillExecutionType.Passive)
+            {
+                Debug.LogWarning($"[SkillsManager] Slot {slotIndex + 1} hanya menerima Skill Pasif!");
+                return false;
+            }
+        }
+        else
+        {
+            if (skill.executionType != SkillExecutionType.Active)
+            {
+                Debug.LogWarning($"[SkillsManager] Slot {slotIndex + 1} hanya menerima Skill Aktif!");
+                return false;
+            }
+        }
 
         EnsureSlotCount();
 
@@ -104,15 +133,14 @@ public class SkillsManager : MonoBehaviour
         if (changed) NotifyChanged();
     }
 
-    private int FindEmptySlot()
+    private int FindEmptyActiveSlot()
     {
-        int slots = Mathf.Min(choosenSkills.Count, maxSkills);
-        for (int i = 0; i < slots; i++)
+        for (int i = 0; i < PassiveSlotIndex; i++)
         {
             if (choosenSkills[i] == null) return i;
         }
 
-        return choosenSkills.Count < maxSkills ? choosenSkills.Count : -1;
+        return -1;
     }
 
     private void EnsureSlotCount()

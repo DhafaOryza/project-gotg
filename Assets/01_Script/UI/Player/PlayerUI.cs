@@ -489,6 +489,14 @@ public class PlayerUI : MonoBehaviour
             SkillUI currentSkill = Instantiate(_skillUIPrefab, _skillContainer);
             currentSkill.Setup(i, keys[i], skills[i]);
         }
+
+        if (skills.Count > SkillsManager.PassiveSlotIndex)
+        {
+            var passiveSkillData = skills[SkillsManager.PassiveSlotIndex];
+            SkillUI passiveSkillUI = Instantiate(_skillUIPrefab, _skillContainer);
+
+            passiveSkillUI.Setup(SkillsManager.PassiveSlotIndex, "", passiveSkillData);
+        }
     }
 
     public void ActivateVolume()

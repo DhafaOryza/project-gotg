@@ -21,8 +21,20 @@ public class SlotUI : MonoBehaviour, IDropHandler
     {
         skillData = currentData;
         slotIndex = index;
-        keyBind.text = setKeyBind;
+        
 
+        if (keyBind != null)
+        {
+            bool hasKey = !string.IsNullOrEmpty(setKeyBind);
+            keyBind.gameObject.SetActive(hasKey);
+
+            if (keyBind.transform.parent != transform)
+                keyBind.transform.parent.gameObject.SetActive(hasKey);
+
+            if (hasKey)
+                keyBind.text = setKeyBind;
+        }
+        
         if (currentData != null)
         {
             info.SetActive(true);
@@ -68,6 +80,11 @@ public class SlotUI : MonoBehaviour, IDropHandler
             return;
         }
 
+        bool success = skillsManager.EquipSkill(slotIndex, card.SkillData);
+        if (!success)
+        {
+            Debug.LogWarning($"[SlotUI] Tidak bisa memasang {card.SkillData.displayName} ke slot ini (Cek tipe Aktif vs Pasif)!");
+        }
         // Pasang tepat di slot ini (Q = 0, W = 1, E = 2, dst).
         skillsManager.EquipSkill(slotIndex, card.SkillData);
     }

@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 
 public enum SkillTargetType
@@ -5,6 +6,12 @@ public enum SkillTargetType
     Enemy,      
     Self,   
     Any     
+}
+
+public enum SkillExecutionType
+{
+    Active,
+    Passive
 }
 
 [CreateAssetMenu(fileName = "NewSkillData", menuName = "Data/Skill/Skill Data")]
@@ -28,6 +35,9 @@ public class SkillDataSO : ScriptableObject
     public SkillType skillType;
     public TargetMode targetMode;
     public bool isProjectile = false;
+
+    [Header ("Execution Mode")]
+    public SkillExecutionType executionType = SkillExecutionType.Active;
 
     [Header("UI & Visual")]
     public Sprite icon;
@@ -119,6 +129,12 @@ public class SkillDataSO : ScriptableObject
             {
                 closestTarget?.TakeDamage(finalDamage);
                 ShowDamageText(closestTarget.transform.position, finalDamage, isLucky);
+                
+                if ((closestTarget.currentHealth <= 0 || closestTarget.IsDead) && user != null)
+                {
+                    // Debug.Log("<color=green>[KILL DETECTED] Single target musuh tewas!</color>");
+                    user.OnEnemyKilledByPlayer();
+                }
             }
             
         }
@@ -131,6 +147,12 @@ public class SkillDataSO : ScriptableObject
                 {
                     target.TakeDamage(finalDamage);
                     ShowDamageText(target.transform.position, finalDamage, isLucky);
+
+                    if ((target.currentHealth <= 0 || target.IsDead) && user != null)
+                    {
+                        // Debug.Log("<color=green>[KILL DETECTED] AOE target musuh tewas!</color>");
+                        user.OnEnemyKilledByPlayer();
+                    }
                 }
             }
         }

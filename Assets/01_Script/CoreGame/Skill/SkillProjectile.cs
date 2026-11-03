@@ -68,10 +68,16 @@ public class SkillProjectile : MonoBehaviour
 
         if (_damageTextPrefab != null)
         {
-            Vector3 textspawnPos = target.transform.position + Vector3.up * 1.5f + new Vector3(Random.Range(0.3f, 0.3f), 0f, 0f);
+            Vector3 textspawnPos = target.transform.position + Vector3.up * 1.5f + new Vector3(Random.Range(-0.3f, 0.3f), 0f, 0f);
             GameObject textGO = Instantiate(_damageTextPrefab, textspawnPos, Quaternion.identity);
             if (textGO.TryGetComponent(out FloatingDamageText floatText))
                 floatText.Setup(_damage, _isLucky);
+        }
+
+        if ((target.currentHealth <= 0 || target.IsDead) && _owner is PlayerBaseEntity playerOwner)
+        {
+            Debug.Log("<color=green>[KILL DETECTED] Proyektil membunuh musuh!</color>");
+            playerOwner.OnEnemyKilledByPlayer();
         }
 
         if (!_isPiercing)

@@ -223,7 +223,7 @@ public class PreparationUI : MonoBehaviour
         {
             SlotUI slot = Instantiate(slotUIPrefab, skillSlotContainer);
 
-            string key = i < keys.Count ? keys[i] : "";
+            string key = (i == SkillsManager.PassiveSlotIndex) ? "" : (i < keys.Count ? keys[i] : "");
             slot.Initialize(key, skillsManager.GetSkill(i), i);
         }
     }

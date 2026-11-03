@@ -33,6 +33,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 00fc075940119194ebd977a54d4a951f, type: 2}
   - {fileID: 11400000, guid: 553605b088e42064f833ea717d6c61fa, type: 2}
   - {fileID: 11400000, guid: cb3138005e21efa479eb3b1e71ea2509, type: 2}
+  - {fileID: 11400000, guid: 6466c49fc0b46784cac17f93fb47dbc8, type: 2}
+  - {fileID: 11400000, guid: 948e09be08dcb7e41b01d5316bba8df4, type: 2}
   Consumables:
   - {fileID: 11400000, guid: 59cbe89ff1ddf30409bdc762d59dbd2d, type: 2}
   - {fileID: 11400000, guid: 2b7da5b97fdcc1f4e91d4daf17565a75, type: 2}

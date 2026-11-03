@@ -20,10 +20,22 @@ public class SkillUI : MonoBehaviour
     public void Setup(int slot, string keyBind, SkillDataSO currentSkill = null)
     {
         slotIndex = slot;
-        txtKey.text = keyBind;
         currentSkillData = currentSkill;
 
-        if (playerentity != null)
+        if (txtKey != null)
+        {
+            bool hasKey = !string.IsNullOrEmpty(keyBind);
+
+            if (txtKey.transform.parent != null && txtKey.transform.parent != transform)
+                txtKey.transform.parent.gameObject.SetActive(hasKey);
+            else
+                txtKey.gameObject.SetActive(hasKey);
+
+            if (hasKey)
+                txtKey.text = keyBind;
+        }
+
+        if (playerentity == null)
             playerentity = GameManager.Instance?.levelSpawnerManager?.GetCurrentPlayer();
 
         if (currentSkill == null)
@@ -44,7 +56,7 @@ public class SkillUI : MonoBehaviour
 
     private void Update()
     {
-        if (currentSkillData == null) return;
+        if (currentSkillData == null || currentSkillData is SkillPassiveSO) return;
         if (playerentity == null)
         {
             playerentity = GameManager.Instance?.levelSpawnerManager?.GetCurrentPlayer();
