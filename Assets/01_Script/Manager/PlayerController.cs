@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     private string activeBindingGroup;
     private InputAction moveAction;
     private InputAction interactAction;
+    private InputAction cancelAction;
     private readonly InputAction[] skillActions = new InputAction[SkillSlotCount];
     private readonly InputAction[] itemActions = new InputAction[SkillSlotCount];
 
@@ -82,6 +83,7 @@ public class PlayerController : MonoBehaviour
         {
             if (moveAction != null) moveAction.Disable();
             if (interactAction != null) interactAction.performed -= HandleInteract;
+            if (cancelAction != null) cancelAction.performed -= HandleCancel;
 
             foreach (var action in skillActions)
             {
@@ -106,6 +108,7 @@ public class PlayerController : MonoBehaviour
         activeBindingGroup = null;
         moveAction = null;
         interactAction = null;
+        cancelAction = null;
         System.Array.Clear(skillActions, 0, skillActions.Length);
         System.Array.Clear(itemActions, 0, itemActions.Length);
     }
@@ -131,9 +134,13 @@ public class PlayerController : MonoBehaviour
 
         moveAction = playerActionMap.FindAction("Move", false);
         interactAction = playerActionMap.FindAction("Interact", false);
+        cancelAction = playerActionMap.FindAction("Cancel", false);
 
         if (interactAction != null)
             interactAction.performed += HandleInteract;
+
+        if (cancelAction != null)
+            cancelAction.performed += HandleCancel;
 
         for (int slot = 0; slot < SkillSlotCount; slot++)
         {
@@ -305,6 +312,12 @@ public class PlayerController : MonoBehaviour
             TryInteract();
     }
 
+    private void HandleCancel(InputAction.CallbackContext context)
+    {
+        if (isAiming)
+            CancelAiming();
+    }
+
     private void HandleSkillStarted(InputAction.CallbackContext context)
     {
         if (playerEntity == null || !playerEntity.CanAct || playerEntity.HasPendingSkill) return;
@@ -329,9 +342,11 @@ public class PlayerController : MonoBehaviour
 
     private void HandleSkillCanceled(InputAction.CallbackContext context)
     {
-        if (!isAiming || activeAimSlot != GetActionSlot(context.action.name, "Skill ") || playerEntity.HasPendingSkill) return;
+        if (!isAiming || playerEntity == null ||
+            activeAimSlot != GetActionSlot(context.action.name, "Skill ") || playerEntity.HasPendingSkill)
+            return;
 
-        if (playerEntity == null || !playerEntity.CanAct)
+        if (!playerEntity.CanAct)
         {
             CancelAiming();
             return;

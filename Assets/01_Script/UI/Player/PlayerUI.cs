@@ -1,6 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
@@ -39,6 +44,13 @@ public class PlayerUI : MonoBehaviour
     [Header("Transition")]
     [SerializeField] private DayTransitionUI dayTransition;
 
+    [Header("UI Input")]
+    [SerializeField] private InputActionAsset inputActions;
+    [SerializeField] private string uiActionMapName = "UI";
+    [SerializeField] private string controllerBindingGroup = "Controller";
+    [SerializeField] private string keyboardBindingGroup = "Keyboard";
+    [SerializeField] private InputSystemUIInputModule uiInputModule;
+
 
     private SkillsManager _skillsManager;
     private PlayerController _playerController;
@@ -47,6 +59,11 @@ public class PlayerUI : MonoBehaviour
     private NPCDataSO _npcData;
     private NPCMovement _npcMovement;
     private NPCBaseEntity _activeNpc;
+    private InputActionAsset runtimeUIInputActions;
+    private InputAction uiSubmitAction;
+    private InputAction uiCancelAction;
+    private string activeUIBindingGroup;
+    private Coroutine panelFocusRoutine;
 
     public ConversationUI ConversationUI => _conversationUI;
     public BuilderPanelUI BuilderPanel => _builderPanelUI;
@@ -77,14 +94,33 @@ public class PlayerUI : MonoBehaviour
 
     void OnEnable()
     {
+        InputSystem.onDeviceChange += HandleUIDeviceChange;
+
         if (_granary != null)
             _granary.OnInteract += OpenPreparationUI;
     }
 
     void OnDisable()
     {
+        InputSystem.onDeviceChange -= HandleUIDeviceChange;
+
         if (_granary != null)
             _granary.OnInteract -= OpenPreparationUI;
+    }
+
+    void OnDestroy()
+    {
+        if (uiSubmitAction != null)
+            uiSubmitAction.performed -= HandleUISubmit;
+
+        if (uiCancelAction != null)
+            uiCancelAction.performed -= HandleUICancel;
+
+        if (uiInputModule != null && uiInputModule.actionsAsset == runtimeUIInputActions)
+            uiInputModule.UnassignActions();
+
+        if (runtimeUIInputActions != null)
+            Destroy(runtimeUIInputActions);
     }
 
     /// <summary>
@@ -109,6 +145,8 @@ public class PlayerUI : MonoBehaviour
     /// </summary>
     public void InitializeUI()
     {
+        InitializeUIInput();
+
         if (_globalVolumeUI == null) _globalVolumeUI = GetComponent<Volume>();
 
         if (_preparationUI == null) _preparationUI = Object.FindFirstObjectByType<PreparationUI>();
@@ -143,6 +181,204 @@ public class PlayerUI : MonoBehaviour
         InitializeVolume();
     }
 
+    private void InitializeUIInput()
+    {
+        if (inputActions == null)
+        {
+            Debug.LogWarning("[PlayerUI] Input Actions asset belum di-assign; navigasi gamepad UI tidak diaktifkan.", this);
+            return;
+        }
+
+        if (uiInputModule == null)
+        {
+            var eventSystem = EventSystem.current != null
+                ? EventSystem.current
+                : Object.FindFirstObjectByType<EventSystem>();
+
+            if (eventSystem == null)
+            {
+                var eventSystemObject = new GameObject("EventSystem");
+                eventSystem = eventSystemObject.AddComponent<EventSystem>();
+            }
+
+            uiInputModule = eventSystem.GetComponent<InputSystemUIInputModule>();
+            if (uiInputModule == null)
+            {
+                foreach (var module in eventSystem.GetComponents<BaseInputModule>())
+                    module.enabled = false;
+
+                uiInputModule = eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
+            }
+        }
+
+        if (runtimeUIInputActions == null)
+            runtimeUIInputActions = Instantiate(inputActions);
+
+        if (uiSubmitAction != null)
+            uiSubmitAction.performed -= HandleUISubmit;
+
+        if (uiCancelAction != null)
+            uiCancelAction.performed -= HandleUICancel;
+
+        uiInputModule.AssignDefaultActions();
+        uiInputModule.actionsAsset = runtimeUIInputActions;
+
+        var uiActionMap = runtimeUIInputActions.FindActionMap(uiActionMapName, false);
+        if (uiActionMap == null)
+        {
+            Debug.LogError($"[PlayerUI] Action Map '{uiActionMapName}' tidak ditemukan.", this);
+            return;
+        }
+
+        uiSubmitAction = uiActionMap.FindAction("Submit", false);
+        if (uiSubmitAction != null)
+            uiSubmitAction.performed += HandleUISubmit;
+
+        uiCancelAction = uiActionMap.FindAction("Cancel", false);
+        if (uiCancelAction != null)
+            uiCancelAction.performed += HandleUICancel;
+
+        UpdateUIBindingGroupForConnectedDevices();
+    }
+
+    private void HandleUICancel(InputAction.CallbackContext context)
+    {
+        if (_conversationUI != null && _conversationUI.IsDialogOpen)
+        {
+            _conversationUI.OnContinueClicked();
+            return;
+        }
+
+        if (_preparationUI != null && _preparationUI.gameObject.activeInHierarchy)
+        {
+            // Tutup subpanel terlebih dahulu agar Cancel berperilaku seperti tombol Back.
+            if (_preparationUI.TryClosePrepareSkillPanel())
+            {
+                return;
+            }
+
+            ClosePreparationUI();
+            return;
+        }
+
+        if (IsPanelOpen(_statsStore) || IsPanelOpen(_builderPanelUI) ||
+            IsPanelOpen(_shopUI) || IsPanelOpen(_skillTreeUI))
+        {
+            CloseAllRolePanels();
+            return;
+        }
+
+        if (_consumableRadialContainer != null && _consumableRadialContainer.activeInHierarchy)
+        {
+            CloseConsumableUI();
+            return;
+        }
+
+        if (_skillContainer != null && _skillContainer.gameObject.activeInHierarchy)
+            CloseSkillUI();
+    }
+
+    private void HandleUISubmit(InputAction.CallbackContext context)
+    {
+        if (_conversationUI != null && _conversationUI.IsDialogOpen)
+            _conversationUI.OnContinueClicked();
+    }
+
+    private static bool IsPanelOpen(Component panel)
+    {
+        return panel != null && panel.gameObject.activeInHierarchy;
+    }
+
+    private void OpenPanel(GameObject panel)
+    {
+        if (panel == null) return;
+
+        var eventSystem = uiInputModule != null
+            ? uiInputModule.GetComponent<EventSystem>()
+            : EventSystem.current;
+        if (eventSystem != null)
+            eventSystem.SetSelectedGameObject(null);
+
+        panel.SetActive(true);
+
+        if (panelFocusRoutine != null)
+            StopCoroutine(panelFocusRoutine);
+
+        panelFocusRoutine = StartCoroutine(FocusPanelNextFrame(panel));
+    }
+
+    private IEnumerator FocusPanelNextFrame(GameObject panel)
+    {
+        yield return null;
+
+        panelFocusRoutine = null;
+        if (panel != null && panel.activeInHierarchy)
+            FocusFirstSelectable(panel);
+    }
+
+    private void FocusFirstSelectable(GameObject panel)
+    {
+        if (panel == null) return;
+
+        var eventSystem = uiInputModule != null
+            ? uiInputModule.GetComponent<EventSystem>()
+            : EventSystem.current;
+        if (eventSystem == null) return;
+
+        foreach (var selectable in panel.GetComponentsInChildren<Selectable>(false))
+        {
+            if (selectable == null || !selectable.IsInteractable() || !selectable.gameObject.activeInHierarchy)
+                continue;
+
+            eventSystem.SetSelectedGameObject(selectable.gameObject);
+            return;
+        }
+    }
+
+    private void HandleUIDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (device is not Gamepad) return;
+
+        if (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected)
+        {
+            SetUIBindingGroup(controllerBindingGroup);
+            return;
+        }
+
+        if (change == InputDeviceChange.Removed || change == InputDeviceChange.Disconnected ||
+            change == InputDeviceChange.Disabled)
+        {
+            UpdateUIBindingGroupForConnectedDevices(device);
+            return;
+        }
+
+        UpdateUIBindingGroupForConnectedDevices();
+    }
+
+    private void UpdateUIBindingGroupForConnectedDevices(InputDevice unavailableDevice = null)
+    {
+        bool hasGamepad = false;
+        foreach (var gamepad in Gamepad.all)
+        {
+            if (gamepad != unavailableDevice && gamepad.added && gamepad.enabled)
+            {
+                hasGamepad = true;
+                break;
+            }
+        }
+
+        SetUIBindingGroup(hasGamepad ? controllerBindingGroup : keyboardBindingGroup);
+    }
+
+    private void SetUIBindingGroup(string bindingGroup)
+    {
+        if (runtimeUIInputActions == null || activeUIBindingGroup == bindingGroup)
+            return;
+
+        runtimeUIInputActions.bindingMask = InputBinding.MaskByGroup(bindingGroup);
+        activeUIBindingGroup = bindingGroup;
+    }
+
     private void InitializeVolume()
     {
         DeactivateVolume();
@@ -166,21 +402,21 @@ public class PlayerUI : MonoBehaviour
                 if (_statsStore != null)
                 {
                     _statsStore.Initialize();
-                    _statsStore.gameObject.SetActive(true);
+                    OpenPanel(_statsStore.gameObject);
                 }
                 break;
             case NpcRole.GranaryKeeper:
                 if (_builderPanelUI != null)
                 {
                     _builderPanelUI.Initialize();
-                    _builderPanelUI.gameObject.SetActive(true);
+                    OpenPanel(_builderPanelUI.gameObject);
                 }
                 break;
             case NpcRole.Merchant:
                 if (_shopUI != null)
                 {
                     _shopUI.Initialize();
-                    _shopUI.gameObject.SetActive(true);
+                    OpenPanel(_shopUI.gameObject);
                 }
                 break;
             case NpcRole.Guard:
@@ -188,7 +424,7 @@ public class PlayerUI : MonoBehaviour
                 if (_skillTreeUI != null)
                 {
                     _skillTreeUI.Initialize(npcData);
-                    _skillTreeUI.gameObject.SetActive(true);
+                    OpenPanel(_skillTreeUI.gameObject);
                 }
                 break;
             default:
@@ -269,7 +505,11 @@ public class PlayerUI : MonoBehaviour
         _globalVolumeUI.weight = 0f;
     }
 
-    public void OpenPreparationUI() => _preparationUI?.gameObject.SetActive(true);
+    public void OpenPreparationUI()
+    {
+        if (_preparationUI != null)
+            OpenPanel(_preparationUI.gameObject);
+    }
 
     public void ClosePreparationUI()
     {
@@ -279,25 +519,25 @@ public class PlayerUI : MonoBehaviour
             _granary.ResumeSign();
     }
 
-    public void OpenStatsStore() => _statsStore?.gameObject.SetActive(true);
+    public void OpenStatsStore() => OpenPanel(_statsStore != null ? _statsStore.gameObject : null);
     public void CloseStatsStore() => _statsStore?.gameObject.SetActive(false);
 
-    public void OpenGranaryUI() => _builderPanelUI?.gameObject.SetActive(true);
+    public void OpenGranaryUI() => OpenPanel(_builderPanelUI != null ? _builderPanelUI.gameObject : null);
     public void CloseGranaryUI() => _builderPanelUI?.gameObject.SetActive(false);
 
-    public void OpenShopUI() => _shopUI?.gameObject.SetActive(true);
+    public void OpenShopUI() => OpenPanel(_shopUI != null ? _shopUI.gameObject : null);
     public void CloseShopUI() => _shopUI?.gameObject.SetActive(false);
 
-    public void OpenSkillTreeUI() => _skillTreeUI?.gameObject.SetActive(true);
+    public void OpenSkillTreeUI() => OpenPanel(_skillTreeUI != null ? _skillTreeUI.gameObject : null);
     public void CloseSkillTreeUI() => _skillTreeUI?.gameObject.SetActive(false);
 
-    public void OpenSkillUI() => _skillContainer?.gameObject.SetActive(true);
+    public void OpenSkillUI() => OpenPanel(_skillContainer != null ? _skillContainer.gameObject : null);
     public void CloseSkillUI() => _skillContainer?.gameObject.SetActive(false);
 
     public void OpenConsumableUI()
     {
         if (_consumableRadialContainer != null)
-            _consumableRadialContainer.gameObject.SetActive(true);
+            OpenPanel(_consumableRadialContainer);
         if (_consumableRadialUI != null)
             _consumableRadialUI.SyncWithManager();
     }
@@ -312,6 +552,7 @@ public class PlayerUI : MonoBehaviour
 
         _resultUI.gameObject.SetActive(true);
         _resultUI.Show(result);
+        FocusFirstSelectable(_resultUI.gameObject);
     }
     public void CloseResultUI() => _resultUI?.gameObject.SetActive(false);
 

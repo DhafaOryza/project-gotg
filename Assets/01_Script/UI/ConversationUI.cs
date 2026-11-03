@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 public class ConversationUI : MonoBehaviour
@@ -12,6 +14,10 @@ public class ConversationUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _dialogueText;
     [SerializeField] private Image _portraitImage;
 
+    [Header("Controller Input")]
+    [SerializeField] private EventSystem _eventSystem;
+    [SerializeField] private InputSystemUIInputModule _uiInputModule;
+
     [Header("Typewriter Settings")]
     [SerializeField] private float _typingSpeed = 0.03f;
 
@@ -20,6 +26,12 @@ public class ConversationUI : MonoBehaviour
     private Coroutine _typingCoroutine;
     private bool _isTyping;
     private Action _onDialogCompletedCallback;
+    private bool _previousNavigationEvents;
+    private GameObject _previousFirstSelected;
+    private bool _navigationEventsSuppressed;
+    private bool _dialogInputPrepared;
+
+    public bool IsDialogOpen => isActiveAndEnabled && _dialogPanel != null && _dialogPanel.activeInHierarchy;
 
     private void Update()
     {
@@ -27,6 +39,11 @@ public class ConversationUI : MonoBehaviour
         {
             OnContinueClicked();
         }
+    }
+
+    private void OnDisable()
+    {
+        RestoreUIInputNavigation();
     }
 
     public void StartDialog(string speakerName, Sprite speakerPortrait, string[] lines, Action onComplete = null)
@@ -38,6 +55,8 @@ public class ConversationUI : MonoBehaviour
             onComplete?.Invoke();
             return;
         }
+
+        SuppressUIInputNavigation();
 
         _currentLines = lines;
         _currentLineIndex = 0;
@@ -54,6 +73,59 @@ public class ConversationUI : MonoBehaviour
         if (_dialogPanel != null) _dialogPanel.SetActive(true);
 
         ShowCurrentLine();
+    }
+
+    private void SuppressUIInputNavigation()
+    {
+        if (_dialogInputPrepared)
+        {
+            if (_eventSystem != null)
+                _eventSystem.SetSelectedGameObject(null);
+            return;
+        }
+
+        _dialogInputPrepared = true;
+
+        if (_eventSystem == null)
+            _eventSystem = EventSystem.current != null
+                ? EventSystem.current
+                : FindFirstObjectByType<EventSystem>();
+
+        if (_uiInputModule == null && _eventSystem != null)
+            _uiInputModule = _eventSystem.GetComponent<InputSystemUIInputModule>();
+
+        if (_uiInputModule != null && !_navigationEventsSuppressed)
+        {
+            _previousNavigationEvents = _uiInputModule.sendNavigationEvents;
+            _uiInputModule.sendNavigationEvents = false;
+            _navigationEventsSuppressed = true;
+        }
+
+        if (_eventSystem != null)
+        {
+            _previousFirstSelected = _eventSystem.firstSelectedGameObject;
+            _eventSystem.firstSelectedGameObject = null;
+            _eventSystem.SetSelectedGameObject(null);
+        }
+    }
+
+    private void RestoreUIInputNavigation()
+    {
+        if (_navigationEventsSuppressed && _uiInputModule != null)
+            _uiInputModule.sendNavigationEvents = _previousNavigationEvents;
+
+        _navigationEventsSuppressed = false;
+        _dialogInputPrepared = false;
+
+        if (_eventSystem != null)
+        {
+            _eventSystem.firstSelectedGameObject =
+                _previousFirstSelected != null && _previousFirstSelected.activeInHierarchy
+                    ? _previousFirstSelected
+                    : null;
+        }
+
+        _previousFirstSelected = null;
     }
 
     public void StartNPCDialog(NPCDataSO npcData, Action onComplete = null)
@@ -107,6 +179,8 @@ public class ConversationUI : MonoBehaviour
     private void EndDialog()
     {
         if (_dialogPanel != null) _dialogPanel.SetActive(false);
+
+        RestoreUIInputNavigation();
 
         // Panggil callback untuk melanjutkan proses setelah dialog selesai
         Action callback = _onDialogCompletedCallback;
