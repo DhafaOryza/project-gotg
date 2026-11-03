@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5059634555884622837}
   - component: {fileID: 7033644194725901257}
   - component: {fileID: 2793046601936813404}
+  - component: {fileID: 5388713417713567499}
   m_Layer: 12
   m_Name: Player_001
   m_TagString: Untagged
@@ -105,6 +106,19 @@ MonoBehaviour:
   equippedConsumables: []
   reviveDuration: 60
   reviveHpPercentage: 0.15
+  attackEventFallbackTime: 1.5
+--- !u!114 &5388713417713567499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992265127889532007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1a249aaab510f44fa11924fcbea4ecd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerPassiveController
 --- !u!1 &5180262458530048171
 GameObject:
   m_ObjectHideFlags: 0
@@ -301,6 +315,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   _animator: {fileID: 2138360499496328168}
   _playerBaseEntity: {fileID: 2793046601936813404}
-  walkingParameter: IsWalking
-  attackTrigger: Attack
   movementThreshold: 0.1

@@ -15324,16 +15324,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ef9ca2a3926b03438a641722bbca1d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  inputActions: {fileID: -944628639613478452, guid: 6eb6d91bf1899884099fab393c77330b, type: 3}
+  actionMapName: Player
+  controllerBindingGroup: Controller
+  keyboardBindingGroup: Keyboard
   stopDistance: 0.1
-  holdToFollow: 1
-  clickMarkerPrefab: {fileID: 0}
+  movementDeadzone: 0.15
+  negativeScaleFacesRight: 1
   slowMoScale: 0.2
   attackPoint: {fileID: 0}
   skill1: 113
   skill2: 119
   skill3: 101
   skill4: 114
-  stopAct: 115
   interact: 102
   interactRange: 2
   interactLayers:

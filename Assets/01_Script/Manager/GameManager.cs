@@ -190,7 +190,11 @@ public class GameManager : MonoBehaviour
     {
         var player = levelSpawnerManager.GetCurrentPlayer();
         if (player != null)
+        {
             player.RedrawSkill();
+            player.RedrawConsumbale();
+        }
+           
 
         if (playerUI != null)
         {

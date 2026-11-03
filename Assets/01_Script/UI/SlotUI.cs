@@ -68,6 +68,11 @@ public class SlotUI : MonoBehaviour, IDropHandler
             return;
         }
 
+        bool success = skillsManager.EquipSkill(slotIndex, card.SkillData);
+        if (!success)
+        {
+            Debug.LogWarning($"[SlotUI] Tidak bisa memasang {card.SkillData.displayName} ke slot ini (Cek tipe Aktif vs Pasif)!");
+        }
         // Pasang tepat di slot ini (Q = 0, W = 1, E = 2, dst).
         skillsManager.EquipSkill(slotIndex, card.SkillData);
     }

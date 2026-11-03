@@ -168,8 +168,18 @@ public class PreparationUI : MonoBehaviour
         {
             SlotUI slot = Instantiate(slotUIPrefab, skillSlotContainer);
 
-            string key = i < keys.Count ? keys[i] : "";
-            slot.Initialize(key, skillsManager.GetSkill(i), i);
+
+
+            string  keyLabel;
+            if (i == SkillsManager.PassiveSlotIndex)
+            {
+                keyLabel = "P";
+            }
+            else
+            {
+                keyLabel = (i < keys.Count) ? keys[i] : "";
+            }
+            slot.Initialize(keyLabel, skillsManager.GetSkill(i), i);
         }
     }
 
