@@ -8659,8 +8659,6 @@ MonoBehaviour:
   _levelUpDetail: {fileID: 1538575295}
   _repairDetail: {fileID: 1538575299}
   _statsNodeContainer: {fileID: 170355412}
-  _statsNodePrefab: {fileID: 8014065273489527031, guid: 3760fa24a6f3b3719a49fe6931f85038, type: 3}
-  _statsDetailUI: {fileID: 2142584024}
   _txtCurrency: {fileID: 978775407}
   _granary: {fileID: 0}
 --- !u!114 &659798464
@@ -19106,16 +19104,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ef9ca2a3926b03438a641722bbca1d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  inputActions: {fileID: 0}
+  actionMapName: Player
+  controllerBindingGroup: Controller
+  keyboardBindingGroup: Keyboard
   stopDistance: 0.1
-  holdToFollow: 1
-  clickMarkerPrefab: {fileID: 0}
+  movementDeadzone: 0.15
+  negativeScaleFacesRight: 1
   slowMoScale: 0.2
   attackPoint: {fileID: 0}
   skill1: 113
   skill2: 119
   skill3: 101
   skill4: 114
-  stopAct: 115
   interact: 102
   interactRange: 2
   interactLayers:

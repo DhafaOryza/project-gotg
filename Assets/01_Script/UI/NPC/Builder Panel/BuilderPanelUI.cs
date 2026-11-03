@@ -12,7 +12,7 @@ public class BuilderPanelUI : MonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject _levelUpPanel;
-    [SerializeField] private GameObject _statsPanel;
+    // [SerializeField] private GameObject _statsPanel;
 
     [Header("Level Up")]
     [SerializeField] private BuilderLevelUpDetail _levelUpDetail;
@@ -22,8 +22,8 @@ public class BuilderPanelUI : MonoBehaviour
 
     [Header("Stats")]
     [SerializeField] private Transform _statsNodeContainer;
-    [SerializeField] private BuilderStatsNodeUI _statsNodePrefab;
-    [SerializeField] private BuilderStatsDetailUI _statsDetailUI;
+    // [SerializeField] private BuilderStatsNodeUI _statsNodePrefab;
+    // [SerializeField] private BuilderStatsDetailUI _statsDetailUI;
 
     [Header("Currency")]
     [SerializeField] private TextMeshProUGUI _txtCurrency;
@@ -32,8 +32,8 @@ public class BuilderPanelUI : MonoBehaviour
     [SerializeField] private GranaryBase _granary;
 
     private CurrencyManager _currencyManager;
-    private readonly List<BuilderStatsNodeUI> _nodes = new List<BuilderStatsNodeUI>();
-    private BuilderStatsNodeUI _selectedNode;
+    // private readonly List<BuilderStatsNodeUI> _nodes = new List<BuilderStatsNodeUI>();
+    // private BuilderStatsNodeUI _selectedNode;
 
     private void Awake()
     {
@@ -67,12 +67,12 @@ public class BuilderPanelUI : MonoBehaviour
         if (_currencyManager != null)
             _currencyManager.OnChange -= RefreshCurrency;
 
-        ClearNodes();
+        // ClearNodes();
     }
 
     public void Initialize()
     {
-        InitializeStatsNodes();
+        // InitializeStatsNodes();
         RefreshCurrency();
 
         // Repair is set up here, not in ShowLevelUpPanel, so it works whichever tab is open.
@@ -89,7 +89,7 @@ public class BuilderPanelUI : MonoBehaviour
     private void ShowLevelUpPanel()
     {
         if (_levelUpPanel != null) _levelUpPanel.SetActive(true);
-        if (_statsPanel != null) _statsPanel.SetActive(false);
+        // if (_statsPanel != null) _statsPanel.SetActive(false);
 
         if (_levelUpDetail != null) _levelUpDetail.Initialize(_granary);
     }
@@ -97,7 +97,7 @@ public class BuilderPanelUI : MonoBehaviour
     private void ShowStatsPanel()
     {
         if (_levelUpPanel != null) _levelUpPanel.SetActive(false);
-        if (_statsPanel != null) _statsPanel.SetActive(true);
+        // if (_statsPanel != null) _statsPanel.SetActive(true);
     }
 
     private void RefreshCurrency()
@@ -107,67 +107,67 @@ public class BuilderPanelUI : MonoBehaviour
         _txtCurrency.text = $"{_currencyManager.Money}";
     }
 
-    #region Stats Nodes
+    // #region Stats Nodes
 
-    private void InitializeStatsNodes()
-    {
-        // Clear first, otherwise the nodes are duplicated every time the panel opens.
-        ClearNodes();
+    // private void InitializeStatsNodes()
+    // {
+    //     // Clear first, otherwise the nodes are duplicated every time the panel opens.
+    //     ClearNodes();
 
-        if (_granary == null || _statsNodePrefab == null || _statsNodeContainer == null) return;
+    //     if (_granary == null || _statsNodePrefab == null || _statsNodeContainer == null) return;
 
-        var stats = _granary.AdditionalStats;
-        if (stats == null) return;
+    //     var stats = _granary.AdditionalStats;
+    //     if (stats == null) return;
 
-        foreach (var stat in stats)
-        {
-            BuilderStatsNodeUI node = Instantiate(_statsNodePrefab, _statsNodeContainer);
-            node.Initialize(stat, _granary);
-            node.OnSelected += HandleNodeSelected;
-            node.OnUpgraded += HandleNodeUpgraded;
-            _nodes.Add(node);
-        }
+    //     foreach (var stat in stats)
+    //     {
+    //         BuilderStatsNodeUI node = Instantiate(_statsNodePrefab, _statsNodeContainer);
+    //         node.Initialize(stat, _granary);
+    //         node.OnSelected += HandleNodeSelected;
+    //         node.OnUpgraded += HandleNodeUpgraded;
+    //         _nodes.Add(node);
+    //     }
 
-        if (_nodes.Count > 0)
-            HandleNodeSelected(_nodes[0]);
-    }
+    //     if (_nodes.Count > 0)
+    //         HandleNodeSelected(_nodes[0]);
+    // }
 
-    private void HandleNodeSelected(BuilderStatsNodeUI selected)
-    {
-        _selectedNode = selected;
+    // private void HandleNodeSelected(BuilderStatsNodeUI selected)
+    // {
+    //     _selectedNode = selected;
 
-        if (_statsDetailUI != null)
-            _statsDetailUI.Show(selected != null ? selected.Stats : null);
-    }
+    //     if (_statsDetailUI != null)
+    //         _statsDetailUI.Show(selected != null ? selected.Stats : null);
+    // }
 
-    private void HandleNodeUpgraded(BuilderStatsNodeUI upgradedNode)
-    {
-        foreach (var node in _nodes)
-        {
-            if (node != null) node.Refresh();
-        }
+    // private void HandleNodeUpgraded(BuilderStatsNodeUI upgradedNode)
+    // {
+    //     foreach (var node in _nodes)
+    //     {
+    //         if (node != null) node.Refresh();
+    //     }
 
-        if (_selectedNode == upgradedNode && _statsDetailUI != null)
-            _statsDetailUI.Show(upgradedNode.Stats);
-    }
+    //     if (_selectedNode == upgradedNode && _statsDetailUI != null)
+    //         _statsDetailUI.Show(upgradedNode.Stats);
+    // }
 
-    private void ClearNodes()
-    {
-        foreach (var node in _nodes)
-        {
-            if (node == null) continue;
+    // private void ClearNodes()
+    // {
+    //     foreach (var node in _nodes)
+    //     {
+    //         if (node == null) continue;
 
-            node.OnSelected -= HandleNodeSelected;
-            node.OnUpgraded -= HandleNodeUpgraded;
-            Destroy(node.gameObject);
-        }
+    //         node.OnSelected -= HandleNodeSelected;
+    //         node.OnUpgraded -= HandleNodeUpgraded;
+    //         Destroy(node.gameObject);
+    //     }
 
-        _nodes.Clear();
-        _selectedNode = null;
+    //     _nodes.Clear();
+    //     _selectedNode = null;
 
-        if (_statsDetailUI != null)
-            _statsDetailUI.Clear();
-    }
+    //     if (_statsDetailUI != null)
+    //         _statsDetailUI.Clear();
+    // }
 
-    #endregion
+    // #endregion
 }

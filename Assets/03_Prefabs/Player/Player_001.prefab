@@ -105,6 +105,7 @@ MonoBehaviour:
   equippedConsumables: []
   reviveDuration: 60
   reviveHpPercentage: 0.15
+  attackEventFallbackTime: 1.5
 --- !u!1 &5180262458530048171
 GameObject:
   m_ObjectHideFlags: 0
@@ -301,6 +302,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   _animator: {fileID: 2138360499496328168}
   _playerBaseEntity: {fileID: 2793046601936813404}
-  walkingParameter: IsWalking
-  attackTrigger: Attack
   movementThreshold: 0.1
