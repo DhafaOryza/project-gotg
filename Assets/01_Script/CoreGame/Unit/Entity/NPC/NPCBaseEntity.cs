@@ -27,7 +27,7 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         OnInteract += HandleNpcConversation;
     }
 
-    void Onestroy()
+    void OnDisable()
     {
         OnInteract -= HandleNpcConversation;
     }
