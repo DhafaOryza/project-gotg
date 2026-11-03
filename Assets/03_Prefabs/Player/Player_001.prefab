@@ -130,7 +130,7 @@ Transform:
   m_GameObject: {fileID: 5180262458530048171}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 1, z: 0}
+  m_LocalPosition: {x: -0.5, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -258,15 +258,49 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8543383791421563379, guid: 37d79e62e39585b47b33b61c1bb2e026, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8682674168726343539, guid: 37d79e62e39585b47b33b61c1bb2e026, type: 3}
+      propertyPath: m_SpriteLibraryAsset
+      value: 
+      objectReference: {fileID: 7108339969198208228, guid: 1a024b65e15807d479439ab80769237c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5278865999828214321, guid: 37d79e62e39585b47b33b61c1bb2e026, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7979453405371890337}
   m_SourcePrefab: {fileID: 100100000, guid: 37d79e62e39585b47b33b61c1bb2e026, type: 3}
+--- !u!95 &2138360499496328168 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2310819115820358902, guid: 37d79e62e39585b47b33b61c1bb2e026, type: 3}
+  m_PrefabInstance: {fileID: 4448806794366748446}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5417096420451690221 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8543383791421563379, guid: 37d79e62e39585b47b33b61c1bb2e026, type: 3}
   m_PrefabInstance: {fileID: 4448806794366748446}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8430486293036066095 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5278865999828214321, guid: 37d79e62e39585b47b33b61c1bb2e026, type: 3}
+  m_PrefabInstance: {fileID: 4448806794366748446}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7979453405371890337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8430486293036066095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 900ea1cb0d9cbf74d8f3b288a74f99ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
+  _animator: {fileID: 2138360499496328168}
+  _playerBaseEntity: {fileID: 2793046601936813404}
+  walkingParameter: IsWalking
+  attackTrigger: Attack
+  movementThreshold: 0.1

@@ -154,12 +154,12 @@ public class PreparationUI : MonoBehaviour
         var skillsManager = GameManager.Instance?.skillsManager;
         var playerController = GameManager.Instance?.playerController;
 
-        var keys = new List<KeyCode>
+        var keys = new List<string>
         {
-            playerController.skill1,
-            playerController.skill2,
-            playerController.skill3,
-            playerController.skill4,
+            playerController.GetSkillDisplayName(0),
+            playerController.GetSkillDisplayName(1),
+            playerController.GetSkillDisplayName(2),
+            playerController.GetSkillDisplayName(3),
         };
 
         ClearSkillSlot();
@@ -168,7 +168,7 @@ public class PreparationUI : MonoBehaviour
         {
             SlotUI slot = Instantiate(slotUIPrefab, skillSlotContainer);
 
-            string key = i < keys.Count ? keys[i].ToString() : "";
+            string key = i < keys.Count ? keys[i] : "";
             slot.Initialize(key, skillsManager.GetSkill(i), i);
         }
     }

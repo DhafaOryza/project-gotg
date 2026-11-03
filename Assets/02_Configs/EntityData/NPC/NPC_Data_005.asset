@@ -18,7 +18,7 @@ MonoBehaviour:
   skillCooldownMultiplier: 1
   moveSpeed: 5
   _npcId: NPC_005
-  _npcName: Pedagang Keliling
+  _npcName: Merchant
   _npcRole: 3
   _dialogueLines:
   - "Lorem Ipsum is standard dummy text used in the graphic design, publishing, and
@@ -26,5 +26,5 @@ MonoBehaviour:
     from the design with meaningful content.  It has a more-or-less normal distribution
     of letters, making it appear like readable English and allowing viewers to focus
     on the visual structure rather than the text itself. \n\n"
-  _npcPortrait: {fileID: 0}
+  _npcPortrait: {fileID: 9107708967767628772, guid: ffe89c834c9e1e04dbd3a40bda5c4dee, type: 3}
   _assignedQuest: {fileID: 0}

@@ -93,7 +93,7 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         var playerController = GameManager.Instance?.playerController;
         if (playerController == null) return;
 
-        _txtSign.text = $"{playerController.interact}";
+        _txtSign.text = playerController.GetInteractDisplayName();
     }
 
     private void SetName(bool visible)

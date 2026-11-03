@@ -240,18 +240,18 @@ public class PlayerUI : MonoBehaviour
         }
 
         var skills = _skillsManager.choosenSkills;
-        var keys = new List<KeyCode>
+        var keys = new List<string>
         {
-            _playerController.skill1,
-            _playerController.skill2,
-            _playerController.skill3,
-            _playerController.skill4,
+            _playerController.GetSkillDisplayName(0),
+            _playerController.GetSkillDisplayName(1),
+            _playerController.GetSkillDisplayName(2),
+            _playerController.GetSkillDisplayName(3),
         };
 
         for (int i = 0; i < skills.Count && i < keys.Count; i++)
         {
             SkillUI currentSkill = Instantiate(_skillUIPrefab, _skillContainer);
-            currentSkill.Setup(i, keys[i].ToString(), skills[i]);
+            currentSkill.Setup(i, keys[i], skills[i]);
         }
     }
 
