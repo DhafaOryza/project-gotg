@@ -9,7 +9,6 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     private BaseEntity targetPlayer;
     private BuildingBase targetBuilding;
     private Collider targetCollider;
-    private Rigidbody rb;
     private float attackCooldownRemaining;
     private Vector2 AttackOrigin => attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
     private bool HasTarget => targetPlayer != null || targetBuilding != null;
@@ -21,7 +20,6 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     {
         base.Awake();
         enemyData = entityData as EnemyDataSO;
-        rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -43,6 +41,8 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     private void FixedUpdate()
     {
         if (IsDead) return;
+
+        if (IsKnockedBack) return; //knockback
 
         if (!HasTarget)
         {
@@ -312,6 +312,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         if (targetPlayer != null)
         {
             targetPlayer.TakeDamage(Mathf.RoundToInt(enemyData.attackDamage * 1.0f));
+            targetPlayer.ApplyKnockback(transform.position, force: 7f);
             attackCooldownRemaining = enemyData.attackCooldown;
         }
         else if (targetBuilding != null)

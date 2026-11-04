@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class BaseEntity : MonoBehaviour, IDamageable, IHealthSource
@@ -14,6 +15,11 @@ public class BaseEntity : MonoBehaviour, IDamageable, IHealthSource
 
     public bool IsDead { get; protected set; }
 
+    [Header ("Knockback Setting")]
+    [SerializeField] protected float defaultKnockbackDuration = 0.2f;
+    [NonSerialized] protected Rigidbody rb;
+    public bool IsKnockedBack { get; private set; }
+
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
 
@@ -26,6 +32,7 @@ public class BaseEntity : MonoBehaviour, IDamageable, IHealthSource
     {
         maxHealth = CalcMaxHP();
         currentHealth = maxHealth;
+        rb = GetComponent<Rigidbody>();
     }
 
     void OnValidate()
@@ -74,6 +81,34 @@ public class BaseEntity : MonoBehaviour, IDamageable, IHealthSource
         Die();
     }
 
+    public virtual void ApplyKnockback(Vector3 sourcePosition, float force = 8f)
+    {
+        if (IsDead || force <= 0)
+            return;
+
+        if (rb == null)
+            rb = GetComponent<Rigidbody>();
+
+        if (rb != null)
+        {
+            float dirX = transform.position.x - sourcePosition.x;
+            float SignX = Mathf.Abs(dirX) > 0.01f ? Mathf.Sign(dirX) : 1f;
+
+            Vector3 knockbackDir = new Vector3(dirX, 0.4f, 0f).normalized;
+
+            Vector3 vel = rb.linearVelocity;
+            vel.x = knockbackDir.x * force;
+            vel.y = knockbackDir.y * force;
+            rb.linearVelocity = vel;
+
+            StopCoroutine(nameof(KnockbackRoutine));
+            StartCoroutine(KnockbackRoutine(defaultKnockbackDuration));
+        }
+
+    }
+
+
+
     #region Additional Stats
 
     /// <summary>
@@ -116,6 +151,13 @@ public class BaseEntity : MonoBehaviour, IDamageable, IHealthSource
         float vitality = entityData.baseVitality + GetAdditionalVitality();
         int baseHp = Mathf.Max(1, Mathf.RoundToInt(vitality * entityData.hpPerVitality) + bonusMaxHP);
         return baseHp;
+    }
+
+    private IEnumerator KnockbackRoutine(float duration)
+    {
+        IsKnockedBack = true;
+        yield return new WaitForSeconds(duration);
+        IsKnockedBack = false;
     }
 
     #endregion

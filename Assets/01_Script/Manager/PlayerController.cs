@@ -530,6 +530,12 @@ public class PlayerController : MonoBehaviour
     {
         if (playerRb == null || playerEntity == null) return;
 
+        if (playerEntity.IsKnockedBack) // knockback
+        {
+            hasTarget = false;
+            return;
+        }
+
         Vector3 vel = playerRb.linearVelocity; // Unity 6. Di versi lama pakai .velocity
 
         if (!playerEntity.CanAct)
