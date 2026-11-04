@@ -94,11 +94,11 @@ public class BuilderPanelUI : MonoBehaviour
         if (_levelUpDetail != null) _levelUpDetail.Initialize(_granary);
     }
 
-    private void ShowStatsPanel()
-    {
-        if (_levelUpPanel != null) _levelUpPanel.SetActive(false);
-        // if (_statsPanel != null) _statsPanel.SetActive(true);
-    }
+    // private void ShowStatsPanel()
+    // {
+    //     if (_levelUpPanel != null) _levelUpPanel.SetActive(false);
+    //     // if (_statsPanel != null) _statsPanel.SetActive(true);
+    // }
 
     private void RefreshCurrency()
     {

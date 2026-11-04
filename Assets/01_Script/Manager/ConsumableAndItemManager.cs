@@ -112,6 +112,39 @@ public class ConsumableAndItemManager : MonoBehaviour
         NotifyChanged();
         return true;
     }
+    
+    /// <summary>
+    /// True if the consumable is not equipped yet and a free slot is available.
+    /// </summary>
+    public bool CanAddConsumable(ConsumableDataSO dataSO)
+    {
+        if (dataSO == null) return false;
+
+        EnsureSlotCount();
+        if (chosenConsumables.Contains(dataSO)) return false;
+
+        return FindEmptySlot() >= 0;
+    }
+
+    /// <summary>
+    /// Puts a consumable with a full stack into the first free slot. Other slots keep their current stock.
+    /// </summary>
+    public bool TryAddConsumable(ConsumableDataSO dataSO)
+    {
+        if (!CanAddConsumable(dataSO)) return false;
+
+        int slotIndex = FindEmptySlot();
+        chosenConsumables[slotIndex] = dataSO;
+
+        // Unlike EquipConsumables, the runtime data is NOT rebuilt, so other slots keep their stock.
+        while (runtimeData.Count < MaxSlots)
+            runtimeData.Add(null);
+
+        runtimeData[slotIndex] = new ConsumableRuntimeData(dataSO, dataSO.maxStack);
+
+        NotifyChanged();
+        return true;
+    }
 
     public void ClearAll()
     {

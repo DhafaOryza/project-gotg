@@ -17,9 +17,13 @@ public class ConsumableDataSO : ScriptableObject
     public Sprite icon;
     public ConsumablesType consumableType;
 
+    [Header("Shop")]
+    public int price = 100;
+
     [TextArea] public string description;
     public int maxStack = 10;
     public int baseValue;
+
 
     // Subclass untuk efek nyata (heal darurat, buff sementara, dll)
     public virtual bool Use(PlayerBaseEntity user)
