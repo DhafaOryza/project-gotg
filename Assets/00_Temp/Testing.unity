@@ -705,6 +705,9 @@ MonoBehaviour:
   skillContainer: {fileID: 1313872783}
   slotUIPrefab: {fileID: 443134183945294231, guid: 0b857af43f8c9014b811f0cca53cdad8, type: 3}
   skillSlotContainer: {fileID: 791848337}
+  eventSystem: {fileID: 0}
+  preparationFirstSelected: {fileID: 0}
+  prepareSkillFirstSelected: {fileID: 0}
 --- !u!1 &70630960
 GameObject:
   m_ObjectHideFlags: 0
@@ -14603,6 +14606,7 @@ MonoBehaviour:
   _nameText: {fileID: 78885774}
   _dialogueText: {fileID: 393763683}
   _portraitImage: {fileID: 1867037472}
+  _eventSystem: {fileID: 0}
   _typingSpeed: 0.03
 --- !u!114 &1004403334
 MonoBehaviour:
@@ -23618,7 +23622,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1625419240
 RectTransform:
   m_ObjectHideFlags: 0
@@ -29925,6 +29929,11 @@ MonoBehaviour:
   _skillTreeUI: {fileID: 622420959}
   _resultUI: {fileID: 1625419241}
   dayTransition: {fileID: 755990534}
+  inputActions: {fileID: 0}
+  uiActionMapName: UI
+  controllerBindingGroup: Controller
+  keyboardBindingGroup: Keyboard
+  uiInputModule: {fileID: 0}
 --- !u!114 &2035140768
 MonoBehaviour:
   m_ObjectHideFlags: 0

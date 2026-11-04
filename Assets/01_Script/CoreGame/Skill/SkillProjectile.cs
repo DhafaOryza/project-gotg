@@ -65,6 +65,7 @@ public class SkillProjectile : MonoBehaviour
         if (!alreadyHit.Add(target)) return;             // satu musuh hanya kena sekali
 
         target.TakeDamage(_damage);
+        target.ApplyKnockback(transform.position, force: 6f);
 
         if (_damageTextPrefab != null)
         {

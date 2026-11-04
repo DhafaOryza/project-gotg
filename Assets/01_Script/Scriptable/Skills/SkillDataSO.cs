@@ -128,6 +128,7 @@ public class SkillDataSO : ScriptableObject
             if (closestTarget != null)
             {
                 closestTarget?.TakeDamage(finalDamage);
+                closestTarget?.ApplyKnockback(spawnPos, force: 8f);
                 ShowDamageText(closestTarget.transform.position, finalDamage, isLucky);
                 
                 if ((closestTarget.currentHealth <= 0 || closestTarget.IsDead) && user != null)
@@ -146,6 +147,7 @@ public class SkillDataSO : ScriptableObject
                 if (target != null && target != user && !(target is PlayerBaseEntity))
                 {
                     target.TakeDamage(finalDamage);
+                    target?.ApplyKnockback(spawnPos, force: 8f);
                     ShowDamageText(target.transform.position, finalDamage, isLucky);
 
                     if ((target.currentHealth <= 0 || target.IsDead) && user != null)
