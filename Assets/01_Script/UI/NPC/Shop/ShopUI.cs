@@ -65,7 +65,7 @@ public class ShopUI : MonoBehaviour
         _consumableManager = gameManager != null ? gameManager.consumableAndItemManager : null;
 
         if (_currencyManager != null)
-            _currencyManager.OnChange += RefreshDetail;
+            _currencyManager.OnChange += HandleCurrencyChanged;
 
         if (_consumableManager != null)
             _consumableManager.OnChosenConsumablesChanged += RefreshDetail;
@@ -77,11 +77,11 @@ public class ShopUI : MonoBehaviour
         BuildCards();
     }
 
-    // private void HandleCurrencyChanged()
-    // {
-    //     RefreshCurrency();
-    //     RefreshDetail();
-    // }
+    private void HandleCurrencyChanged()
+    {
+        RefreshCurrency();
+        RefreshDetail();
+    }
 
     public void CloseUI()
     {
@@ -209,7 +209,7 @@ public class ShopUI : MonoBehaviour
     private void UnsubscribeManagers()
     {
         if (_currencyManager != null)
-            _currencyManager.OnChange -= RefreshDetail;
+            _currencyManager.OnChange -= HandleCurrencyChanged;
 
         if (_consumableManager != null)
             _consumableManager.OnChosenConsumablesChanged -= RefreshDetail;
