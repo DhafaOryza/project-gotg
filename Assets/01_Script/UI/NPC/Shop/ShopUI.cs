@@ -173,6 +173,8 @@ public class ShopUI : MonoBehaviour
         bool isAvailable = _consumableManager != null && _consumableManager.CanAddConsumable(item);
 
         _detailUI.Show(item, canAfford, isAvailable);
+        
+        Debug.Log($"[ShopUI] money={(_currencyManager != null ? _currencyManager.Money : -1)}, price={item.price}, canAfford={canAfford}, isAvailable={isAvailable}, hasManager={_consumableManager != null}");
     }
 
     /// <summary>

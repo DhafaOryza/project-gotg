@@ -84,6 +84,7 @@ public class ConsumableDetailUI : MonoBehaviour
 
     private void HandleBuyButton()
     {
+        Debug.Log("[ConsumableDetailUI] Buy button clicked.");
         OnBuyClicked?.Invoke();
     }
 }
