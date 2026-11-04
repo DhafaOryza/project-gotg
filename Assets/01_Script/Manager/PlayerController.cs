@@ -54,6 +54,7 @@ public class PlayerController : MonoBehaviour
     private float targetX;
     private bool hasTarget;
     private float facingDirection = 1f;
+    private bool gameplayInputEnabled = true;
 
     // Buffer untuk OverlapSphereNonAlloc supaya tidak membuat array baru tiap interact.
     private readonly Collider[] interactBuffer = new Collider[16];
@@ -158,6 +159,27 @@ public class PlayerController : MonoBehaviour
 
         UpdateBindingGroupForConnectedDevices();
         playerActionMap.Enable();
+        if (!gameplayInputEnabled)
+            playerActionMap.Disable();
+    }
+
+    public void SetGameplayInputEnabled(bool enabled)
+    {
+        if (gameplayInputEnabled == enabled) return;
+
+        gameplayInputEnabled = enabled;
+        if (!enabled)
+        {
+            hasTarget = false;
+            CancelAiming();
+        }
+
+        if (playerActionMap == null || !isActiveAndEnabled) return;
+
+        if (enabled)
+            playerActionMap.Enable();
+        else
+            playerActionMap.Disable();
     }
 
     private void HandleDeviceChange(InputDevice device, InputDeviceChange change)

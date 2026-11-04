@@ -20,6 +20,8 @@ public class PlayerUI : MonoBehaviour
 
     [Header("Preparation")]
     [SerializeField] private PreparationUI _preparationUI;
+    [SerializeField] private GameObject _preparationFirstSelected;
+    [SerializeField] private GameObject _prepareSkillFirstSelected;
 
     [Header("Skill Panel")]
     [SerializeField] private Transform _skillContainer;
@@ -64,6 +66,7 @@ public class PlayerUI : MonoBehaviour
     private InputAction uiCancelAction;
     private string activeUIBindingGroup;
     private Coroutine panelFocusRoutine;
+    private bool isModalUIInputActive;
 
     public ConversationUI ConversationUI => _conversationUI;
     public BuilderPanelUI BuilderPanel => _builderPanelUI;
@@ -92,6 +95,11 @@ public class PlayerUI : MonoBehaviour
         InitializeUI();
     }
 
+    void LateUpdate()
+    {
+        UpdateInputMode();
+    }
+
     void OnEnable()
     {
         InputSystem.onDeviceChange += HandleUIDeviceChange;
@@ -103,6 +111,15 @@ public class PlayerUI : MonoBehaviour
     void OnDisable()
     {
         InputSystem.onDeviceChange -= HandleUIDeviceChange;
+
+        if (isModalUIInputActive)
+        {
+            if (uiInputModule != null)
+                uiInputModule.enabled = false;
+
+            GameManager.Instance?.playerController?.SetGameplayInputEnabled(true);
+            isModalUIInputActive = false;
+        }
 
         if (_granary != null)
             _granary.OnInteract -= OpenPreparationUI;
@@ -239,6 +256,45 @@ public class PlayerUI : MonoBehaviour
             uiCancelAction.performed += HandleUICancel;
 
         UpdateUIBindingGroupForConnectedDevices();
+        uiInputModule.enabled = false;
+        isModalUIInputActive = false;
+    }
+
+    private void UpdateInputMode()
+    {
+        if (uiInputModule == null || runtimeUIInputActions == null)
+            return;
+
+        bool useUIInput = HasModalUIOpen();
+        if (useUIInput == isModalUIInputActive)
+            return;
+
+        isModalUIInputActive = useUIInput;
+        uiInputModule.enabled = useUIInput;
+
+        var playerController = GameManager.Instance != null
+            ? GameManager.Instance.playerController
+            : null;
+        playerController?.SetGameplayInputEnabled(!useUIInput);
+
+        if (!useUIInput)
+        {
+            var eventSystem = uiInputModule.GetComponent<EventSystem>();
+            if (eventSystem != null)
+                eventSystem.SetSelectedGameObject(null);
+        }
+    }
+
+    private bool HasModalUIOpen()
+    {
+        return (_conversationUI != null && _conversationUI.IsDialogOpen) ||
+            IsPanelOpen(_preparationUI) ||
+            IsPanelOpen(_statsStore) ||
+            IsPanelOpen(_builderPanelUI) ||
+            IsPanelOpen(_shopUI) ||
+            IsPanelOpen(_skillTreeUI) ||
+            IsPanelOpen(_resultUI) ||
+            (dayTransition != null && dayTransition.IsPlaying);
     }
 
     private void HandleUICancel(InputAction.CallbackContext context)
@@ -254,6 +310,7 @@ public class PlayerUI : MonoBehaviour
             // Tutup subpanel terlebih dahulu agar Cancel berperilaku seperti tombol Back.
             if (_preparationUI.TryClosePrepareSkillPanel())
             {
+                FocusPreparationPanel();
                 return;
             }
 
@@ -289,7 +346,7 @@ public class PlayerUI : MonoBehaviour
         return panel != null && panel.gameObject.activeInHierarchy;
     }
 
-    private void OpenPanel(GameObject panel)
+    private void OpenPanel(GameObject panel, GameObject preferredSelection = null)
     {
         if (panel == null) return;
 
@@ -304,19 +361,19 @@ public class PlayerUI : MonoBehaviour
         if (panelFocusRoutine != null)
             StopCoroutine(panelFocusRoutine);
 
-        panelFocusRoutine = StartCoroutine(FocusPanelNextFrame(panel));
+        panelFocusRoutine = StartCoroutine(FocusPanelNextFrame(panel, preferredSelection));
     }
 
-    private IEnumerator FocusPanelNextFrame(GameObject panel)
+    private IEnumerator FocusPanelNextFrame(GameObject panel, GameObject preferredSelection = null)
     {
         yield return null;
 
         panelFocusRoutine = null;
         if (panel != null && panel.activeInHierarchy)
-            FocusFirstSelectable(panel);
+            FocusFirstSelectable(panel, preferredSelection);
     }
 
-    private void FocusFirstSelectable(GameObject panel)
+    private void FocusFirstSelectable(GameObject panel, GameObject preferredSelection = null)
     {
         if (panel == null) return;
 
@@ -324,6 +381,12 @@ public class PlayerUI : MonoBehaviour
             ? uiInputModule.GetComponent<EventSystem>()
             : EventSystem.current;
         if (eventSystem == null) return;
+
+        if (IsSelectable(preferredSelection))
+        {
+            eventSystem.SetSelectedGameObject(preferredSelection);
+            return;
+        }
 
         foreach (var selectable in panel.GetComponentsInChildren<Selectable>(false))
         {
@@ -333,6 +396,49 @@ public class PlayerUI : MonoBehaviour
             eventSystem.SetSelectedGameObject(selectable.gameObject);
             return;
         }
+    }
+
+    private static bool IsSelectable(GameObject candidate)
+    {
+        if (candidate == null || !candidate.activeInHierarchy) return false;
+
+        var selectable = candidate.GetComponent<Selectable>();
+        return selectable != null && selectable.IsInteractable();
+    }
+
+    public void ShowPreparationSkillPanel(GameObject panel)
+    {
+        OpenPanel(panel, _prepareSkillFirstSelected);
+    }
+
+    public void FocusPreparationPanel()
+    {
+        if (_preparationUI == null) return;
+
+        if (panelFocusRoutine != null)
+            StopCoroutine(panelFocusRoutine);
+
+        panelFocusRoutine = StartCoroutine(FocusPanelNextFrame(
+            _preparationUI.gameObject,
+            _preparationFirstSelected));
+    }
+
+    public void StartNPCConversation(NPCDataSO npcData, System.Action onComplete)
+    {
+        if (_conversationUI == null)
+            _conversationUI = Object.FindFirstObjectByType<ConversationUI>();
+
+        if (_conversationUI == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        var eventSystem = uiInputModule != null
+            ? uiInputModule.GetComponent<EventSystem>()
+            : EventSystem.current;
+        eventSystem?.SetSelectedGameObject(null);
+        _conversationUI.StartNPCDialog(npcData, onComplete);
     }
 
     private void HandleUIDeviceChange(InputDevice device, InputDeviceChange change)
@@ -516,7 +622,7 @@ public class PlayerUI : MonoBehaviour
     public void OpenPreparationUI()
     {
         if (_preparationUI != null)
-            OpenPanel(_preparationUI.gameObject);
+            OpenPanel(_preparationUI.gameObject, _preparationFirstSelected);
     }
 
     public void ClosePreparationUI()

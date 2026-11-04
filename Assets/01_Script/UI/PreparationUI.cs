@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PreparationUI : MonoBehaviour
@@ -22,25 +21,12 @@ public class PreparationUI : MonoBehaviour
     [SerializeField] private SlotUI slotUIPrefab;
     [SerializeField] private Transform skillSlotContainer;
 
-    [Header("Controller Navigation")]
-    [Tooltip("EventSystem scene. Boleh dikosongkan; akan dicari otomatis saat game berjalan.")]
-    [SerializeField] private EventSystem eventSystem;
-    [Tooltip("Elemen pertama yang dipilih saat kembali ke Preparation UI.")]
-    [SerializeField] private GameObject preparationFirstSelected;
-    [Tooltip("Elemen pertama yang dipilih saat Prepare Skill Panel dibuka.")]
-    [SerializeField] private GameObject prepareSkillFirstSelected;
-
     private NightController nightController;
 
     // Listener tombol didaftarkan SEKALI di Awake. Sebelumnya didaftarkan di Initialize() yang
     // dipanggil setiap OnEnable, sehingga tiap panel dibuka listener-nya bertambah (aksi terpanggil berkali-kali).
     void Awake()
     {
-        if (eventSystem == null)
-            eventSystem = EventSystem.current != null
-                ? EventSystem.current
-                : FindFirstObjectByType<EventSystem>();
-
         if (btnPreparation != null) btnPreparation.onClick.AddListener(HandlePreparationButton);
         if (btnExploreWorld != null) btnExploreWorld.onClick.AddListener(HandleExploreWorldButton);
         if (btnStartNight != null) btnStartNight.onClick.AddListener(HandleStartNightButton);
@@ -100,12 +86,13 @@ public class PreparationUI : MonoBehaviour
     {
         if (preparationSkillPanel == null) return;
 
-        preparationSkillPanel.SetActive(true);
+        if (PlayerUI.Instance != null)
+            PlayerUI.Instance.ShowPreparationSkillPanel(preparationSkillPanel);
+        else
+            preparationSkillPanel.SetActive(true);
+
         GenerateSkillCard();
         GenerateSkillSlot();
-        SelectFirst(prepareSkillFirstSelected != null
-            ? prepareSkillFirstSelected
-            : btnPrepareBack != null ? btnPrepareBack.gameObject : null);
     }
 
     private void HandleBackPreparationButton()
@@ -149,26 +136,7 @@ public class PreparationUI : MonoBehaviour
         if (preparationSkillPanel != null)
             preparationSkillPanel.SetActive(false);
 
-        SelectFirst(preparationFirstSelected != null
-            ? preparationFirstSelected
-            : btnPreparation != null ? btnPreparation.gameObject : null);
-    }
-
-    private void SelectFirst(GameObject target)
-    {
-        if (target == null || !target.activeInHierarchy) return;
-
-        if (eventSystem == null)
-            eventSystem = EventSystem.current != null
-                ? EventSystem.current
-                : FindFirstObjectByType<EventSystem>();
-
-        if (eventSystem == null) return;
-
-        // firstSelectedGameObject menyimpan default EventSystem, sementara SetSelectedGameObject
-        // langsung memindahkan fokus navigasi pada frame ini.
-        eventSystem.firstSelectedGameObject = target;
-        eventSystem.SetSelectedGameObject(target);
+        PlayerUI.Instance?.FocusPreparationPanel();
     }
 
     #region Prepare Skill Panel
