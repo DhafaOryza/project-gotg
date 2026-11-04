@@ -151,12 +151,16 @@ public class NPCBaseEntity : BaseEntity, IInteractable
 
     private void HandleNpcConversation()
     {
-        var conversationUI = PlayerUI.Instance?.ConversationUI;
-        if (conversationUI == null) conversationUI = Object.FindFirstObjectByType<ConversationUI>();
+        if (_npcData == null) return;
 
-        if (conversationUI == null || _npcData == null) return;
+        if (PlayerUI.Instance != null)
+        {
+            PlayerUI.Instance.StartNPCConversation(_npcData, OnConversationEnded);
+            return;
+        }
 
-        conversationUI.StartNPCDialog(_npcData, OnConversationEnded);
+        var conversationUI = Object.FindFirstObjectByType<ConversationUI>();
+        conversationUI?.StartNPCDialog(_npcData, OnConversationEnded);
     }
 
     #endregion
