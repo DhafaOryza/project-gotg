@@ -21,7 +21,12 @@ public class PreparationUI : MonoBehaviour
     [SerializeField] private SlotUI slotUIPrefab;
     [SerializeField] private Transform skillSlotContainer;
 
+    [Header("Notification")]
+    [SerializeField] private Notification notification;
+
     private NightController nightController;
+
+    private bool hasWarned = false;
 
     // Listener tombol didaftarkan SEKALI di Awake. Sebelumnya didaftarkan di Initialize() yang
     // dipanggil setiap OnEnable, sehingga tiap panel dibuka listener-nya bertambah (aksi terpanggil berkali-kali).
@@ -48,6 +53,8 @@ public class PreparationUI : MonoBehaviour
         var skillsManager = GameManager.Instance?.skillsManager;
         if (skillsManager != null)
             skillsManager.OnChosenSkillsChanged += RedrawPrepareSkill;
+
+        hasWarned = false;
     }
 
     void OnDisable()
@@ -117,6 +124,21 @@ public class PreparationUI : MonoBehaviour
         {
             Debug.LogError("PreparationUI: NightController tidak ditemukan di GameManager.", this);
             return;
+        }
+
+        var skillsManager = GameManager.Instance?.skillsManager;
+
+        if (skillsManager != null && skillsManager.EquippedCount == 0)
+        {
+            if (!hasWarned)
+            {
+                if (notification != null)
+                {
+                    notification.ShowWarning();
+                }
+                hasWarned = true;
+                return;
+            }
         }
 
         controller.StartNight();
