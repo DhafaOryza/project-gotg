@@ -13,7 +13,7 @@ public class ShopUI : MonoBehaviour
     [Header("Shop List")]
     [SerializeField] private Transform _contentContainer;
     [SerializeField] private ConsumableCardUI _cardPrefab;
-    [SerializeField] private List<ConsumableDataSO> _shopItems = new List<ConsumableDataSO>();
+    private const int MaxCards = 8;
 
     [Header("Currency")]
     [SerializeField] private TextMeshProUGUI _txtCurrency;
@@ -24,6 +24,7 @@ public class ShopUI : MonoBehaviour
     private CurrencyManager _currencyManager;
     private ConsumableAndItemManager _consumableManager;
     private readonly List<ConsumableCardUI> _cards = new List<ConsumableCardUI>();
+    private readonly List<GameObject> _emptySlots = new List<GameObject>();
     private ConsumableCardUI _selectedCard;
 
     private void Awake()
@@ -107,16 +108,36 @@ public class ShopUI : MonoBehaviour
         // Clear first, otherwise the cards are duplicated every time the shop opens.
         ClearCards();
 
-        if (_cardPrefab == null || _contentContainer == null) return;
+        if (_contentContainer == null) return;
 
-        foreach (var item in _shopItems)
+        GameSessionData sessionData = GameSessionData.GetOrCreate();
+        List<ConsumableDataSO> shopItems = sessionData != null && sessionData.consumables != null
+            ? sessionData.consumables
+            : new List<ConsumableDataSO>();
+
+        int generatedCount = 0;
+
+        if (_cardPrefab != null)
         {
-            if (item == null) continue;
+            foreach (var item in shopItems)
+            {
+                if (item == null) continue;
+                if (generatedCount >= MaxCards) break;
 
-            ConsumableCardUI card = Instantiate(_cardPrefab, _contentContainer);
-            card.Initialize(item);
-            card.OnSelected += HandleCardSelected;
-            _cards.Add(card);
+                ConsumableCardUI card = Instantiate(_cardPrefab, _contentContainer);
+                card.Initialize(item);
+                card.OnSelected += HandleCardSelected;
+                _cards.Add(card);
+                generatedCount++;
+            }
+        }
+
+        while (generatedCount < MaxCards)
+        {
+            GameObject emptySlot = new GameObject("None", typeof(RectTransform));
+            emptySlot.transform.SetParent(_contentContainer, false);
+            _emptySlots.Add(emptySlot);
+            generatedCount++;
         }
 
         if (_cards.Count > 0)
@@ -132,10 +153,17 @@ public class ShopUI : MonoBehaviour
             if (card == null) continue;
 
             card.OnSelected -= HandleCardSelected;
-            Destroy(card.gameObject);
+        }
+
+        // Clear every existing entry in the container, including objects not tracked by this instance.
+        if (_contentContainer != null)
+        {
+            for (int i = _contentContainer.childCount - 1; i >= 0; i--)
+                Destroy(_contentContainer.GetChild(i).gameObject);
         }
 
         _cards.Clear();
+        _emptySlots.Clear();
         _selectedCard = null;
 
         if (_detailUI != null)
@@ -145,11 +173,6 @@ public class ShopUI : MonoBehaviour
     private void HandleCardSelected(ConsumableCardUI selected)
     {
         _selectedCard = selected;
-
-        foreach (var card in _cards)
-        {
-            if (card != null) card.SetSelected(card == _selectedCard);
-        }
 
         RefreshDetail();
     }
