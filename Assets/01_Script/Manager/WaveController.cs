@@ -74,6 +74,10 @@ public class WaveController : MonoBehaviour
 
         if (!IsNightValid()) return;
 
+        var waveMeter = FindFirstObjectByType<WaveMeterUI>();
+        if (waveMeter != null)
+            waveMeter.SetupFlagMarker();
+
         nightEnded = false;
         IsClearingEnemies = false;
         SubscribeLoseCondition();
@@ -215,6 +219,29 @@ public class WaveController : MonoBehaviour
     public int GetCurrentWaveIndex() => currentWaveIndex;
     public void SetCurrentWaveIndex(int setWaveIndex) => currentWaveIndex = setWaveIndex;
     public NightWaveDataSO GetWaveData() => waveData;
+
+    /// <summary>
+    /// Menghitung persentase keseluruhan malam (0.0f sampai 1.0f) untuk kebutuhan Wave Meter UI.
+    /// </summary>
+    
+    public float GetTotalNightProgress()
+    {
+        if (waveData == null || waveData.waveEnemies == null || waveData.waveEnemies.Count == 0)
+            return 0;
+
+        int totalWaves = waveData.waveEnemies.Count;
+        float totalDuration = totalWaves * waveData.timerPerWave;
+        if (totalDuration <= 0f ) return 0f;
+
+        if (IsClearingEnemies) return 1.0f;
+
+        float completedWaveTime = currentWaveIndex * waveData.timerPerWave;
+        float currentWaveElapsedTime = Mathf.Max(0f, waveData.timerPerWave - WaveTimeRemaining);
+        float totalElapsedTime = completedWaveTime + currentWaveElapsedTime; 
+        return Mathf.Clamp01(totalElapsedTime / totalDuration);
+    }
+
+    public int GetTotalWavesCount => waveData != null && waveData.waveEnemies != null ? waveData.waveEnemies.Count : 0;
 
     #endregion
 }
