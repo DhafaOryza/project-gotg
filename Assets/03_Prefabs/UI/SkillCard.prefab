@@ -294,6 +294,7 @@ MonoBehaviour:
   skillIcon: {fileID: 213892365466395551}
   skillName: {fileID: 2137809516879892223}
   skillCooldown: {fileID: 885734669649311898}
+  dragSourceAlpha: 0.5
 --- !u!1 &3797223323691529598
 GameObject:
   m_ObjectHideFlags: 0

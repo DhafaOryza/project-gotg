@@ -46,9 +46,9 @@ public class ResultUI : MonoBehaviour
     [FormerlySerializedAs("lose")]
     [SerializeField] private GameObject _lose;
 
-    [Header("Report")]
-    [SerializeField] private ReportTexts _clearTexts;
-    [SerializeField] private ReportTexts _loseTexts;
+    [Header("Shared Report")]
+    [SerializeField] private GameObject _reportPanel;
+    [SerializeField] private ReportTexts _reportTexts;
 
     [Header("References")]
     [FormerlySerializedAs("btnContinue")]
@@ -78,18 +78,21 @@ public class ResultUI : MonoBehaviour
 
         if (_clear != null) _clear.SetActive(won);
         if (_lose != null) _lose.SetActive(!won);
+        if (_reportPanel != null) _reportPanel.SetActive(true);
 
-        ShowReport(won);
+        ShowReport();
     }
 
     public void ClearNightWave() => Show(NightResult.Clear);
 
     public void LoseNightWave() => Show(NightResult.Lose);
 
-    private void ShowReport(bool won)
+    private void ShowReport()
     {
-        TrackerBattle tracker = GameManager.Instance.trackerBattle;
-        CurrencyManager currency = GameManager.Instance != null ? GameManager.Instance.currencyManager : null;
+        bool won = _lastResult == NightResult.Clear;
+        GameManager gameManager = GameManager.Instance;
+        TrackerBattle tracker = gameManager != null ? gameManager.trackerBattle : null;
+        CurrencyManager currency = gameManager != null ? gameManager.currencyManager : null;
 
         if (tracker == null || currency == null)
         {
@@ -102,8 +105,7 @@ public class ResultUI : MonoBehaviour
 
         BattleReward reward = currency.ApplyBattleReward(report, won);
 
-        if (won) _clearTexts.Apply(report, reward);
-        else _loseTexts.Apply(report, reward);
+        _reportTexts?.Apply(report, reward);
     }
 
     // Semua alur setelah Continue diatur GameManager lewat GameState:
