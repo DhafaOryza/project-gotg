@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6085547132985784735}
-  - {fileID: 8610276657885842789}
+  - {fileID: 1792097034186968714}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &4446217346963391130
@@ -104,7 +104,7 @@ MonoBehaviour:
   defaultKnockbackDuration: 0.2
   attackPoint: {fileID: 6085547132985784735}
   _attackEventFallbackTime: 1.5
-  _visualRoot: {fileID: 8610276657885842789}
+  _visualRoot: {fileID: 1792097034186968714}
   _spriteFacesRight: 0
   _facingDeadZone: 0.05
 --- !u!1 &6695799739565963735
@@ -198,7 +198,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1001 &200626240434060929
+--- !u!1001 &7884627849021291886
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -214,6 +214,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.00000032782552
       objectReference: {fileID: 0}
+    - target: {fileID: 4440146608360769763, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 0796a5dc03fbfaf46b856b6f0c324b3c, type: 2}
     - target: {fileID: 6920496234249428176, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.16520602
@@ -294,45 +298,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8481717913020937188, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7313006129517521799, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 9128505184706512154}
+      addedObject: {fileID: 5392569756205465579}
   m_SourcePrefab: {fileID: 100100000, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
---- !u!95 &4563929074678789730 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4440146608360769763, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
-  m_PrefabInstance: {fileID: 200626240434060929}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7473091176134137094 stripped
+--- !u!1 &582889687542503145 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7313006129517521799, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
-  m_PrefabInstance: {fileID: 200626240434060929}
+  m_PrefabInstance: {fileID: 7884627849021291886}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &9128505184706512154
+--- !u!114 &5392569756205465579
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7473091176134137094}
+  m_GameObject: {fileID: 582889687542503145}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef4bbf70fdbfd8110be5ab49547c635d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimation
-  _animator: {fileID: 4563929074678789730}
+  _animator: {fileID: 5833642085868057997}
   _enemyBaseEntity: {fileID: 3713379564978150042}
   _movementThreshold: 0.1
---- !u!4 &8610276657885842789 stripped
+--- !u!4 &1792097034186968714 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8481717913020937188, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
-  m_PrefabInstance: {fileID: 200626240434060929}
+  m_PrefabInstance: {fileID: 7884627849021291886}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &5833642085868057997 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4440146608360769763, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
+  m_PrefabInstance: {fileID: 7884627849021291886}
   m_PrefabAsset: {fileID: 0}

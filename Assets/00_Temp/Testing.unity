@@ -29148,13 +29148,13 @@ MonoBehaviour:
   _lose: {fileID: 895363000}
   _reportPanel: {fileID: 951464977}
   _reportTexts:
-    _survivalTimeText: {fileID: 1036157367}
-    _killText: {fileID: 58361606}
-    _knockdownText: {fileID: 1402785845}
-    _granaryDamageText: {fileID: 1010826328}
-    _killPercentText: {fileID: 486830176}
-    _totalPercentText: {fileID: 1773199255}
-    _rewardText: {fileID: 511180223}
+    _survivalTimeText: {fileID: 2139094188}
+    _killText: {fileID: 1720619142}
+    _knockdownText: {fileID: 2047414077}
+    _granaryDamageText: {fileID: 696038561}
+    _killPercentText: {fileID: 1156292713}
+    _totalPercentText: {fileID: 486548343}
+    _rewardText: {fileID: 1126305925}
   _btnContinue: {fileID: 1362485152}
   _wavemeter: {fileID: 749671072}
 --- !u!1 &1629140633
