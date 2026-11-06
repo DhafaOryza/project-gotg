@@ -15,12 +15,7 @@ public class EnemyRangedEntity : EnemyBaseEntity
     /// </summary>
     protected override void PerformAttack()
     {
-        if (_rangedData == null || _rangedData.castSkill == null)
-        {
-            // No ranged skill assigned: use the normal melee damage.
-            base.PerformAttack();
-            return;
-        }
+        if (_rangedData == null) return;
 
         Transform targetTransform = null;
         if (targetPlayer != null) targetTransform = targetPlayer.transform;
@@ -28,9 +23,16 @@ public class EnemyRangedEntity : EnemyBaseEntity
 
         if (targetTransform == null) return;
 
-        Transform origin = attackPoint != null ? attackPoint : transform;
+        Transform originTransform  = attackPoint != null ? attackPoint : transform;
         Vector2 aimDirection = ((Vector2)targetTransform.position - AttackOrigin).normalized;
 
-        _rangedData.castSkill.Activate(this, origin, aimDirection);
+        if (_rangedData.castSkill != null)
+        {
+            _rangedData.castSkill.Activate(this, originTransform , aimDirection);
+        }
+        else
+        {
+            base.PerformAttack();
+        }
     }
 }

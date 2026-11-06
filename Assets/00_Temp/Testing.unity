@@ -24149,7 +24149,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1362485153}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1625419241}
+        m_TargetAssemblyTypeName: ResultUI, Assembly-CSharp
+        m_MethodName: HandleContinueButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1362485153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29144,6 +29156,7 @@ MonoBehaviour:
     _totalPercentText: {fileID: 1773199255}
     _rewardText: {fileID: 511180223}
   _btnContinue: {fileID: 1362485152}
+  _wavemeter: {fileID: 749671072}
 --- !u!1 &1629140633
 GameObject:
   m_ObjectHideFlags: 0

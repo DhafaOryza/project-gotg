@@ -53,6 +53,7 @@ public class ResultUI : MonoBehaviour
     [Header("References")]
     [FormerlySerializedAs("btnContinue")]
     [SerializeField] private Button _btnContinue;
+    [SerializeField] private GameObject _wavemeter;
 
     private NightResult _lastResult = NightResult.Clear;
 
@@ -84,7 +85,6 @@ public class ResultUI : MonoBehaviour
     }
 
     public void ClearNightWave() => Show(NightResult.Clear);
-
     public void LoseNightWave() => Show(NightResult.Lose);
 
     private void ShowReport()
@@ -111,7 +111,7 @@ public class ResultUI : MonoBehaviour
     // Semua alur setelah Continue diatur GameManager lewat GameState:
     //   menang -> Reset    (night berikutnya, NPC kembali, interactable aktif)
     //   kalah  -> Starting (dunia di-reset: HP penuh, NPC kembali)
-    private void HandleContinueButton()
+    public void HandleContinueButton()
     {
         var gameManager = GameManager.Instance;
         if (gameManager == null)
@@ -124,6 +124,16 @@ public class ResultUI : MonoBehaviour
 
         // Panel hanya ditutup kalau perpindahan state diterima (mis. ditolak saat transisi masih berjalan).
         if (gameManager.SetState(target))
+        {
             gameObject.SetActive(false);
+        }
+            
+        var meter = _wavemeter.GetComponent<WaveMeterUI>();
+        if (meter != null)
+            meter.ResetWaveMeter();
+
+        if (_wavemeter != null)
+            _wavemeter.gameObject.SetActive(false);
+        
     }
 }

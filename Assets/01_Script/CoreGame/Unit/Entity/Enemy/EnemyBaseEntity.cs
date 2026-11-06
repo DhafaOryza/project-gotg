@@ -392,7 +392,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         // The target may have died or moved away while the attack animation was playing.
         if (IsDead || enemyData == null || !HasTarget || !IsTargetInRange()) return;
 
-        DealDamageToTarget();
+        PerformAttack();
     }
 
     /// <summary>
