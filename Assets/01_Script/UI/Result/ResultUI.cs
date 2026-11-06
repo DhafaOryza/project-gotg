@@ -126,14 +126,6 @@ public class ResultUI : MonoBehaviour
         if (gameManager.SetState(target))
         {
             gameObject.SetActive(false);
-        }
-            
-        var meter = _wavemeter.GetComponent<WaveMeterUI>();
-        if (meter != null)
-            meter.ResetWaveMeter();
-
-        if (_wavemeter != null)
-            _wavemeter.gameObject.SetActive(false);
-        
+        }     
     }
 }

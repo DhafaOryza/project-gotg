@@ -185,6 +185,7 @@ public class PlayerUI : MonoBehaviour
         if (_waveMeterContainer != null) _waveMeterContainer.SetActive(false);
 
         CloseAllRolePanels();
+        CloseWaveMeterUI();
 
         if (_granary == null)
         {
@@ -657,9 +658,18 @@ public class PlayerUI : MonoBehaviour
     {
         if (_waveMeterContainer != null)
         {
-            var meter = _waveMeterContainer.GetComponent<WaveMeterUI>();
+            var meter = _waveMeterContainer.GetComponentInChildren<WaveMeterUI>(true);
             meter?.ResetWaveMeter();
             _waveMeterContainer.SetActive(false);
+        }
+        else
+        {
+            var meter = FindFirstObjectByType<WaveMeterUI>();
+            if (meter != null)
+            {
+                meter.ResetWaveMeter();
+                meter.gameObject.SetActive(false);
+            }
         }
     }
 

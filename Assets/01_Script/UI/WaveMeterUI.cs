@@ -51,11 +51,16 @@ public class WaveMeterUI : MonoBehaviour
     public void SetupFlagMarker()
     {
         ClearFlags();
-        if (waveController == null)
-            waveController = GameManager.Instance?.waveController;
-        if (waveController == null)
+
+        if (flagMarkerPrefabs == null)
         {
-            Debug.LogError("[WaveMeterUI] waveController tidak ditemukan!");
+            Debug.LogWarning($"[WaveMeterUI] Variabel flagMarkerPrefabs kosong di GameObject: '{gameObject.name}'! Melewati spawn bendera.", this);
+            return;
+        }
+
+        if (flagContainer == null)
+        {
+            Debug.LogWarning($"[WaveMeterUI] Variabel flagContainer kosong di GameObject: '{gameObject.name}'!", this);
             return;
         }
         

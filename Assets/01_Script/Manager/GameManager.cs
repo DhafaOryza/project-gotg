@@ -268,6 +268,7 @@ public class GameManager : MonoBehaviour
     {
         playerUI?.CloseSkillUI();
         playerUI?.CloseConsumableUI();
+        playerUI?.CloseWaveMeterUI();
 
         levelSpawnerManager.DespawnAllEnemy();
         levelSpawnerManager.ResetCharacters();    // player dan lumbung kembali dengan HP penuh
