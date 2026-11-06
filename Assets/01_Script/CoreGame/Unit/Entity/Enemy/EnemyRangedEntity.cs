@@ -2,37 +2,35 @@ using UnityEngine;
 
 public class EnemyRangedEntity : EnemyBaseEntity
 {
-    private EnemyRangeDataSO rangedData;
+    private EnemyRangeDataSO _rangedData;
 
     protected override void Awake()
     {
         base.Awake();
-        rangedData = entityData as EnemyRangeDataSO;
+        _rangedData = entityData as EnemyRangeDataSO;
     }
 
-    protected override void TryAttackTarget()
+    /// <summary>
+    /// Runs on the hit frame of the attack animation. Fires the cast skill at where the target is right now.
+    /// </summary>
+    protected override void PerformAttack()
     {
-        if (attackCooldownRemaining > 0f || rangedData == null) return;
+        if (_rangedData == null || _rangedData.castSkill == null)
+        {
+            // No ranged skill assigned: use the normal melee damage.
+            base.PerformAttack();
+            return;
+        }
 
         Transform targetTransform = null;
         if (targetPlayer != null) targetTransform = targetPlayer.transform;
         else if (targetBuilding != null) targetTransform = targetBuilding.transform;
 
-        Vector2 origin = AttackOrigin;
-        Vector2 aimDir = ((Vector2)targetTransform.position - origin).normalized;
-
         if (targetTransform == null) return;
-        
-        if (rangedData.castSkill != null)
-        {
-            rangedData.castSkill.Activate(this, attackPoint != null ? attackPoint : transform ,aimDir);
-        }
-        else
-        {
-            base.TryAttackTarget();
-        }
 
-        attackCooldownRemaining = rangedData.attackCooldown;
+        Transform origin = attackPoint != null ? attackPoint : transform;
+        Vector2 aimDirection = ((Vector2)targetTransform.position - AttackOrigin).normalized;
 
+        _rangedData.castSkill.Activate(this, origin, aimDirection);
     }
 }

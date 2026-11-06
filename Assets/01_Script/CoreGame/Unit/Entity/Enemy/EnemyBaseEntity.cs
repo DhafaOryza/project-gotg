@@ -381,7 +381,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     }
 
     /// <summary>
-    /// Called by EnemyAnimation on the hit frame, or by the fallback timer. Deals the damage.
+    /// Called by EnemyAnimation on the hit frame, or by the fallback timer. Runs the attack effect.
     /// </summary>
     public void ExecutePendingAttackFromAnimationEvent()
     {
@@ -392,6 +392,15 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         // The target may have died or moved away while the attack animation was playing.
         if (IsDead || enemyData == null || !HasTarget || !IsTargetInRange()) return;
 
+        DealDamageToTarget();
+    }
+
+    /// <summary>
+    /// The real effect of the attack, run on the hit frame of the animation.
+    /// Melee damage by default; ranged enemies override this to fire a skill instead.
+    /// </summary>
+    protected virtual void PerformAttack()
+    {
         DealDamageToTarget();
     }
 

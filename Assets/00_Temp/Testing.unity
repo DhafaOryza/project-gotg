@@ -29136,13 +29136,13 @@ MonoBehaviour:
   _lose: {fileID: 895363000}
   _reportPanel: {fileID: 951464977}
   _reportTexts:
-    _survivalTimeText: {fileID: 0}
-    _killText: {fileID: 0}
-    _knockdownText: {fileID: 0}
-    _granaryDamageText: {fileID: 0}
-    _killPercentText: {fileID: 0}
-    _totalPercentText: {fileID: 0}
-    _rewardText: {fileID: 0}
+    _survivalTimeText: {fileID: 1036157367}
+    _killText: {fileID: 58361606}
+    _knockdownText: {fileID: 1402785845}
+    _granaryDamageText: {fileID: 1010826328}
+    _killPercentText: {fileID: 486830176}
+    _totalPercentText: {fileID: 1773199255}
+    _rewardText: {fileID: 511180223}
   _btnContinue: {fileID: 1362485152}
 --- !u!1 &1629140633
 GameObject:
