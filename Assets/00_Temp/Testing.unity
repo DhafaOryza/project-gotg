@@ -1014,6 +1014,7 @@ MonoBehaviour:
   skillContainer: {fileID: 1313872783}
   slotUIPrefab: {fileID: 443134183945294231, guid: 0b857af43f8c9014b811f0cca53cdad8, type: 3}
   skillSlotContainer: {fileID: 791848337}
+  notification: {fileID: 0}
 --- !u!1 &70630960
 GameObject:
   m_ObjectHideFlags: 0

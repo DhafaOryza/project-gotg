@@ -5,11 +5,25 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 {
     [SerializeField] private Transform attackPoint;
 
+    [Header("Attack Animation")]
+    [SerializeField, Min(0.1f)] private float _attackEventFallbackTime = 1.5f;
+
+    [Header("Facing")]
+    [SerializeField] private Transform _visualRoot;
+    [SerializeField] private bool _spriteFacesRight = true;
+    [SerializeField, Min(0f)] private float _facingDeadZone = 0.05f;
+
+    private bool _isAttacking;
+    private float _attackFallbackTimer;
+    private float attackCooldownRemaining;
+    private float _attackPointBaseX;
+    private bool _isAttackPointInsideVisual;
+
+    private EnemyAnimation _enemyAnimation;
     private EnemyDataSO enemyData;
     private BaseEntity targetPlayer;
     private BuildingBase targetBuilding;
     private Collider targetCollider;
-    private float attackCooldownRemaining;
     private Vector2 AttackOrigin => attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
     private bool HasTarget => targetPlayer != null || targetBuilding != null;
 
@@ -20,6 +34,16 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     {
         base.Awake();
         enemyData = entityData as EnemyDataSO;
+        _enemyAnimation = GetComponentInChildren<EnemyAnimation>(true);
+
+        if (_visualRoot == null)
+            _visualRoot = _enemyAnimation != null ? _enemyAnimation.transform : transform;
+
+        if (attackPoint != null)
+        {
+            _attackPointBaseX = attackPoint.localPosition.x;
+            _isAttackPointInsideVisual = attackPoint.IsChildOf(_visualRoot);
+        }
     }
 
     private void Update()
@@ -27,6 +51,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         if (IsDead) return;
 
         TickAttackCooldown(Time.deltaTime);
+        TickAttackFallback(Time.deltaTime);
 
         if (targetPlayer != null && targetPlayer.IsDead)
             ClearTarget();
@@ -36,13 +61,21 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 
         if (!HasTarget)
             AcquireTarget();
+
+        FaceTarget();
     }
 
     private void FixedUpdate()
     {
         if (IsDead) return;
 
-        if (IsKnockedBack) return; //knockback
+        if (IsKnockedBack) return;
+
+        if (_isAttacking)
+        {
+            StopMoving();
+            return;
+        }
 
         if (!HasTarget)
         {
@@ -57,6 +90,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     {
         if (IsDead) return;
 
+        CancelAttack();
         base.Die();
         GameManager.Instance.trackerBattle?.RegisterEnemyKilled();
         ReturnToPool();
@@ -65,14 +99,21 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     public void OnSpawn()
     {
         ResetState();
+        CancelAttack();
         attackCooldownRemaining = 0f;
+
+        if (_enemyAnimation != null)
+            _enemyAnimation.ResetAnimation();
+
         GameManager.Instance.trackerBattle?.RegisterEnemySpawned();
         AcquireTarget();
+        FaceTarget();
     }
 
     public void OnDespawn()
     {
         ClearTarget();
+        CancelAttack();
         attackCooldownRemaining = 0f;
 
         if (rb != null)
@@ -304,22 +345,143 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
             attackCooldownRemaining = Mathf.Max(0f, attackCooldownRemaining - deltaTime);
     }
 
+    // private void TryAttackTarget()
+    // {
+    //     if (attackCooldownRemaining > 0f || enemyData == null) return;
+
+    //     // int damage = Mathf.RoundToInt(enemyData.attackDamage);
+    //     if (targetPlayer != null)
+    //     {
+    //         targetPlayer.TakeDamage(Mathf.RoundToInt(enemyData.attackDamage * 1.0f));
+    //         targetPlayer.ApplyKnockback(transform.position, force: 7f);
+    //         attackCooldownRemaining = enemyData.attackCooldown;
+    //     }
+    //     else if (targetBuilding != null)
+    //     {
+    //         targetBuilding.TakeDamage(Mathf.RoundToInt(enemyData.attackDamage * 0.2f));
+    //         attackCooldownRemaining = enemyData.attackCooldown;
+    //     }
+    // }
+
+    /// <summary>
+    /// Starts an attack when the cooldown is ready. The damage is dealt later, on the Animation Event.
+    /// </summary>
+    /// 
     private void TryAttackTarget()
     {
-        if (attackCooldownRemaining > 0f || enemyData == null) return;
+        if (_isAttacking || attackCooldownRemaining > 0f || enemyData == null) return;
 
-        // int damage = Mathf.RoundToInt(enemyData.attackDamage);
+        _isAttacking = true;
+        _attackFallbackTimer = _attackEventFallbackTime;
+        attackCooldownRemaining = enemyData.attackCooldown;
+
+        // Without an attack animation there is no event, so the damage is dealt right away.
+        if (_enemyAnimation == null || !_enemyAnimation.PlayAttack())
+            ExecutePendingAttackFromAnimationEvent();
+    }
+
+    /// <summary>
+    /// Called by EnemyAnimation on the hit frame, or by the fallback timer. Deals the damage.
+    /// </summary>
+    public void ExecutePendingAttackFromAnimationEvent()
+    {
+        if (!_isAttacking) return;
+
+        CancelAttack();
+
+        // The target may have died or moved away while the attack animation was playing.
+        if (IsDead || enemyData == null || !HasTarget || !IsTargetInRange()) return;
+
+        DealDamageToTarget();
+    }
+
+    private void DealDamageToTarget()
+    {
         if (targetPlayer != null)
         {
             targetPlayer.TakeDamage(Mathf.RoundToInt(enemyData.attackDamage * 1.0f));
             targetPlayer.ApplyKnockback(transform.position, force: 7f);
-            attackCooldownRemaining = enemyData.attackCooldown;
         }
         else if (targetBuilding != null)
         {
             targetBuilding.TakeDamage(Mathf.RoundToInt(enemyData.attackDamage * 0.2f));
-            attackCooldownRemaining = enemyData.attackCooldown;
         }
+    }
+
+    private bool IsTargetInRange()
+    {
+        float attackRange = enemyData != null ? enemyData.attackRange : 1.5f;
+        Vector2 origin = AttackOrigin;
+
+        return Vector2.Distance(origin, GetTargetClosestPoint(origin)) <= attackRange;
+    }
+
+    private void TickAttackFallback(float deltaTime)
+    {
+        if (!_isAttacking) return;
+
+        _attackFallbackTimer -= deltaTime;
+        if (_attackFallbackTimer > 0f) return;
+
+        Debug.LogWarning($"[{name}] Attack Animation Event tidak terpanggil; serangan dijalankan lewat fallback.", this);
+        ExecutePendingAttackFromAnimationEvent();
+    }
+
+    private void CancelAttack()
+    {
+        _isAttacking = false;
+        _attackFallbackTimer = 0f;
+    }
+
+    #endregion
+
+    #region Facing
+
+    /// <summary>
+    /// Turns the enemy toward its current target. The facing is locked while an attack animation plays.
+    /// </summary>
+    private void FaceTarget()
+    {
+        if (_isAttacking || !HasTarget) return;
+
+        float targetX = targetPlayer != null
+            ? targetPlayer.transform.position.x
+            : targetBuilding.transform.position.x;
+
+        // Measured from the root, not from the attack point, because the attack point moves when the enemy flips.
+        float dx = targetX - transform.position.x;
+        if (Mathf.Abs(dx) < _facingDeadZone) return;
+
+        SetFacing(dx > 0f);
+    }
+
+    /// <summary>
+    /// Flips the visual so the enemy looks to the right (true) or to the left (false).
+    /// </summary>
+    private void SetFacing(bool faceRight)
+    {
+        // Positive scale means "default direction", so the sign depends on which way the sprite was drawn.
+        float desiredSign = faceRight == _spriteFacesRight ? 1f : -1f;
+
+        Vector3 scale = _visualRoot.localScale;
+        if (Mathf.Sign(scale.x) == desiredSign) return;
+
+        scale.x = Mathf.Abs(scale.x) * desiredSign;
+        _visualRoot.localScale = scale;
+
+        MirrorAttackPoint(faceRight);
+    }
+
+    /// <summary>
+    /// Keeps the attack point in front of the enemy when it is not part of the flipped visual.
+    /// </summary>
+    private void MirrorAttackPoint(bool faceRight)
+    {
+        if (attackPoint == null || _isAttackPointInsideVisual) return;
+
+        Vector3 position = attackPoint.localPosition;
+        position.x = faceRight == _spriteFacesRight ? _attackPointBaseX : -_attackPointBaseX;
+        attackPoint.localPosition = position;
     }
 
     #endregion
