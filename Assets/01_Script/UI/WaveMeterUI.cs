@@ -88,14 +88,20 @@ public class WaveMeterUI : MonoBehaviour
         }
     }
 
-    private void ClearFlags()
+    public void ResetWaveMeter()
     {
-        foreach (var flag in activeFlags)
-        {
-            if (flag != null)
-                Destroy(flag);
+        ClearFlags();
+        if (progressBarFill != null)
+            progressBarFill.fillAmount = 0f;
+    }
 
-            activeFlags.Clear();
+    public void ClearFlags()
+    {
+        for (int i = activeFlags.Count - 1; i >= 0; i--)
+        {
+            if (activeFlags[i] != null)
+                Destroy(activeFlags[i]);
         }
+        activeFlags.Clear();
     }
 }
