@@ -653,7 +653,15 @@ public class PlayerUI : MonoBehaviour
     public void CloseSkillUI() => _skillContainer?.gameObject.SetActive(false);
 
     public void OpenWaveMeterUI() => _waveMeterContainer?.gameObject.SetActive(true);
-    public void CloseWaveMeterUI() => _waveMeterContainer?.gameObject.SetActive(false);
+    public void CloseWaveMeterUI()
+    {
+        if (_waveMeterContainer != null)
+        {
+            var meter = _waveMeterContainer.GetComponent<WaveMeterUI>();
+            meter?.ResetWaveMeter();
+            _waveMeterContainer.SetActive(false);
+        }
+    }
 
     public void OpenConsumableUI()
     {
