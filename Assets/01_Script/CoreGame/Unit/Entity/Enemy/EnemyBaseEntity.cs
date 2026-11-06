@@ -23,7 +23,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     private EnemyDataSO enemyData;
     protected BaseEntity targetPlayer;
     protected BuildingBase targetBuilding;
-    private Collider targetCollider;
+    protected Collider targetCollider;
     protected Vector2 AttackOrigin => attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
     private bool HasTarget => targetPlayer != null || targetBuilding != null;
 

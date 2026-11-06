@@ -17,14 +17,17 @@ public class EnemyRangedEntity : EnemyBaseEntity
     {
         if (_rangedData == null) return;
 
-        Transform targetTransform = null;
-        if (targetPlayer != null) targetTransform = targetPlayer.transform;
-        else if (targetBuilding != null) targetTransform = targetBuilding.transform;
+        Vector3 targetCenterPos;
 
-        if (targetTransform == null) return;
+        if (targetCollider != null && targetCollider.enabled) targetCenterPos = targetCollider.bounds.center;
+        else if (targetPlayer != null) targetCenterPos  = targetPlayer.transform.position + Vector3.up * 1f;
+        else if (targetBuilding != null) targetCenterPos  = targetBuilding.transform.position + Vector3.up * 1.5f;
+        else return;
+
+        if (targetCenterPos  == null) return;
 
         Transform originTransform  = attackPoint != null ? attackPoint : transform;
-        Vector2 aimDirection = ((Vector2)targetTransform.position - AttackOrigin).normalized;
+        Vector2 aimDirection = ((Vector2)targetCenterPos - AttackOrigin).normalized;
 
         if (_rangedData.castSkill != null)
         {
