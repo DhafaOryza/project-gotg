@@ -59,9 +59,48 @@ public class SkillProjectile : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other)
-    {
+    {   
+        var building = other.GetComponentInParent<BuildingBase>();
+        if (building != null && !building.IsDestroy)
+        {
+            if (_owner is EnemyBaseEntity)
+            {
+                building.TakeDamage(_damage);
+
+                if (_damageTextPrefab != null)
+                {
+                    Vector3 textSpawnPos = building.transform.position + Vector3.up * 2f;
+                    GameObject textGO = Instantiate(_damageTextPrefab, textSpawnPos, Quaternion.identity);
+                    if (textGO.TryGetComponent(out FloatingDamageText floatText))
+                        floatText.Setup(_damage, false);
+                }
+
+                if (!_isPiercing)
+                    Destroy(gameObject);
+
+                return;
+            }
+            else
+            {
+                return;
+            }
+        }
+
         var target = other.GetComponentInParent<BaseEntity>();
-        if (target == null || target == _owner || target is PlayerBaseEntity) return;
+        if (target == null || target == _owner || target.IsDead) return;
+
+        if (_owner != null && _owner.entityData != null && target.entityData != null)
+        {
+            if (_owner.entityData.Faction == target.entityData.Faction)
+                return;
+        }
+        else
+        {
+            if (_owner is PlayerBaseEntity && target is PlayerBaseEntity) return;
+            if (_owner is EnemyBaseEntity && target is EnemyBaseEntity) return;
+        }
+
+
         if (!alreadyHit.Add(target)) return;             // satu musuh hanya kena sekali
 
         target.TakeDamage(_damage);

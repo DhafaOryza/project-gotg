@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EnemyBaseEntity : BaseEntity, IPoolable
 {
-    [SerializeField] private Transform attackPoint;
+    [SerializeField] protected Transform attackPoint;
 
     [Header("Attack Animation")]
     [SerializeField, Min(0.1f)] private float _attackEventFallbackTime = 1.5f;
@@ -15,16 +15,16 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 
     private bool _isAttacking;
     private float _attackFallbackTimer;
-    private float attackCooldownRemaining;
+    protected float attackCooldownRemaining;
     private float _attackPointBaseX;
     private bool _isAttackPointInsideVisual;
 
     private EnemyAnimation _enemyAnimation;
     private EnemyDataSO enemyData;
-    private BaseEntity targetPlayer;
-    private BuildingBase targetBuilding;
+    protected BaseEntity targetPlayer;
+    protected BuildingBase targetBuilding;
     private Collider targetCollider;
-    private Vector2 AttackOrigin => attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
+    protected Vector2 AttackOrigin => attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
     private bool HasTarget => targetPlayer != null || targetBuilding != null;
 
     // Buffer bersama supaya GetSolidCollider tidak membuat array baru tiap dipanggil.
@@ -367,7 +367,7 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
     /// Starts an attack when the cooldown is ready. The damage is dealt later, on the Animation Event.
     /// </summary>
     /// 
-    private void TryAttackTarget()
+    protected virtual void TryAttackTarget()
     {
         if (_isAttacking || attackCooldownRemaining > 0f || enemyData == null) return;
 
