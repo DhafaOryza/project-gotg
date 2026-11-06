@@ -106,7 +106,7 @@ public class PlayerAnimation : MonoBehaviour
     /// Called by the Animation Event placed on the hit frame of the Atk clip.
     /// </summary>
     public void OnAttackAnimationEvent()
-    {
+    {        
         if (_playerBaseEntity == null)
             _playerBaseEntity = GetComponentInParent<PlayerBaseEntity>();
 
