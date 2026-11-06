@@ -204,6 +204,7 @@ public class GameManager : MonoBehaviour
             playerUI.InitializeSkillUI();
             playerUI.OpenSkillUI();
             playerUI.OpenConsumableUI();
+            playerUI.OpenWaveMeterUI();
         }
 
         levelSpawnerManager.DespawnAllNPC();
@@ -233,6 +234,7 @@ public class GameManager : MonoBehaviour
     {
         playerUI?.CloseSkillUI();
         playerUI?.CloseConsumableUI();
+        playerUI?.CloseWaveMeterUI();
 
         levelSpawnerManager.DespawnAllEnemy();
         levelSpawnerManager.SpawnNPCs();

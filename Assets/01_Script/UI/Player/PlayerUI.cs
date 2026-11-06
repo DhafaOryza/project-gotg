@@ -43,6 +43,9 @@ public class PlayerUI : MonoBehaviour
     [Header("Result")]
     [SerializeField] private ResultUI _resultUI;
 
+    [Header("Wave Meter HUD")]
+    [SerializeField] private GameObject _waveMeterContainer;
+
     [Header("Transition")]
     [SerializeField] private DayTransitionUI dayTransition;
 
@@ -179,6 +182,7 @@ public class PlayerUI : MonoBehaviour
         if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
         if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
         if (_consumableRadialContainer != null) _consumableRadialContainer.gameObject.SetActive(false);
+        if (_waveMeterContainer != null) _waveMeterContainer.SetActive(false);
 
         CloseAllRolePanels();
 
@@ -647,6 +651,9 @@ public class PlayerUI : MonoBehaviour
 
     public void OpenSkillUI() => OpenPanel(_skillContainer != null ? _skillContainer.gameObject : null);
     public void CloseSkillUI() => _skillContainer?.gameObject.SetActive(false);
+
+    public void OpenWaveMeterUI() => _waveMeterContainer?.gameObject.SetActive(true);
+    public void CloseWaveMeterUI() => _waveMeterContainer?.gameObject.SetActive(false);
 
     public void OpenConsumableUI()
     {
