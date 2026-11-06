@@ -22,7 +22,7 @@ MonoBehaviour:
   - waveType: 0
     spawnPerInterval: 3
     enemyIds:
-    - {fileID: 11400000, guid: d2ce71cf22993914f824808e04b42c16, type: 2}
+    - {fileID: 11400000, guid: 74f8a8ad4c5776441ba7c38c3a39e2f6, type: 2}
   - waveType: 0
     spawnPerInterval: 3
     enemyIds:
@@ -30,4 +30,4 @@ MonoBehaviour:
   - waveType: 0
     spawnPerInterval: 3
     enemyIds:
-    - {fileID: 11400000, guid: d2ce71cf22993914f824808e04b42c16, type: 2}
+    - {fileID: 11400000, guid: 74f8a8ad4c5776441ba7c38c3a39e2f6, type: 2}
