@@ -73,18 +73,17 @@ public class SkillDataSO : ScriptableObject
         }
     }
 
-    public bool Activate(PlayerBaseEntity user, Transform attackPoint, Vector2 aimDirection)
+    public bool Activate(BaseEntity user, Transform attackPoint, Vector2 aimDirection)
     {
         Vector3 spawnPos = attackPoint != null ? attackPoint.position : user.transform.position;
         float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
         
         bool isLucky = false;
-        int finalDamage = user != null ? user.CalculateDamageWithLucky(baseValue, out isLucky) : baseValue;
-        if (isLucky)
-        {
-            Debug.Log($"<color=yellow>[LUCKY CRITICAL!] Serangan {displayName} memicu Lucky! Damage: {baseValue} -> {finalDamage}</color>");
-        }
+        int finalDamage = baseValue;
+
+        if (user is PlayerBaseEntity playerUser)
+            finalDamage = user != null ? playerUser.CalculateDamageWithLucky(baseValue, out isLucky) : baseValue;
 
         if (isProjectile)
         {
@@ -131,10 +130,10 @@ public class SkillDataSO : ScriptableObject
                 closestTarget?.ApplyKnockback(spawnPos, force: 8f);
                 ShowDamageText(closestTarget.transform.position, finalDamage, isLucky);
                 
-                if ((closestTarget.currentHealth <= 0 || closestTarget.IsDead) && user != null)
+                if ((closestTarget.currentHealth <= 0 || closestTarget.IsDead) && user is PlayerBaseEntity playeruser)
                 {
                     // Debug.Log("<color=green>[KILL DETECTED] Single target musuh tewas!</color>");
-                    user.OnEnemyKilledByPlayer();
+                    playeruser.OnEnemyKilledByPlayer();
                 }
             }
             
@@ -150,10 +149,10 @@ public class SkillDataSO : ScriptableObject
                     target?.ApplyKnockback(spawnPos, force: 8f);
                     ShowDamageText(target.transform.position, finalDamage, isLucky);
 
-                    if ((target.currentHealth <= 0 || target.IsDead) && user != null)
+                    if ((target.currentHealth <= 0 || target.IsDead) && user != null && user is PlayerBaseEntity playerAoeUser)
                     {
                         // Debug.Log("<color=green>[KILL DETECTED] AOE target musuh tewas!</color>");
-                        user.OnEnemyKilledByPlayer();
+                        playerAoeUser.OnEnemyKilledByPlayer();
                     }
                 }
             }
