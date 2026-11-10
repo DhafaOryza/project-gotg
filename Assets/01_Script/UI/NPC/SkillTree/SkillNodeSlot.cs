@@ -10,7 +10,6 @@ public class SkillNodeSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _descriptionText;
     [SerializeField] private TextMeshProUGUI _costText;
     [SerializeField] private Button _slotButton;
-    [SerializeField] private Image _selectedBorder;
     [SerializeField] private GameObject _lockOverlayObject;
 
     private SkillDataSO _skillData;

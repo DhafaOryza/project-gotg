@@ -10,7 +10,6 @@ public class SkillTreeUI : MonoBehaviour
 
     [Header("Character Profile UI")]
     [SerializeField] private Image _portraitImage;
-    [SerializeField] private TextMeshProUGUI _nameText;
 
     [Header("Prefabs & Container")]
     [SerializeField] private SkillNodeSlot _skillSlotPrefab;
@@ -36,7 +35,6 @@ public class SkillTreeUI : MonoBehaviour
 
     public GameObject SkillTreeMainPanel => _skillTreeMainPanel;
     public Image PortraitImage => _portraitImage;
-    public TextMeshProUGUI NameText => _nameText;
     public SkillDataSO SelectedSkillData => _selectedSkillData;
     public Button ExitButton => _exitButton;
 
@@ -57,24 +55,19 @@ public class SkillTreeUI : MonoBehaviour
 
         if (_npcData != null)
         {
-            SetupProfile(_npcData.NpcPortrait, _npcData.NpcName);
+            SetupProfile(_npcData.NpcPortrait);
         }
     }
 
     /// <summary>
     /// Sets up the character portrait image and name text dynamically.
     /// </summary>
-    private void SetupProfile(Sprite portrait, string characterName)
+    private void SetupProfile(Sprite portrait)
     {
         if (_portraitImage != null)
         {
             _portraitImage.gameObject.SetActive(portrait != null);
             _portraitImage.sprite = portrait;
-        }
-
-        if (_nameText != null)
-        {
-            _nameText.text = characterName;
         }
     }
 
