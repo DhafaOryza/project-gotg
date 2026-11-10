@@ -136,10 +136,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3059301a9031da54dbc8a4dcc59849cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSlotUI
-  ItemIcon: {fileID: 7263015842738232102}
-  txtCurrentStack: {fileID: 2978167859648501409}
-  txtSlotLabel: {fileID: 4001483271016868368}
-  btnRemove: {fileID: 8817165834588016907}
+  _itemIcon: {fileID: 7263015842738232102}
+  _itemNameText: {fileID: 3245810565149794522}
+  _txtCurrentStack: {fileID: 2978167859648501409}
+  _txtSlotLabel: {fileID: 4001483271016868368}
+  _info: {fileID: 7424157027633507011}
+  _none: {fileID: 8714819426047816358}
+  _btnRemove: {fileID: 8817165834588016907}
 --- !u!1 &2866814290371795168
 GameObject:
   m_ObjectHideFlags: 0
