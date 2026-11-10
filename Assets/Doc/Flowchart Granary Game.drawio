@@ -194,7 +194,7 @@
         <mxCell id="TEKYcDeXiPUu0HET5yMa-62" edge="1" parent="1" source="TEKYcDeXiPUu0HET5yMa-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="TEKYcDeXiPUu0HET5yMa-39">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="TEKYcDeXiPUu0HET5yMa-47" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Registry&lt;div&gt;- Granary Data&lt;br&gt;&lt;div&gt;- Enemies&lt;/div&gt;&lt;div&gt;- Skill Datas&lt;/div&gt;&lt;div&gt;- Consumables&lt;/div&gt;&lt;div&gt;- Night Datas&lt;/div&gt;&lt;div&gt;- Quest Datas&lt;/div&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="TEKYcDeXiPUu0HET5yMa-47" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Registry&lt;div&gt;- Granary Data&lt;br&gt;&lt;div&gt;- Enemies&lt;/div&gt;&lt;div&gt;- Skill Datas&lt;/div&gt;&lt;div&gt;- Items&lt;/div&gt;&lt;div&gt;- Night Datas&lt;/div&gt;&lt;div&gt;- Quest Datas&lt;/div&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="122" width="120" x="-630.85" y="369" as="geometry" />
         </mxCell>
         <mxCell id="TEKYcDeXiPUu0HET5yMa-51" edge="1" parent="1" source="TEKYcDeXiPUu0HET5yMa-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="TEKYcDeXiPUu0HET5yMa-49">

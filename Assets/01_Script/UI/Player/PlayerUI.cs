@@ -27,9 +27,9 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private Transform _skillContainer;
     [SerializeField] private SkillUI _skillUIPrefab;
 
-    [Header("Consumable & Item Radial Menu")]
-    [SerializeField] private GameObject _consumableRadialContainer;
-    [SerializeField] private ConsumableRadialUI _consumableRadialUI;
+    [Header("Item & Item Radial Menu")]
+    [SerializeField] private GameObject _itemRadialContainer;
+    [SerializeField] private ItemRadialUI _itemRadialUI;
 
     [Header("Dialog System")]
     [SerializeField] private ConversationUI _conversationUI;
@@ -181,7 +181,7 @@ public class PlayerUI : MonoBehaviour
 
         if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
         if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
-        if (_consumableRadialContainer != null) _consumableRadialContainer.gameObject.SetActive(false);
+        if (_itemRadialContainer != null) _itemRadialContainer.gameObject.SetActive(false);
         if (_waveMeterContainer != null) _waveMeterContainer.SetActive(false);
 
         CloseAllRolePanels();
@@ -330,9 +330,9 @@ public class PlayerUI : MonoBehaviour
             return;
         }
 
-        if (_consumableRadialContainer != null && _consumableRadialContainer.activeInHierarchy)
+        if (_itemRadialContainer != null && _itemRadialContainer.activeInHierarchy)
         {
-            CloseConsumableUI();
+            CloseItemUI();
             return;
         }
 
@@ -673,14 +673,14 @@ public class PlayerUI : MonoBehaviour
         }
     }
 
-    public void OpenConsumableUI()
+    public void OpenItemUI()
     {
-        if (_consumableRadialContainer != null)
-            OpenPanel(_consumableRadialContainer);
-        if (_consumableRadialUI != null)
-            _consumableRadialUI.SyncWithManager();
+        if (_itemRadialContainer != null)
+            OpenPanel(_itemRadialContainer);
+        if (_itemRadialUI != null)
+            _itemRadialUI.SyncWithManager();
     }
-    public void CloseConsumableUI() => _consumableRadialContainer?.gameObject.SetActive(false);
+    public void CloseItemUI() => _itemRadialContainer?.gameObject.SetActive(false);
     public void OpenResultUI(NightResult result)
     {
         if (_resultUI == null)

@@ -226,7 +226,7 @@ GameObject:
   - component: {fileID: 4859588895142151595}
   - component: {fileID: 7897820809058882740}
   m_Layer: 0
-  m_Name: ConsumableItemUI
+  m_Name: ItemUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -272,6 +272,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3059301a9031da54dbc8a4dcc59849cf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableItemSlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemSlotUI
   ItemIcon: {fileID: 2132240004276379616}
   txtCurrentStack: {fileID: 8968080345048324192}

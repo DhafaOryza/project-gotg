@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     public CinemachineCamera cinemachine;
     public PlayerUI playerUI;
     public EnvController envController;
-    public ConsumableAndItemManager consumableAndItemManager;
+    public ItemManager itemManager;
     public CurrencyManager currencyManager;
     public TrackerBattle trackerBattle;
 
@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
         if (cinemachine == null) cinemachine = Object.FindAnyObjectByType<CinemachineCamera>();
         if (playerUI == null) playerUI = Object.FindAnyObjectByType<PlayerUI>();
         if (envController == null) envController = Object.FindAnyObjectByType<EnvController>();
-        if (consumableAndItemManager == null) consumableAndItemManager = Object.FindAnyObjectByType<ConsumableAndItemManager>();
+        if (itemManager == null) itemManager = Object.FindAnyObjectByType<ItemManager>();
         if (currencyManager == null) currencyManager = Object.FindFirstObjectByType<CurrencyManager>();
         if (trackerBattle == null) trackerBattle = Object.FindAnyObjectByType<TrackerBattle>();
 
@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour
         {
             playerUI.InitializeSkillUI();
             playerUI.OpenSkillUI();
-            playerUI.OpenConsumableUI();
+            playerUI.OpenItemUI();
             playerUI.OpenWaveMeterUI();
         }
 
@@ -233,7 +233,7 @@ public class GameManager : MonoBehaviour
     private void SwitchWorldToDay()
     {
         playerUI?.CloseSkillUI();
-        playerUI?.CloseConsumableUI();
+        playerUI?.CloseItemUI();
         playerUI?.CloseWaveMeterUI();
 
         levelSpawnerManager.DespawnAllEnemy();
@@ -267,7 +267,7 @@ public class GameManager : MonoBehaviour
     private void RestartWorld()
     {
         playerUI?.CloseSkillUI();
-        playerUI?.CloseConsumableUI();
+        playerUI?.CloseItemUI();
         playerUI?.CloseWaveMeterUI();
 
         levelSpawnerManager.DespawnAllEnemy();

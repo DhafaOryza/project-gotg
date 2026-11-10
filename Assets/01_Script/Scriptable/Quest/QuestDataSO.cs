@@ -10,6 +10,6 @@ public class QuestDataSO : ScriptableObject
 
     [Header("Rewards")]
     public int goldReward;
-    public bool rewardConsumable;
-    public ConsumableDataSO consumableReward;
+    public bool rewardItem;
+    public ItemDataSO itemReward;
 }

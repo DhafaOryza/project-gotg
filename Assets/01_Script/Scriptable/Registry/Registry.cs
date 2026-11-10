@@ -10,8 +10,8 @@ public class Registry : ScriptableObject
     [Header("Skills")]
     public List<SkillDataSO> Skills = new List<SkillDataSO>();
 
-    [Header("Consumables")]
-    public List<ConsumableDataSO> Consumables = new List<ConsumableDataSO>();
+    [Header("Items")]
+    public List<ItemDataSO> Items = new List<ItemDataSO>();
 
     [Header("Waves")]
     public List<NightWaveDataSO> NightWaves = new List<NightWaveDataSO>();

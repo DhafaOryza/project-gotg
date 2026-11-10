@@ -12,14 +12,26 @@ public class PreparationUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtNightCounter;
 
     [Header("Panel")]
-    [SerializeField] private GameObject preparationSkillPanel;
+    [SerializeField] private GameObject preparationPanel;
+    [SerializeField] private Button btnPrepareBack;
+
+    [Header("Prepare Tabs")]
+    [SerializeField] private Button btnSkillTab;
+    [SerializeField] private Button btnItemsTab;
+    [SerializeField] private GameObject skillTabPanel;
+    [SerializeField] private GameObject itemsTabPanel;
 
     [Header("Prepare Skill UI")]
-    [SerializeField] private Button btnPrepareBack;
     [SerializeField] private SkillCard skillCardPrefab;
     [SerializeField] private Transform skillContainer;
-    [SerializeField] private SlotUI slotUIPrefab;
+    [SerializeField] private SkillSlotUI slotUIPrefab;
     [SerializeField] private Transform skillSlotContainer;
+
+    [Header("Prepare Items UI")]
+    [SerializeField] private GameObject itemsCardPrefab;
+    [SerializeField] private Transform itemsContainer;
+    [SerializeField] private ItemSlotUI itemSlotPrefab;
+    [SerializeField] private Transform itemSlotContainer;
 
     [Header("Notification")]
     [SerializeField] private Notification notification;
@@ -36,6 +48,8 @@ public class PreparationUI : MonoBehaviour
         if (btnExploreWorld != null) btnExploreWorld.onClick.AddListener(HandleExploreWorldButton);
         if (btnStartNight != null) btnStartNight.onClick.AddListener(HandleStartNightButton);
         if (btnPrepareBack != null) btnPrepareBack.onClick.AddListener(HandleBackPreparationButton);
+        if (btnSkillTab != null) btnSkillTab.onClick.AddListener(ShowSkillTab);
+        if (btnItemsTab != null) btnItemsTab.onClick.AddListener(ShowItemsTab);
     }
 
     void OnDestroy()
@@ -44,6 +58,8 @@ public class PreparationUI : MonoBehaviour
         if (btnExploreWorld != null) btnExploreWorld.onClick.RemoveListener(HandleExploreWorldButton);
         if (btnStartNight != null) btnStartNight.onClick.RemoveListener(HandleStartNightButton);
         if (btnPrepareBack != null) btnPrepareBack.onClick.RemoveListener(HandleBackPreparationButton);
+        if (btnSkillTab != null) btnSkillTab.onClick.RemoveListener(ShowSkillTab);
+        if (btnItemsTab != null) btnItemsTab.onClick.RemoveListener(ShowItemsTab);
     }
 
     void OnEnable()
@@ -54,6 +70,10 @@ public class PreparationUI : MonoBehaviour
         if (skillsManager != null)
             skillsManager.OnChosenSkillsChanged += RedrawPrepareSkill;
 
+        var itemManager = GameManager.Instance?.itemManager;
+        if (itemManager != null)
+            itemManager.OnChosenItemsChanged += RedrawPrepareItems;
+
         hasWarned = false;
     }
 
@@ -62,6 +82,10 @@ public class PreparationUI : MonoBehaviour
         var skillsManager = GameManager.Instance?.skillsManager;
         if (skillsManager != null)
             skillsManager.OnChosenSkillsChanged -= RedrawPrepareSkill;
+
+        var itemManager = GameManager.Instance?.itemManager;
+        if (itemManager != null)
+            itemManager.OnChosenItemsChanged -= RedrawPrepareItems;
     }
 
     void Initialize()
@@ -70,7 +94,8 @@ public class PreparationUI : MonoBehaviour
         HandleNightCounter();
 
         // Prepare Skill Panel selalu mulai tertutup
-        if (preparationSkillPanel != null) preparationSkillPanel.SetActive(false);
+        if (preparationPanel != null) preparationPanel.SetActive(false);
+        ShowSkillTab();
     }
 
     private NightController GetNightController()
@@ -91,15 +116,29 @@ public class PreparationUI : MonoBehaviour
 
     private void HandlePreparationButton()
     {
-        if (preparationSkillPanel == null) return;
+        if (preparationPanel == null) return;
 
         if (PlayerUI.Instance != null)
-            PlayerUI.Instance.ShowPreparationSkillPanel(preparationSkillPanel);
+            PlayerUI.Instance.ShowPreparationSkillPanel(preparationPanel);
         else
-            preparationSkillPanel.SetActive(true);
+            preparationPanel.SetActive(true);
 
         GenerateSkillCard();
         GenerateSkillSlot();
+        RedrawPrepareItems();
+        ShowSkillTab();
+    }
+
+    public void ShowSkillTab()
+    {
+        if (skillTabPanel != null) skillTabPanel.SetActive(true);
+        if (itemsTabPanel != null) itemsTabPanel.SetActive(false);
+    }
+
+    public void ShowItemsTab()
+    {
+        if (skillTabPanel != null) skillTabPanel.SetActive(false);
+        if (itemsTabPanel != null) itemsTabPanel.SetActive(true);
     }
 
     private void HandleBackPreparationButton()
@@ -146,7 +185,7 @@ public class PreparationUI : MonoBehaviour
 
     public bool TryClosePrepareSkillPanel()
     {
-        if (preparationSkillPanel == null || !preparationSkillPanel.activeSelf)
+        if (preparationPanel == null || !preparationPanel.activeSelf)
             return false;
 
         ClosePrepareSkillPanel();
@@ -155,8 +194,8 @@ public class PreparationUI : MonoBehaviour
 
     private void ClosePrepareSkillPanel()
     {
-        if (preparationSkillPanel != null)
-            preparationSkillPanel.SetActive(false);
+        if (preparationPanel != null)
+            preparationPanel.SetActive(false);
 
         PlayerUI.Instance?.FocusPreparationPanel();
     }
@@ -211,7 +250,7 @@ public class PreparationUI : MonoBehaviour
 
         for (int i = 0; i < skillsManager.maxSkills; i++)
         {
-            SlotUI slot = Instantiate(slotUIPrefab, skillSlotContainer);
+            SkillSlotUI slot = Instantiate(slotUIPrefab, skillSlotContainer);
 
             string key = (i == SkillsManager.PassiveSlotIndex) ? "" : (i < keys.Count ? keys[i] : "");
             slot.Initialize(key, skillsManager.GetSkill(i), i);
@@ -232,6 +271,70 @@ public class PreparationUI : MonoBehaviour
     {
         GenerateSkillCard();
         GenerateSkillSlot();
+    }
+
+    public void RedrawPrepareItems()
+    {
+        GenerateItemCards();
+        GenerateItemSlots();
+    }
+
+    private void GenerateItemCards()
+    {
+        ClearContainer(itemsContainer);
+
+        if (itemsContainer == null || itemsCardPrefab == null)
+            return;
+
+        var manager = GameManager.Instance?.itemManager;
+        if (manager == null || manager.chosenItems == null)
+            return;
+
+        foreach (var item in manager.chosenItems)
+        {
+            if (item == null) continue;
+
+            var cardObject = Instantiate(itemsCardPrefab, itemsContainer);
+            var card = cardObject.GetComponent<ItemCardUI>();
+            if (card == null)
+            {
+                Debug.LogError("PreparationUI: Items Card Prefab memerlukan komponen ItemCardUI.", cardObject);
+                Destroy(cardObject);
+                continue;
+            }
+
+            card.Initialize(item);
+            card.SetDraggable(true);
+        }
+    }
+
+    private void GenerateItemSlots()
+    {
+        ClearContainer(itemSlotContainer);
+        if (itemSlotContainer == null || itemSlotPrefab == null) return;
+
+        var manager = GameManager.Instance?.itemManager;
+        var playerController = GameManager.Instance?.playerController;
+
+        for (int slotIndex = 0; slotIndex < ItemManager.MaxSlots; slotIndex++)
+        {
+            var slot = Instantiate(itemSlotPrefab, itemSlotContainer);
+            var runtime = manager != null ? manager.GetRuntimeSlot(slotIndex) : null;
+            var data = runtime != null && runtime.HasStock ? runtime.data : null;
+            string slotLabel = playerController != null
+                ? playerController.GetItemDisplayName(slotIndex)
+                : $"Item {slotIndex + 1}";
+
+            slot.SetupLoadoutSlot(slotIndex, slotLabel, data, runtime != null ? runtime.currentStack : 0);
+        }
+    }
+
+    private static void ClearContainer(Transform container)
+    {
+        if (container == null) return;
+
+        for (int i = container.childCount - 1; i >= 0; i--)
+            Destroy(container.GetChild(i).gameObject);
     }
 
     #endregion

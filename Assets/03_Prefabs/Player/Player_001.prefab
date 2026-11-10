@@ -103,7 +103,7 @@ MonoBehaviour:
   currentHealth: 0
   defaultKnockbackDuration: 0.2
   equippedSkills: []
-  equippedConsumables: []
+  equippedItems: []
   reviveDuration: 60
   reviveHpPercentage: 0.15
   attackEventFallbackTime: 1.5

@@ -3663,7 +3663,7 @@ GameObject:
   - component: {fileID: 730624635}
   - component: {fileID: 730624634}
   m_Layer: 0
-  m_Name: ConsumableButton
+  m_Name: ItemButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7696,7 +7696,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Consumable
+  m_text: 'Item
 
 '
   m_isRightToLeft: 0

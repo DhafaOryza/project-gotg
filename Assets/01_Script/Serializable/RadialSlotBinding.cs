@@ -7,7 +7,7 @@ public class RadialSlotBinding
     public string slotName;                  
     public KeyCode triggerKey;               
     public Transform socketParent;           
-    public ConsumableDataSO boundData;
+    public ItemDataSO boundData;
 
-    [HideInInspector] public ConsumableItemSlotUI spawnedSlotUI;
+    [HideInInspector] public ItemSlotUI spawnedSlotUI;
 }

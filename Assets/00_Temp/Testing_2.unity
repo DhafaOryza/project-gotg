@@ -794,7 +794,7 @@ GameObject:
   - component: {fileID: 66582164}
   - component: {fileID: 66582163}
   m_Layer: 0
-  m_Name: ConsumableDetail
+  m_Name: ItemDetail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1376,7 +1376,7 @@ GameObject:
   - component: {fileID: 108370606}
   - component: {fileID: 108370605}
   m_Layer: 0
-  m_Name: ConsumableCard
+  m_Name: ItemCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3948,7 +3948,7 @@ MonoBehaviour:
   cinemachine: {fileID: 660435077}
   playerUI: {fileID: 2035140767}
   envController: {fileID: 138849069}
-  consumableAndItemManager: {fileID: 1154509386}
+  itemManager: {fileID: 1154509386}
   currencyManager: {fileID: 1542901464}
   trackerBattle: {fileID: 2119964441}
   currentState: 0
@@ -6736,7 +6736,7 @@ GameObject:
   - component: {fileID: 477767307}
   - component: {fileID: 477767308}
   m_Layer: 0
-  m_Name: Consumables & Items Container
+  m_Name: Items Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6776,7 +6776,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9743f090a8e4884a8cba176afc24269, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableRadialUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemRadialUI
   slots:
   - slotName: Top
     triggerKey: 49
@@ -17737,7 +17737,7 @@ GameObject:
   - component: {fileID: 1154509385}
   - component: {fileID: 1154509386}
   m_Layer: 0
-  m_Name: Consumables&ItemsManager
+  m_Name: ItemsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17769,8 +17769,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3311031f895b834da8da00a99c5479d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableAndItemManager
-  chosenConsumables:
+  m_EditorClassIdentifier: Assembly-CSharp::ItemManager
+  chosenItems:
   - {fileID: 11400000, guid: 59cbe89ff1ddf30409bdc762d59dbd2d, type: 2}
   - {fileID: 11400000, guid: 2b7da5b97fdcc1f4e91d4daf17565a75, type: 2}
   - {fileID: 0}
@@ -32876,8 +32876,8 @@ MonoBehaviour:
   _prepareSkillFirstSelected: {fileID: 0}
   _skillContainer: {fileID: 651034799}
   _skillUIPrefab: {fileID: 3450644131939496317, guid: aea3efd3677af7146b6fbdd2c9b825a3, type: 3}
-  _consumableRadialContainer: {fileID: 477767306}
-  _consumableRadialUI: {fileID: 477767308}
+  _itemRadialContainer: {fileID: 477767306}
+  _itemRadialUI: {fileID: 477767308}
   _conversationUI: {fileID: 1004403333}
   _builderPanelUI: {fileID: 659798463}
   _shopUI: {fileID: 2006842450}

@@ -840,7 +840,7 @@ GameObject:
   - component: {fileID: 66582166}
   - component: {fileID: 66582165}
   m_Layer: 0
-  m_Name: Consumable Detail
+  m_Name: Item Detail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -918,7 +918,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b931e4bc3cfc0c86a8b1fe3c579d94b0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableDetailUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemDetailUI
   _icon: {fileID: 706369759}
   _nameText: {fileID: 126657651}
   _descriptionText: {fileID: 2121630146}
@@ -1562,7 +1562,7 @@ GameObject:
   - component: {fileID: 124279883}
   - component: {fileID: 124279882}
   m_Layer: 0
-  m_Name: Consumable Card (6)
+  m_Name: Item Card (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1601,7 +1601,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableCardUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
   _icon: {fileID: 1512361871}
   _nameText: {fileID: 1684709514}
   _selectButton: {fileID: 0}
@@ -2753,7 +2753,7 @@ GameObject:
   - component: {fileID: 189367332}
   - component: {fileID: 189367331}
   m_Layer: 0
-  m_Name: Consumable Card
+  m_Name: Item Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2792,7 +2792,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableCardUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
   _icon: {fileID: 385087841}
   _nameText: {fileID: 1054269774}
   _selectButton: {fileID: 0}
@@ -3643,7 +3643,7 @@ GameObject:
   - component: {fileID: 234123132}
   - component: {fileID: 234123131}
   m_Layer: 0
-  m_Name: Consumable Card (5)
+  m_Name: Item Card (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3682,7 +3682,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableCardUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
   _icon: {fileID: 1211887660}
   _nameText: {fileID: 882842005}
   _selectButton: {fileID: 0}
@@ -4853,7 +4853,7 @@ MonoBehaviour:
   cinemachine: {fileID: 660435077}
   playerUI: {fileID: 2035140767}
   envController: {fileID: 138849069}
-  consumableAndItemManager: {fileID: 1154509386}
+  itemManager: {fileID: 1154509386}
   currencyManager: {fileID: 1542901464}
   trackerBattle: {fileID: 2119964441}
   currentState: 0
@@ -7966,7 +7966,7 @@ GameObject:
   - component: {fileID: 477767307}
   - component: {fileID: 477767308}
   m_Layer: 0
-  m_Name: Consumables & Items Container
+  m_Name: Items Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8006,7 +8006,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9743f090a8e4884a8cba176afc24269, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableRadialUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemRadialUI
   slots:
   - slotName: Top
     triggerKey: 49
@@ -14169,7 +14169,7 @@ GameObject:
   - component: {fileID: 736747649}
   - component: {fileID: 736747648}
   m_Layer: 0
-  m_Name: Consumable Card (1)
+  m_Name: Item Card (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14208,7 +14208,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableCardUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
   _icon: {fileID: 1493489191}
   _nameText: {fileID: 1571343029}
   _selectButton: {fileID: 0}
@@ -16512,7 +16512,7 @@ GameObject:
   - component: {fileID: 861788571}
   - component: {fileID: 861788570}
   m_Layer: 0
-  m_Name: Consumable Card (7)
+  m_Name: Item Card (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16551,7 +16551,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableCardUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
   _icon: {fileID: 2091404061}
   _nameText: {fileID: 1908451222}
   _selectButton: {fileID: 0}
@@ -17868,7 +17868,7 @@ GameObject:
   - component: {fileID: 969501404}
   - component: {fileID: 969501403}
   m_Layer: 0
-  m_Name: Consumable Card (2)
+  m_Name: Item Card (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17907,7 +17907,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableCardUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
   _icon: {fileID: 105926414}
   _nameText: {fileID: 1007805190}
   _selectButton: {fileID: 0}
@@ -20702,7 +20702,7 @@ GameObject:
   - component: {fileID: 1154509385}
   - component: {fileID: 1154509386}
   m_Layer: 0
-  m_Name: Consumables&ItemsManager
+  m_Name: ItemsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20734,8 +20734,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3311031f895b834da8da00a99c5479d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableAndItemManager
-  chosenConsumables:
+  m_EditorClassIdentifier: Assembly-CSharp::ItemManager
+  chosenItems:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -27402,7 +27402,7 @@ GameObject:
   - component: {fileID: 1546015892}
   - component: {fileID: 1546015895}
   m_Layer: 0
-  m_Name: Consumable Card
+  m_Name: Item Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27505,7 +27505,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableCardUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
   _icon: {fileID: 1295978945}
   _nameText: {fileID: 2116490963}
   _selectButton: {fileID: 1546015896}
@@ -32168,7 +32168,7 @@ GameObject:
   - component: {fileID: 1824154527}
   - component: {fileID: 1824154526}
   m_Layer: 0
-  m_Name: Consumable Card (3)
+  m_Name: Item Card (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32207,7 +32207,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableCardUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
   _icon: {fileID: 1920532572}
   _nameText: {fileID: 1261252343}
   _selectButton: {fileID: 0}
@@ -36852,8 +36852,8 @@ MonoBehaviour:
   _prepareSkillFirstSelected: {fileID: 0}
   _skillContainer: {fileID: 651034799}
   _skillUIPrefab: {fileID: 3450644131939496317, guid: aea3efd3677af7146b6fbdd2c9b825a3, type: 3}
-  _consumableRadialContainer: {fileID: 477767306}
-  _consumableRadialUI: {fileID: 477767308}
+  _itemRadialContainer: {fileID: 477767306}
+  _itemRadialUI: {fileID: 477767308}
   _conversationUI: {fileID: 1004403333}
   _builderPanelUI: {fileID: 659798463}
   _shopUI: {fileID: 2006842450}
@@ -36956,7 +36956,7 @@ GameObject:
   - component: {fileID: 2040326188}
   - component: {fileID: 2040326187}
   m_Layer: 0
-  m_Name: Consumable Card (4)
+  m_Name: Item Card (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36995,7 +36995,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConsumableCardUI
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
   _icon: {fileID: 1472055810}
   _nameText: {fileID: 1083230362}
   _selectButton: {fileID: 0}

@@ -1,12 +1,12 @@
 using UnityEngine;
 
 [System.Serializable]
-public class ConsumableRuntimeData
+public class ItemRuntimeData
 {
-    public ConsumableDataSO data;
+    public ItemDataSO data;
     public int currentStack;
 
-    public ConsumableRuntimeData(ConsumableDataSO dataSO, int startingQuantity = 1)
+    public ItemRuntimeData(ItemDataSO dataSO, int startingQuantity = 1)
     {
         data = dataSO;
         int max = dataSO != null ? dataSO.maxStack : 99;

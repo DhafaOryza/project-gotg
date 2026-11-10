@@ -8,6 +8,7 @@ public class SkillCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     [SerializeField] private Image skillIcon;
     [SerializeField] private TextMeshProUGUI skillName;
     [SerializeField] private TextMeshProUGUI skillCooldown;
+    [SerializeField] private Button selectButton;
 
     [Header("Drag")]
     [SerializeField, Range(0.1f, 1f)] private float dragSourceAlpha = 0.5f;
@@ -17,6 +18,23 @@ public class SkillCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     private Canvas rootCanvas;
     private RectTransform ghost;
     private CanvasGroup sourceGroup;
+
+    private void Awake()
+    {
+        if (selectButton == null)
+            selectButton = GetComponent<Button>();
+        if (selectButton == null)
+            selectButton = GetComponentInChildren<Button>();
+
+        if (selectButton != null)
+            selectButton.onClick.AddListener(HandleSubmitButton);
+    }
+
+    private void OnDestroy()
+    {
+        if (selectButton != null)
+            selectButton.onClick.RemoveListener(HandleSubmitButton);
+    }
 
     public void Initialize(SkillDataSO currentSkill)
     {
@@ -28,6 +46,23 @@ public class SkillCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         skillIcon.sprite = currentSkill.icon;
         skillName.text = currentSkill.displayName;
         skillCooldown.text = $"Cooldown : {currentSkill.cooldown}s";
+    }
+
+    private void HandleSubmitButton()
+    {
+        if (SkillData == null) return;
+
+        SkillsManager skillsManager = GameManager.Instance?.skillsManager;
+        if (skillsManager == null)
+        {
+            Debug.LogWarning("[SkillCard] SkillsManager tidak ditemukan.", this);
+            return;
+        }
+
+        // AddSkill memilih slot aktif kosong pertama secara berurutan dan
+        // menempatkan skill pasif pada slot pasif khusus.
+        if (!skillsManager.AddSkill(SkillData))
+            Debug.LogWarning($"[SkillCard] Skill {SkillData.displayName} tidak dapat ditambahkan.", this);
     }
 
     #region Drag & Drop
@@ -69,7 +104,7 @@ public class SkillCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        // OnDrop di SlotUI dipanggil lebih dulu; di sini tinggal merapikan.
+        // OnDrop di SkillSlotUI dipanggil lebih dulu; di sini tinggal merapikan.
         CleanupDrag();
     }
 

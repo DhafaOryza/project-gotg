@@ -12,20 +12,20 @@ public class ShopUI : MonoBehaviour
 
     [Header("Shop List")]
     [SerializeField] private Transform _contentContainer;
-    [SerializeField] private ConsumableCardUI _cardPrefab;
+    [SerializeField] private ItemCardUI _cardPrefab;
     private const int MaxCards = 8;
 
     [Header("Currency")]
     [SerializeField] private TextMeshProUGUI _txtCurrency;
     
     [Header("Detail")]
-    [SerializeField] private ConsumableDetailUI _detailUI;
+    [SerializeField] private ItemDetailUI _detailUI;
 
     private CurrencyManager _currencyManager;
-    private ConsumableAndItemManager _consumableManager;
-    private readonly List<ConsumableCardUI> _cards = new List<ConsumableCardUI>();
+    private ItemManager _itemManager;
+    private readonly List<ItemCardUI> _cards = new List<ItemCardUI>();
     private readonly List<GameObject> _emptySlots = new List<GameObject>();
-    private ConsumableCardUI _selectedCard;
+    private ItemCardUI _selectedCard;
 
     private void Awake()
     {
@@ -63,13 +63,13 @@ public class ShopUI : MonoBehaviour
 
         GameManager gameManager = GameManager.Instance;
         _currencyManager = gameManager != null ? gameManager.currencyManager : null;
-        _consumableManager = gameManager != null ? gameManager.consumableAndItemManager : null;
+        _itemManager = gameManager != null ? gameManager.itemManager : null;
 
         if (_currencyManager != null)
             _currencyManager.OnChange += HandleCurrencyChanged;
 
-        if (_consumableManager != null)
-            _consumableManager.OnChosenConsumablesChanged += RefreshDetail;
+        if (_itemManager != null)
+            _itemManager.OnChosenItemsChanged += RefreshDetail;
 
         if (_shopMainPanel != null)
             _shopMainPanel.SetActive(true);
@@ -111,9 +111,9 @@ public class ShopUI : MonoBehaviour
         if (_contentContainer == null) return;
 
         GameSessionData sessionData = GameSessionData.GetOrCreate();
-        List<ConsumableDataSO> shopItems = sessionData != null && sessionData.consumables != null
-            ? sessionData.consumables
-            : new List<ConsumableDataSO>();
+        List<ItemDataSO> shopItems = sessionData != null && sessionData.items != null
+            ? sessionData.items
+            : new List<ItemDataSO>();
 
         int generatedCount = 0;
 
@@ -124,7 +124,7 @@ public class ShopUI : MonoBehaviour
                 if (item == null) continue;
                 if (generatedCount >= MaxCards) break;
 
-                ConsumableCardUI card = Instantiate(_cardPrefab, _contentContainer);
+                ItemCardUI card = Instantiate(_cardPrefab, _contentContainer);
                 card.Initialize(item);
                 card.OnSelected += HandleCardSelected;
                 _cards.Add(card);
@@ -170,7 +170,7 @@ public class ShopUI : MonoBehaviour
             _detailUI.Clear();
     }
 
-    private void HandleCardSelected(ConsumableCardUI selected)
+    private void HandleCardSelected(ItemCardUI selected)
     {
         _selectedCard = selected;
 
@@ -191,26 +191,26 @@ public class ShopUI : MonoBehaviour
             return;
         }
 
-        ConsumableDataSO item = _selectedCard.Data;
+        ItemDataSO item = _selectedCard.Data;
         bool canAfford = _currencyManager != null && _currencyManager.Money >= item.price;
-        bool isAvailable = _consumableManager != null && _consumableManager.CanAddConsumable(item);
+        bool isAvailable = _itemManager != null && _itemManager.CanAddItem(item);
 
         _detailUI.Show(item, canAfford, isAvailable);
         
-        Debug.Log($"[ShopUI] money={(_currencyManager != null ? _currencyManager.Money : -1)}, price={item.price}, canAfford={canAfford}, isAvailable={isAvailable}, hasManager={_consumableManager != null}");
+        Debug.Log($"[ShopUI] money={(_currencyManager != null ? _currencyManager.Money : -1)}, price={item.price}, canAfford={canAfford}, isAvailable={isAvailable}, hasManager={_itemManager != null}");
     }
 
     /// <summary>
-    /// Pays for the selected consumable and puts it in a free slot. The money is refunded if adding fails.
+    /// Pays for the selected item and puts it in a free slot. The money is refunded if adding fails.
     /// </summary>
     private void HandleBuyClicked()
     {
         if (_selectedCard == null || _selectedCard.Data == null) return;
-        if (_currencyManager == null || _consumableManager == null) return;
+        if (_currencyManager == null || _itemManager == null) return;
 
-        ConsumableDataSO item = _selectedCard.Data;
+        ItemDataSO item = _selectedCard.Data;
 
-        if (!_consumableManager.CanAddConsumable(item))
+        if (!_itemManager.CanAddItem(item))
         {
             RefreshDetail();
             return;
@@ -223,7 +223,7 @@ public class ShopUI : MonoBehaviour
             return;
         }
 
-        if (!_consumableManager.TryAddConsumable(item))
+        if (!_itemManager.TryAddItem(item))
             _currencyManager.AddMoney(price);
 
         RefreshDetail();
@@ -234,8 +234,8 @@ public class ShopUI : MonoBehaviour
         if (_currencyManager != null)
             _currencyManager.OnChange -= HandleCurrencyChanged;
 
-        if (_consumableManager != null)
-            _consumableManager.OnChosenConsumablesChanged -= RefreshDetail;
+        if (_itemManager != null)
+            _itemManager.OnChosenItemsChanged -= RefreshDetail;
     }
 
     private void RefreshCurrency()

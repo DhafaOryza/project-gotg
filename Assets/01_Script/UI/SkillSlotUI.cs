@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SlotUI : MonoBehaviour, IDropHandler
+public class SkillSlotUI : MonoBehaviour, IDropHandler
 {
     [Header("References")]
     [SerializeField] private Image skillIcon;
@@ -11,11 +11,39 @@ public class SlotUI : MonoBehaviour, IDropHandler
     [SerializeField] private TextMeshProUGUI keyBind;
     [SerializeField] private GameObject info;
     [SerializeField] private GameObject none;
+    [SerializeField] private Button removeButton;
 
     private SkillDataSO skillData;
     private int slotIndex = -1;
 
     public int SlotIndex => slotIndex;
+
+    private void Awake()
+    {
+        if (removeButton == null)
+            removeButton = GetComponent<Button>();
+        if (removeButton == null)
+            removeButton = GetComponentInChildren<Button>();
+
+        if (removeButton != null)
+            removeButton.onClick.AddListener(RemoveSkillFromSlot);
+    }
+
+    private void OnDestroy()
+    {
+        if (removeButton != null)
+            removeButton.onClick.RemoveListener(RemoveSkillFromSlot);
+    }
+
+    private void RemoveSkillFromSlot()
+    {
+        if (skillData == null || slotIndex < 0) return;
+
+        SkillsManager skillsManager = GameManager.Instance?.skillsManager;
+        if (skillsManager == null) return;
+
+        skillsManager.RemoveSkillAt(slotIndex);
+    }
 
     public void Initialize(string setKeyBind, SkillDataSO currentData = null, int index = -1)
     {
@@ -56,34 +84,34 @@ public class SlotUI : MonoBehaviour, IDropHandler
         var dragged = eventData.pointerDrag;
         if (dragged == null)
         {
-            Debug.LogWarning("SlotUI.OnDrop: pointerDrag null.", this);
+            Debug.LogWarning("SkillSlotUI.OnDrop: pointerDrag null.", this);
             return;
         }
 
         var card = dragged.GetComponent<SkillCard>();
         if (card == null || card.SkillData == null)
         {
-            Debug.LogWarning($"SlotUI.OnDrop: yang di-drop bukan SkillCard yang valid ({dragged.name}).", this);
+            Debug.LogWarning($"SkillSlotUI.OnDrop: yang di-drop bukan SkillCard yang valid ({dragged.name}).", this);
             return;
         }
 
         var skillsManager = GameManager.Instance?.skillsManager;
         if (skillsManager == null)
         {
-            Debug.LogError("SlotUI: GameManager atau skillsManager tidak ditemukan.", this);
+            Debug.LogError("SkillSlotUI: GameManager atau skillsManager tidak ditemukan.", this);
             return;
         }
 
         if (slotIndex < 0)
         {
-            Debug.LogWarning("SlotUI.OnDrop: slotIndex -1. Pastikan slot dibuat dengan Initialize(key, skill, i) dan i = indeks slot.", this);
+            Debug.LogWarning("SkillSlotUI.OnDrop: slotIndex -1. Pastikan slot dibuat dengan Initialize(key, skill, i) dan i = indeks slot.", this);
             return;
         }
 
         bool success = skillsManager.EquipSkill(slotIndex, card.SkillData);
         if (!success)
         {
-            Debug.LogWarning($"[SlotUI] Tidak bisa memasang {card.SkillData.displayName} ke slot ini (Cek tipe Aktif vs Pasif)!");
+            Debug.LogWarning($"[SkillSlotUI] Tidak bisa memasang {card.SkillData.displayName} ke slot ini (Cek tipe Aktif vs Pasif)!");
         }
         // Pasang tepat di slot ini (Q = 0, W = 1, E = 2, dst).
         skillsManager.EquipSkill(slotIndex, card.SkillData);

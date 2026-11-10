@@ -16,5 +16,5 @@ MonoBehaviour:
   questTitle: Kill
   questDescription: Kill 100 Monster Tier 1
   goldReward: 200
-  rewardConsumable: 0
-  consumableReward: {fileID: 0}
+  rewardItem: 0
+  itemReward: {fileID: 0}

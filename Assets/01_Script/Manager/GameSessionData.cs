@@ -8,7 +8,7 @@ public class GameSessionData : MonoBehaviour
     [Header("Data Whole Game")]
     public List<EnemyDataSO> enemies = new List<EnemyDataSO>();
     public List<SkillDataSO> skills = new List<SkillDataSO>();
-    public List<ConsumableDataSO> consumables = new List<ConsumableDataSO>();
+    public List<ItemDataSO> items = new List<ItemDataSO>();
     public List<NightWaveDataSO> nightwaves = new List<NightWaveDataSO>();
 
     [Header("Registry Data")]
@@ -59,7 +59,7 @@ public class GameSessionData : MonoBehaviour
 
         enemies = data.Enemies;
         skills = data.Skills;
-        consumables = data.Consumables;
+        items = data.Items;
         nightwaves = data.NightWaves;
     }
 }

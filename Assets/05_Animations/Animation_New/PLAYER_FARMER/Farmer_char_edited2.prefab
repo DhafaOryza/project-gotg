@@ -564,7 +564,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrary
   m_Library: []
-  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: 4ca705a3d7e5ecf4d95235db23b375c9, type: 3}
+  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: 5516668ac15e6484083c5411c83f93b8, type: 3}
 --- !u!114 &6217023496091709006
 MonoBehaviour:
   m_ObjectHideFlags: 0

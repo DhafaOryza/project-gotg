@@ -247,6 +247,12 @@ public class PlayerController : MonoBehaviour
         return skillActions[slot] != null ? skillActions[slot].GetBindingDisplayString() : GetSkillKey(slot).ToString();
     }
 
+    public string GetItemDisplayName(int slot)
+    {
+        if (slot < 0 || slot >= SkillSlotCount) return string.Empty;
+        return itemActions[slot] != null ? itemActions[slot].GetBindingDisplayString() : $"Item {slot + 1}";
+    }
+
     public void Setup()
     {
         var _currentPlayer = GameManager.Instance?.levelSpawnerManager.GetCurrentPlayer();
@@ -385,7 +391,7 @@ public class PlayerController : MonoBehaviour
         int slot = GetActionSlot(context.action.name, "Item ");
         if (slot < 0 || slot >= SkillSlotCount) return;
 
-        GameManager.Instance?.consumableAndItemManager?.UseConsumable(slot, playerEntity);
+        GameManager.Instance?.itemManager?.UseItem(slot, playerEntity);
     }
 
     private static int GetActionSlot(string actionName, string prefix)

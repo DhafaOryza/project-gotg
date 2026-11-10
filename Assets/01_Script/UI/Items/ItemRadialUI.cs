@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 #endif
 
-public class ConsumableRadialUI : MonoBehaviour
+public class ItemRadialUI : MonoBehaviour
 {
     [Header("Radial Slot Bindings")]
     [SerializeField] private List<RadialSlotBinding> slots = new List<RadialSlotBinding>
@@ -16,10 +16,10 @@ public class ConsumableRadialUI : MonoBehaviour
         new RadialSlotBinding { slotName = "Left", triggerKey = KeyCode.Alpha3 },
         new RadialSlotBinding { slotName = "Bottom", triggerKey = KeyCode.Alpha4 }
     };
-    [SerializeField] private ConsumableItemSlotUI slotPrefabsUI;
+    [SerializeField] private ItemSlotUI slotPrefabsUI;
 
     private PlayerBaseEntity player;
-    private ConsumableAndItemManager consumableManager;
+    private ItemManager itemManager;
 
     private void Awake()
     {
@@ -46,21 +46,21 @@ public class ConsumableRadialUI : MonoBehaviour
 
     private void OnEnable()
     {
-        consumableManager = GameManager.Instance?.consumableAndItemManager;
-        if (consumableManager == null)
-            consumableManager = FindAnyObjectByType<ConsumableAndItemManager>();
+        itemManager = GameManager.Instance?.itemManager;
+        if (itemManager == null)
+            itemManager = FindAnyObjectByType<ItemManager>();
 
-        if (consumableManager != null)
+        if (itemManager != null)
         {
-            consumableManager.OnChosenConsumablesChanged += SyncWithManager;
+            itemManager.OnChosenItemsChanged += SyncWithManager;
             SyncWithManager();
         }
 
     }
     private void OnDisable()
     {
-        if (consumableManager != null)
-            consumableManager.OnChosenConsumablesChanged -= SyncWithManager;
+        if (itemManager != null)
+            itemManager.OnChosenItemsChanged -= SyncWithManager;
     }
 
     private void InitializeSocket()
@@ -88,11 +88,11 @@ public class ConsumableRadialUI : MonoBehaviour
 
     public void SyncWithManager()
     {
-        if (consumableManager == null) return;
+        if (itemManager == null) return;
 
-        for (int i = 0; i < slots.Count && i < ConsumableAndItemManager.MaxSlots ; i++)
+        for (int i = 0; i < slots.Count && i < ItemManager.MaxSlots ; i++)
         {
-            var runtime = consumableManager.GetRuntimeSlot(i);
+            var runtime = itemManager.GetRuntimeSlot(i);
             if (runtime != null && runtime.HasStock)
             {
                 SetSlotData(i, runtime.data, runtime.currentStack);
@@ -117,15 +117,15 @@ public class ConsumableRadialUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Eksekusi consumable pada slot tertentu
+    /// Eksekusi item pada slot tertentu
     /// </summary>
     public void UseSlot(int index)
     {
-        if (consumableManager == null || player == null) return;
-        consumableManager.UseConsumable(index, player);
+        if (itemManager == null || player == null) return;
+        itemManager.UseItem(index, player);
     }
 
-    public void SetSlotData(int slotIndex, ConsumableDataSO data, int currentStack = 1)
+    public void SetSlotData(int slotIndex, ItemDataSO data, int currentStack = 1)
     {
         if (slotIndex < 0 || slotIndex >= slots.Count) return;
 
@@ -139,12 +139,12 @@ public class ConsumableRadialUI : MonoBehaviour
     public void LoadFromGameSession()
     {
         var sessionData = GameSessionData.Instance;
-        if (sessionData == null || sessionData.consumables == null) return;
+        if (sessionData == null || sessionData.items == null) return;
 
         for (int i = 0; i < slots.Count ; i++)
         {
-            if (i < sessionData.consumables.Count)
-                SetSlotData(i, sessionData.consumables[i]);
+            if (i < sessionData.items.Count)
+                SetSlotData(i, sessionData.items[i]);
             else
                 SetSlotData(i, null);
         }

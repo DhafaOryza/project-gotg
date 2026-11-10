@@ -16,6 +16,6 @@ MonoBehaviour:
   questTitle: Kill
   questDescription: Kill 50 Enemy sebelum mereka mencapai Lumbung
   goldReward: 1000
-  rewardConsumable: 0
-  consumableReward: {fileID: 0}
+  rewardItem: 0
+  itemReward: {fileID: 0}
   timeLimitSeconds: 60

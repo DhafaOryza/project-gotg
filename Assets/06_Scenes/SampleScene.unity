@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameSessionData
   choosenSkills:
   - {fileID: 11400000, guid: 41fcf815ed56c7740aac3347a832cd23, type: 2}
-  consumableItem: []
+  itemItem: []
   choosenWave: {fileID: 0}
 --- !u!1 &137871678
 GameObject:

@@ -7,9 +7,9 @@ public class PlayerBaseEntity : BaseEntity
     [Header("Skill Loadout")]
     [SerializeField] private List<SkillDataSO> equippedSkills = new List<SkillDataSO>();
 
-    [Header("Consumable Loadout")]
-    [SerializeField] private List<ConsumableDataSO> equippedConsumables = new List<ConsumableDataSO>();
-    // [SerializeField] private int defaultConsumableQuantity = 2;
+    [Header("Item Loadout")]
+    [SerializeField] private List<ItemDataSO> equippedItems = new List<ItemDataSO>();
+    // [SerializeField] private int defaultItemQuantity = 2;
 
     [Header("Knockdown & Revive Configs")]
     [SerializeField] private float reviveDuration = 60f;
@@ -220,14 +220,14 @@ public class PlayerBaseEntity : BaseEntity
 
     public void RedrawConsumbale()
     {
-        var consumableManager = GameManager.Instance?.consumableAndItemManager;
-        if (consumableManager == null)
+        var itemManager = GameManager.Instance?.itemManager;
+        if (itemManager == null)
         {
-            Debug.LogWarning($"[{name}] RedrawConsumables: consumableAndItemManager tidak ditemukan.");
+            Debug.LogWarning($"[{name}] RedrawItems: itemManager tidak ditemukan.");
             return;
         }
 
-        equippedConsumables = new List<ConsumableDataSO>(consumableManager.chosenConsumables);
+        equippedItems = new List<ItemDataSO>(itemManager.chosenItems);
 
     }
 

@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ConsumableDetailUI : MonoBehaviour
+public class ItemDetailUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Image _icon;
@@ -32,9 +32,9 @@ public class ConsumableDetailUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Shows one consumable. The cost color depends on the money, the Buy button on money and slot availability.
+    /// Shows one item. The cost color depends on the money, the Buy button on money and slot availability.
     /// </summary>
-    public void Show(ConsumableDataSO data, bool canAfford, bool isAvailable)
+    public void Show(ItemDataSO data, bool canAfford, bool isAvailable)
     {
         if (data == null)
         {
@@ -50,7 +50,7 @@ public class ConsumableDetailUI : MonoBehaviour
 
         if (_nameText != null) _nameText.text = data.displayName;
         if (_descriptionText != null) _descriptionText.text = data.description;
-        if (_typeText != null) _typeText.text = data.consumableType.ToString();
+        if (_typeText != null) _typeText.text = data.itemType.ToString();
 
         if (_costText != null)
         {
@@ -84,7 +84,7 @@ public class ConsumableDetailUI : MonoBehaviour
 
     private void HandleBuyButton()
     {
-        Debug.Log("[ConsumableDetailUI] Buy button clicked.");
+        Debug.Log("[ItemDetailUI] Buy button clicked.");
         OnBuyClicked?.Invoke();
     }
 }
