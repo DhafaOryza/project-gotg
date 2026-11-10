@@ -287,12 +287,15 @@ public class PreparationUI : MonoBehaviour
             return;
 
         var manager = GameManager.Instance?.itemManager;
-        if (manager == null || manager.chosenItems == null)
+        if (manager == null)
             return;
 
-        foreach (var item in manager.chosenItems)
+        foreach (var owned in manager.Inventory)
         {
-            if (item == null) continue;
+            if (owned == null || owned.data == null) continue;
+
+            // An equipped item is shown in its slot, so it is not listed as a card.
+            if (manager.IsEquipped(owned.data)) continue;
 
             var cardObject = Instantiate(itemsCardPrefab, itemsContainer);
             var card = cardObject.GetComponent<ItemCardUI>();
@@ -303,8 +306,29 @@ public class PreparationUI : MonoBehaviour
                 continue;
             }
 
-            card.Initialize(item);
+            card.Initialize(owned.data);
             card.SetDraggable(true);
+
+            card.OnSelected += HandleItemCardSelected;
+        }
+    }
+
+    /// <summary>
+    /// Handles item card selection to automatically equip it into the first available loadout slot.
+    /// </summary>
+    private void HandleItemCardSelected(ItemCardUI selectedCard)
+    {
+        var manager = GameManager.Instance?.itemManager;
+        if (manager == null || selectedCard == null || selectedCard.Data == null) return;
+
+        // Cari slot kosong pertama dari loadout item (0 hingga MaxSlots - 1)
+        for (int i = 0; i < ItemManager.MaxSlots; i++)
+        {
+            if (manager.GetItem(i) == null)
+            {
+                manager.EquipItems(i, selectedCard.Data);
+                break;
+            }
         }
     }
 
