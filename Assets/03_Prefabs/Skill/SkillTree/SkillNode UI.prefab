@@ -240,7 +240,6 @@ MonoBehaviour:
   _descriptionText: {fileID: 1216738565693646776}
   _costText: {fileID: 6699770652093429732}
   _slotButton: {fileID: 1705725039832981241}
-  _selectedBorder: {fileID: 0}
   _lockOverlayObject: {fileID: 9009135077706529182}
 --- !u!114 &6542256546320947897
 MonoBehaviour:

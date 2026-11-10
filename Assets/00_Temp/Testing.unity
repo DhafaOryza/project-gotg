@@ -10116,7 +10116,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeUI
   _skillTreeMainPanel: {fileID: 622420957}
   _portraitImage: {fileID: 1501986126}
-  _nameText: {fileID: 875614558}
   _skillSlotPrefab: {fileID: 8141475785489813140, guid: 9c09996c1eedbcc91809f0b4da983d77, type: 3}
   _tierHeaderPrefab: {fileID: 645701305543114283, guid: 7c14179d12cba105c97ddcde68ede794, type: 3}
   _skillListContentContainer: {fileID: 1796262248}
