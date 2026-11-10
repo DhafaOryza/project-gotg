@@ -224,9 +224,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4210536951984313929}
   - component: {fileID: 4859588895142151595}
-  - component: {fileID: 7897820809058882740}
+  - component: {fileID: 3611849345229153432}
   m_Layer: 0
-  m_Name: ItemUI
+  m_Name: ItemRadialSlotUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -261,7 +261,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6005299735683544115}
   m_CullTransparentMesh: 1
---- !u!114 &7897820809058882740
+--- !u!114 &3611849345229153432
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -270,8 +270,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 6005299735683544115}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3059301a9031da54dbc8a4dcc59849cf, type: 3}
+  m_Script: {fileID: 11500000, guid: ec37a994f3aae61f9b6ea5bfec30c1ac, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemSlotUI
-  ItemIcon: {fileID: 2132240004276379616}
-  txtCurrentStack: {fileID: 8968080345048324192}
+  m_EditorClassIdentifier: Assembly-CSharp::ItemRadialSlotUI
+  _itemIcon: {fileID: 2132240004276379616}
+  _txtCurrentStack: {fileID: 8968080345048324192}

@@ -9,5 +9,5 @@ public class RadialSlotBinding
     public Transform socketParent;           
     public ItemDataSO boundData;
 
-    [HideInInspector] public ItemSlotUI spawnedSlotUI;
+    [HideInInspector] public ItemRadialSlotUI spawnedSlotUI;
 }

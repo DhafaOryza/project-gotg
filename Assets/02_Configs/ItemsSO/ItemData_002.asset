@@ -15,7 +15,11 @@ MonoBehaviour:
   itemId: 002
   displayName: Item_002
   icon: {fileID: 21300000, guid: 8951035cedd8d0f40a4bd980a8f3fd40, type: 3}
-  itemType: 0
   description: 
   maxStack: 5
+  category: 0
+  ItemPrefabs: {fileID: 0}
+  itemType: 0
+  price: 100
+  stack: 0
   baseValue: 0

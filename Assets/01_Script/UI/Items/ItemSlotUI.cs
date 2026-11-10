@@ -30,32 +30,7 @@ public class ItemSlotUI : MonoBehaviour, IDropHandler
     }
 
     /// <summary>
-    /// Sets up the slot for general inventory display.
-    /// </summary>
-    public void Setup(ItemDataSO data, int currentStack)
-    {
-        _loadoutSlotIndex = -1;
-        _currentData = data;
-
-        if (data == null || currentStack <= 0)
-        {
-            gameObject.SetActive(false);
-            return;
-        }
-
-        gameObject.SetActive(true);
-        if (_itemIcon != null)
-            _itemIcon.sprite = data.icon;
-
-        if (_info != null) _info.SetActive(true);
-        if (_none != null) _none.SetActive(false);
-
-        UpdateStackText(currentStack);
-    }
-
-    /// <summary>
-    /// Sets up the loadout slot with item data, slot index, label, and stack amount.
-    /// Handles info and none GameObject states similar to SkillSlotUI.
+    /// Sets up the loadout slot with item data, slot index, label, and stack amount for PreparationUI.
     /// </summary>
     public void SetupLoadoutSlot(int slotIndex, string slotLabel, ItemDataSO data, int currentStack)
     {

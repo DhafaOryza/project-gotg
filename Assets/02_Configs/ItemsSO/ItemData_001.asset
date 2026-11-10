@@ -15,7 +15,11 @@ MonoBehaviour:
   itemId: 001
   displayName: Heal Potion
   icon: {fileID: 21300000, guid: b761766bb8ba61548941f11f840bb8df, type: 3}
-  itemType: 0
   description: Memulihkan HP Player dalam jumlah kecil.
   maxStack: 5
+  category: 3
+  ItemPrefabs: {fileID: 82464634710934586, guid: 092bec6622d6b4947ad2f7b2d038552a, type: 3}
+  itemType: 0
+  price: 100
+  stack: 0
   baseValue: 100

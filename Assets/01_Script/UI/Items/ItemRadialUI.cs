@@ -16,7 +16,9 @@ public class ItemRadialUI : MonoBehaviour
         new RadialSlotBinding { slotName = "Left", triggerKey = KeyCode.Alpha3 },
         new RadialSlotBinding { slotName = "Bottom", triggerKey = KeyCode.Alpha4 }
     };
-    [SerializeField] private ItemSlotUI slotPrefabsUI;
+    
+    // Diubah menggunakan ItemRadialSlotUI khusus radial
+    [SerializeField] private ItemRadialSlotUI slotPrefabsUI;
 
     private PlayerBaseEntity player;
     private ItemManager itemManager;
@@ -25,6 +27,7 @@ public class ItemRadialUI : MonoBehaviour
     {
         InitializeSocket();
     }
+
     private void Start()
     {
         player = GameManager.Instance?.levelSpawnerManager?.GetCurrentPlayer();
@@ -55,8 +58,8 @@ public class ItemRadialUI : MonoBehaviour
             itemManager.OnChosenItemsChanged += SyncWithManager;
             SyncWithManager();
         }
-
     }
+
     private void OnDisable()
     {
         if (itemManager != null)
@@ -69,20 +72,22 @@ public class ItemRadialUI : MonoBehaviour
 
         foreach (var slot in slots)
         {
-            if (slot.socketParent != null)
-            {
-                foreach (Transform child in slot.socketParent)
-                    Destroy(child.gameObject);
+            if (slot.socketParent == null) continue;
 
-                var Instance = Instantiate(slotPrefabsUI, slot.socketParent);
+            foreach (Transform child in slot.socketParent)
+                Destroy(child.gameObject);
 
-                Instance.transform.localPosition = Vector3.zero;
-                Instance.transform.localRotation = Quaternion.identity;
-                Instance.transform.localScale = Vector3.one;
+            var instance = Instantiate(slotPrefabsUI, slot.socketParent);
 
-                slot.spawnedSlotUI = Instance;
-                slot.spawnedSlotUI.gameObject.SetActive(false);
-            }
+            instance.transform.localPosition = Vector3.zero;
+            instance.transform.localRotation = Quaternion.identity;
+            instance.transform.localScale = Vector3.one;
+
+            // Store the reference so SetSlotData can call Setup() on it.
+            slot.spawnedSlotUI = instance;
+
+            // Hide immediately so the slot does not show placeholder content before SyncWithManager runs.
+            instance.gameObject.SetActive(false);
         }
     }
 
@@ -116,9 +121,6 @@ public class ItemRadialUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Eksekusi item pada slot tertentu
-    /// </summary>
     public void UseSlot(int index)
     {
         if (itemManager == null || player == null) return;
@@ -133,25 +135,12 @@ public class ItemRadialUI : MonoBehaviour
         slot.boundData = data;
 
         if (slot.spawnedSlotUI != null)
-            slot.spawnedSlotUI.Setup(data, currentStack);
-    }
-
-    public void LoadFromGameSession()
-    {
-        var sessionData = GameSessionData.Instance;
-        if (sessionData == null || sessionData.items == null) return;
-
-        for (int i = 0; i < slots.Count ; i++)
         {
-            if (i < sessionData.items.Count)
-                SetSlotData(i, sessionData.items[i]);
-            else
-                SetSlotData(i, null);
+            slot.spawnedSlotUI.Setup(data, currentStack);
         }
-
     }
 
-    #region Input Helper (Support Old & New Input System)
+    #region Input Helper
 
     private bool ReadDigitDown(KeyCode key)
     {
