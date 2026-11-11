@@ -153,11 +153,11 @@ public class NPCBaseEntity : BaseEntity, IInteractable
     {
         if (_npcData == null) return;
 
-        if (PlayerUI.Instance != null)
-        {
-            PlayerUI.Instance.StartNPCConversation(_npcData, OnConversationEnded);
-            return;
-        }
+        // if (PlayerUI.Instance != null)
+        // {
+        //     PlayerUI.Instance.StartNPCConversation(_npcData, OnConversationEnded);
+        //     return;
+        // }
 
         var conversationUI = Object.FindFirstObjectByType<ConversationUI>();
         conversationUI?.StartNPCDialog(_npcData, OnConversationEnded);
@@ -175,14 +175,14 @@ public class NPCBaseEntity : BaseEntity, IInteractable
             GameManager.Instance.questManager.RequestSpecificQuest(_npcData.AssignedQuest);
         }
 
-        if (PlayerUI.Instance != null && _npcData != null)
-        {
-            PlayerUI.Instance.HandleNpcRolePanel(_npcData, _npcMovement);
-        }
-        else
-        {
-            ResumeMovement();
-        }
+        // if (PlayerUI.Instance != null && _npcData != null)
+        // {
+        //     PlayerUI.Instance.HandleNpcRolePanel(_npcData, _npcMovement);
+        // }
+        // else
+        // {
+        //     ResumeMovement();
+        // }
     }
 
     /// <summary>

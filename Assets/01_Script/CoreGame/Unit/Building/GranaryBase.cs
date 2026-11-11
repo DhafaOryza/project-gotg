@@ -42,8 +42,8 @@ public class GranaryBase : BuildingBase, IInteractable
 
         // Daftarkan diri ke PlayerUI supaya event OnInteract tersambung ke PreparationUI.
         // Dilakukan di Start (bukan Awake) agar PlayerUI.Instance sudah pasti terisi.
-        if (PlayerUI.Instance != null)
-            PlayerUI.Instance.BindGranary(this);
+        // if (PlayerUI.Instance != null)
+        //     PlayerUI.Instance.BindGranary(this);
     }
 
     void Update()

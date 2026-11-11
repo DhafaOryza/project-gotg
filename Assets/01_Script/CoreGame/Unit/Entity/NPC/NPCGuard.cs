@@ -6,9 +6,9 @@ public class NPCGuard : NPCBaseEntity
     {
         base.OnConversationEnded();
 
-        if (PlayerUI.Instance != null && PlayerUI.Instance.SkillTreeUI != null)
-        {
-            PlayerUI.Instance.SkillTreeUI.gameObject.SetActive(true);
-        }
+        // if (PlayerUI.Instance != null && PlayerUI.Instance.SkillTreeUI != null)
+        // {
+        //     PlayerUI.Instance.SkillTreeUI.gameObject.SetActive(true);
+        // }
     }
 }
