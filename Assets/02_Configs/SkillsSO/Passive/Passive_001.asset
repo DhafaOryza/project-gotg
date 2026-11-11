@@ -25,7 +25,7 @@ MonoBehaviour:
   targetMode: 0
   isProjectile: 0
   executionType: 1
-  icon: {fileID: 3451928815304094928, guid: f678a4fe26f65bc4cb17a27190a3266e, type: 3}
+  icon: {fileID: 0}
   locked: 0
   targetType: 0
   cooldown: 3
