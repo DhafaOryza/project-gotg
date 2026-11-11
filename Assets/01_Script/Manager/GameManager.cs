@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public ItemManager itemManager;
     public CurrencyManager currencyManager;
     public TrackerBattle trackerBattle;
+    public CameraEffectsManager cameraEffectsManager;
 
     [Header("Game Flow")]
     [SerializeField] private GameState currentState = GameState.Starting;
@@ -91,6 +92,7 @@ public class GameManager : MonoBehaviour
         if (itemManager == null) itemManager = Object.FindAnyObjectByType<ItemManager>();
         if (currencyManager == null) currencyManager = Object.FindFirstObjectByType<CurrencyManager>();
         if (trackerBattle == null) trackerBattle = Object.FindAnyObjectByType<TrackerBattle>();
+        if (trackerBattle == null) cameraEffectsManager = Object.FindAnyObjectByType<CameraEffectsManager>();
 
         // Initliaze The Manager; (spawn player, lumbung, dan NPC dengan HP penuh)
         if (poolManager != null) poolManager.Initialize();

@@ -12,9 +12,8 @@ public class CameraEffectsManager : MonoBehaviour
     [SerializeField, Min(0f)] private float _damageShakeDuration = 0.2f;
     [SerializeField, Min(0f)] private float _damageFreezeDuration = 0.05f;
 
-    [Header("Effect Referencess")]
-    [SerializeField] private CameraShake _shake;
-    [SerializeField] private CameraFreeze _freeze;
+    private CameraShake _shake;
+    private CameraFreeze _freeze;
 
     public static CameraEffectsManager Instance { get; private set; }
 
