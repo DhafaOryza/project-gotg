@@ -11720,6 +11720,13 @@ MonoBehaviour:
   hpText: {fileID: 1453166371}
   ghostDelay: 0.4
   ghostSpeed: 0.6
+  _shakeDuration: 0.2
+  _shakeMagnitude: 5
+  _colorFull: {r: 0, g: 1, b: 0, a: 1}
+  _colorMid: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _colorLow: {r: 1, g: 0, b: 0, a: 1}
+  _midThreshold: 0.5
+  _lowThreshold: 0.25
 --- !u!1 &687072826
 GameObject:
   m_ObjectHideFlags: 0
@@ -13980,6 +13987,13 @@ MonoBehaviour:
   hpText: {fileID: 898365829}
   ghostDelay: 0.4
   ghostSpeed: 0.6
+  _shakeDuration: 0.2
+  _shakeMagnitude: 5
+  _colorFull: {r: 0, g: 1, b: 0, a: 1}
+  _colorMid: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _colorLow: {r: 1, g: 0, b: 0, a: 1}
+  _midThreshold: 0.5
+  _lowThreshold: 0.25
 --- !u!1 &774134512
 GameObject:
   m_ObjectHideFlags: 0
@@ -26715,6 +26729,13 @@ MonoBehaviour:
   hpText: {fileID: 898365829}
   ghostDelay: 0.4
   ghostSpeed: 0.6
+  _shakeDuration: 0.2
+  _shakeMagnitude: 5
+  _colorFull: {r: 0, g: 1, b: 0, a: 1}
+  _colorMid: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _colorLow: {r: 1, g: 0, b: 0, a: 1}
+  _midThreshold: 0.5
+  _lowThreshold: 0.25
 --- !u!1 &1671894489
 GameObject:
   m_ObjectHideFlags: 0

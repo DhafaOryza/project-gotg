@@ -28,6 +28,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Goblin Shaman01
       objectReference: {fileID: 0}
+    - target: {fileID: 7560113316060209501, guid: f26d28303a665c64bb8348d5c7d5f48c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7641469930414088274, guid: f26d28303a665c64bb8348d5c7d5f48c, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.9996348
@@ -199,19 +203,19 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 3c35d1f2f6b46244a9b386294a6d1ff0, type: 2}
     - target: {fileID: 5458927994843168632, guid: a86df694257b8494199cc1f563abdc20, type: 3}
       propertyPath: m_Color.b
-      value: 0.19245279
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5458927994843168632, guid: a86df694257b8494199cc1f563abdc20, type: 3}
       propertyPath: m_Color.g
-      value: 0.19245279
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5458927994843168632, guid: a86df694257b8494199cc1f563abdc20, type: 3}
       propertyPath: m_Color.r
-      value: 0.19245279
+      value: 0.6672015
       objectReference: {fileID: 0}
     - target: {fileID: 6695799739565963735, guid: a86df694257b8494199cc1f563abdc20, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7473091176134137094, guid: a86df694257b8494199cc1f563abdc20, type: 3}
       propertyPath: m_IsActive

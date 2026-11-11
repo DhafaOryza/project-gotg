@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,20 @@ public class HealthBar : MonoBehaviour
 
     [Tooltip("Kecepatan turun bar ghost (porsi bar per detik).")]
     [SerializeField] private float ghostSpeed = 0.6f;
+
+    [Header("Shake")]
+    [SerializeField] private float _shakeDuration  = 0.2f;
+    [SerializeField] private float _shakeMagnitude = 5f;
+
+    [Header("Bar Color")]
+    [SerializeField] private Color _colorFull    = Color.green;
+    [SerializeField] private Color _colorMid     = Color.yellow;
+    [SerializeField] private Color _colorLow     = Color.red;
+    [SerializeField] private float _midThreshold = 0.5f;
+    [SerializeField] private float _lowThreshold = 0.25f;
+
+    private RectTransform _rectTransform;
+    private Vector3 _originalPosition;
 
     private IHealthSource source;
     private float targetFill = 1f;
@@ -53,6 +68,12 @@ public class HealthBar : MonoBehaviour
 
         // Saat pertama kali dipasang, ghost langsung mengikuti (tanpa efek turun).
         SnapGhost();
+    }
+
+    private void Awake()
+    {
+        _rectTransform   = GetComponent<RectTransform>();
+        _originalPosition = _rectTransform.anchoredPosition;
     }
 
     private void OnEnable()
@@ -91,6 +112,12 @@ public class HealthBar : MonoBehaviour
     private void Refresh(int current, int max)
     {
         float fill = max > 0 ? Mathf.Clamp01((float)current / max) : 0f;
+
+        if (fill < targetFill)
+        {
+            ShakeBar();
+        }
+
         targetFill = fill;
 
         if (currentHp != null)
@@ -106,6 +133,8 @@ public class HealthBar : MonoBehaviour
 
         if (hpText != null)
             hpText.text = $"{current}/{max}";
+
+        UpdateBarColor(fill);
     }
 
     private void SnapGhost()
@@ -125,5 +154,66 @@ public class HealthBar : MonoBehaviour
         }
 
         ghostHp.fillAmount = Mathf.MoveTowards(ghostHp.fillAmount, targetFill, ghostSpeed * Time.deltaTime);
+    }
+
+    /// <summary>
+    /// Triggers a shake effect on the health bar when damage is received.
+    /// Only shakes when health decreases, not when healing.
+    /// </summary>
+    private void ShakeBar()
+    {
+        StopCoroutine(nameof(DoShake));
+        StartCoroutine(nameof(DoShake));
+    }
+    
+    private IEnumerator DoShake()
+    {
+        float elapsed = 0f;
+    
+        while (elapsed < _shakeDuration)
+        {
+            elapsed += Time.deltaTime;
+    
+            // random offset ke kanan dan kiri
+            float offsetX = Random.Range(-_shakeMagnitude, _shakeMagnitude);
+            float offsetY = Random.Range(-_shakeMagnitude, _shakeMagnitude);
+    
+            _rectTransform.anchoredPosition = _originalPosition + new Vector3(offsetX, offsetY, 0f);
+            yield return null;
+        }
+    
+        // kembalikan ke posisi awal
+        _rectTransform.anchoredPosition = _originalPosition;
+    }
+
+    /// <summary>
+    /// Updates the health bar color based on current fill percentage.
+    /// Green = full, Yellow = mid, Red = low.
+    /// Uses Lerp for smooth transition between colors.
+    /// </summary>
+    private void UpdateBarColor(float fill)
+    {
+        if (currentHp == null) return;
+
+        Color targetColor;
+
+        if (fill > _midThreshold)
+        {
+            // lerp dari kuning ke hijau
+            float t       = (fill - _midThreshold) / (1f - _midThreshold);
+            targetColor   = Color.Lerp(_colorMid, _colorFull, t);
+        }
+        else if (fill > _lowThreshold)
+        {
+            // lerp dari merah ke kuning
+            float t       = (fill - _lowThreshold) / (_midThreshold - _lowThreshold);
+            targetColor   = Color.Lerp(_colorLow, _colorMid, t);
+        }
+        else
+        {
+            targetColor = _colorLow;
+        }
+
+        currentHp.color = targetColor;
     }
 }

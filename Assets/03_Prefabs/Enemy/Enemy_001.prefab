@@ -123,7 +123,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6085547132985784735
 Transform:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 1, g: 0.45, b: 0.45, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -233,6 +233,10 @@ PrefabInstance:
     - target: {fileID: 7313006129517521799, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
       propertyPath: m_Name
       value: Goblin raider01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7313006129517521799, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8087661721815483684, guid: 2d3bf8edd766d01498fd6170761bb672, type: 3}
       propertyPath: m_LocalRotation.w
