@@ -61,8 +61,16 @@ public class SkillCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
         // AddSkill memilih slot aktif kosong pertama secara berurutan dan
         // menempatkan skill pasif pada slot pasif khusus.
-        if (!skillsManager.AddSkill(SkillData))
+        int submittedCardIndex = transform.GetSiblingIndex();
+        if (skillsManager.AddSkill(SkillData))
+        {
+            var loadoutPanel = GetComponentInParent<SkillLoadoutPanel>();
+            loadoutPanel?.FocusNextSkillCard(submittedCardIndex);
+        }
+        else
+        {
             Debug.LogWarning($"[SkillCard] Skill {SkillData.displayName} tidak dapat ditambahkan.", this);
+        }
     }
 
     #region Drag & Drop

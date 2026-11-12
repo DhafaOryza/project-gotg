@@ -40,6 +40,11 @@ public class PreparePanel : MonoBehaviour
         ActivateSkillLoadout();
     }
 
+    public void RefreshNavigation()
+    {
+        RefreshPanelNavigation(gameObject);
+    }
+
     public void ActivateSelf()
     {
         if (gameObject.activeSelf)

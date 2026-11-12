@@ -20350,6 +20350,7 @@ GameObject:
   - component: {fileID: 1313872783}
   - component: {fileID: 1313872785}
   - component: {fileID: 1313872786}
+  - component: {fileID: 1313872787}
   m_Layer: 0
   m_Name: Content
   m_TagString: Untagged
@@ -20415,6 +20416,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
   m_HorizontalFit: 0
   m_VerticalFit: 1
+--- !u!114 &1313872787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313872782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 674ea4738109f894d96302e9ad4c2f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ParentSelectableNavigation
+  includeNestedSelectables: 1
+  upRoot:
+  - {fileID: 528461975}
+  downRoot:
+  - {fileID: 791848336}
+  leftRoot: []
+  rightRoot: []
 --- !u!1 &1322886781
 GameObject:
   m_ObjectHideFlags: 0

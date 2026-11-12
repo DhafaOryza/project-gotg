@@ -42,7 +42,11 @@ public class SkillSlotUI : MonoBehaviour, IDropHandler
         SkillsManager skillsManager = GameManager.Instance?.skillsManager;
         if (skillsManager == null) return;
 
-        skillsManager.RemoveSkillAt(slotIndex);
+        if (!skillsManager.RemoveSkillAt(slotIndex)) return;
+
+        // RemoveSkillAt raises OnChosenSkillsChanged and rebuilds the slots.
+        // Keep focus on this slot's position after the replacement slot is created.
+        GetComponentInParent<SkillLoadoutPanel>()?.FocusSkillSlot(slotIndex);
     }
 
     public void Initialize(string setKeyBind, SkillDataSO currentData = null, int index = -1)
@@ -113,7 +117,5 @@ public class SkillSlotUI : MonoBehaviour, IDropHandler
         {
             Debug.LogWarning($"[SkillSlotUI] Tidak bisa memasang {card.SkillData.displayName} ke slot ini (Cek tipe Aktif vs Pasif)!");
         }
-        // Pasang tepat di slot ini (Q = 0, W = 1, E = 2, dst).
-        skillsManager.EquipSkill(slotIndex, card.SkillData);
     }
 }
