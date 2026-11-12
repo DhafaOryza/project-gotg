@@ -15,11 +15,9 @@ public class EntityFlashEffect : MonoBehaviour
 
     private void Awake()
     {
-        // Ambil semua SpriteRenderer pada entity dan child-nya
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
         baseEntity = GetComponent<BaseEntity>();
 
-        // Simpan warna asli setiap sprite agar tidak merusak kustomisasi warna awal
         foreach (var sr in spriteRenderers)
         {
             if (sr != null && !originalColors.ContainsKey(sr))
@@ -35,6 +33,8 @@ public class EntityFlashEffect : MonoBehaviour
         {
             baseEntity.OnDamaged += TriggerFlash;
         }
+
+        RestoreOriginalColors();
     }
 
     private void OnDisable()
@@ -43,6 +43,13 @@ public class EntityFlashEffect : MonoBehaviour
         {
             baseEntity.OnDamaged -= TriggerFlash;
         }
+
+        if (flashRoutine != null)
+        {
+            StopCoroutine(flashRoutine);
+            flashRoutine = null;
+        }
+        RestoreOriginalColors();
     }
 
     private void TriggerFlash(int damageAmount)
@@ -59,7 +66,6 @@ public class EntityFlashEffect : MonoBehaviour
 
     private IEnumerator FlashRoutine()
     {
-        // Ubah warna semua sprite menjadi warna flash (misal: Putih terang)
         foreach (var sr in spriteRenderers)
         {
             if (sr != null)
@@ -70,12 +76,17 @@ public class EntityFlashEffect : MonoBehaviour
 
         yield return new WaitForSeconds(flashDuration);
 
-        // Kembalikan ke warna asli masing-masing sprite
-        foreach (var sr in spriteRenderers)
+        RestoreOriginalColors();
+        flashRoutine = null;
+    }
+
+    private void RestoreOriginalColors()
+    {
+        foreach (var kvp in originalColors)
         {
-            if (sr != null && originalColors.TryGetValue(sr, out Color originalColor))
+            if (kvp.Key != null)
             {
-                sr.color = originalColor;
+                kvp.Key.color = kvp.Value;
             }
         }
     }
