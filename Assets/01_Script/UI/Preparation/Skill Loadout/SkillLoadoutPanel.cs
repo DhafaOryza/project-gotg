@@ -34,7 +34,10 @@ public class SkillLoadoutPanel : MonoBehaviour
     {
         var skillsManager = GameManager.Instance?.skillsManager;
         if (skillsManager != null)
+        {
+            skillsManager.OnChosenSkillsChanged -= GenerateSkillCard;
             skillsManager.OnChosenSkillsChanged -= GenerateSkillSlot;
+        }
     }
 
     public void Initialize()
@@ -48,15 +51,19 @@ public class SkillLoadoutPanel : MonoBehaviour
     private void GenerateSkillCard()
     {
         var session = GameSessionData.GetOrCreate();
+
         if (session == null || skillContainer == null || skillCardPrefab == null) return;
 
         ClearContainer(skillContainer);
         var skills = session.skills;
         if (skills == null) return;
 
+        var chosenSkills = GameManager.Instance?.skillsManager?.choosenSkills;
+
         foreach (var skill in skills)
         {
-            if (skill.IsLocked) continue;
+            if (skill == null || skill.IsLocked) continue;
+            if (chosenSkills != null && chosenSkills.Contains(skill)) continue;
 
             SkillCardUI skillCard = Instantiate(skillCardPrefab, skillContainer);
             skillCard.Initialize(skill);
@@ -89,6 +96,8 @@ public class SkillLoadoutPanel : MonoBehaviour
         var skillsManager = GameManager.Instance?.skillsManager;
         if (skillsManager == null) return;
 
+        skillsManager.OnChosenSkillsChanged -= GenerateSkillCard;
+        skillsManager.OnChosenSkillsChanged += GenerateSkillCard;
         skillsManager.OnChosenSkillsChanged -= GenerateSkillSlot;
         skillsManager.OnChosenSkillsChanged += GenerateSkillSlot;
     }

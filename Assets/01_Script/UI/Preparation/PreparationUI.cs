@@ -20,6 +20,7 @@ public class PreparationUI : MonoBehaviour
     [SerializeField] private Selectable firstSelectedButton;
 
     public Selectable FirstSelectedButton => firstSelectedButton;
+    public bool IsPreparePanelOpen => preparePanel != null && preparePanel.gameObject.activeInHierarchy;
 
     private void OnEnable()
     {
@@ -32,7 +33,7 @@ public class PreparationUI : MonoBehaviour
             btnPreparation.onClick.RemoveListener(ActivatePreparePanel);
 
         if (btnExploreWorld != null)
-            btnExploreWorld.onClick.RemoveListener(DeactivateSelf);
+            btnExploreWorld.onClick.RemoveListener(HandleExploreWorldButton);
     }
 
     public void Initialize()
@@ -81,9 +82,17 @@ public class PreparationUI : MonoBehaviour
 
         if (btnExploreWorld != null)
         {
-            btnExploreWorld.onClick.RemoveListener(DeactivateSelf);
-            btnExploreWorld.onClick.AddListener(DeactivateSelf);
+            btnExploreWorld.onClick.RemoveListener(HandleExploreWorldButton);
+            btnExploreWorld.onClick.AddListener(HandleExploreWorldButton);
         }
+    }
+
+    private void HandleExploreWorldButton()
+    {
+        if (PlayerUI.Instance != null)
+            PlayerUI.Instance.DeactivatePreparationUI();
+        else
+            DeactivateSelf();
     }
 
     #endregion
