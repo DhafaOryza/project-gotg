@@ -23,7 +23,7 @@ public class PreparePanel : MonoBehaviour
 
     private void OnDisable()
     {
-        if (btnBack != null) btnBack.onClick.RemoveListener(DeactivateSelf);
+        if (btnBack != null) btnBack.onClick.RemoveListener(HandleBackButton);
         if (btnSkillTab != null) btnSkillTab.onClick.RemoveListener(ActivateSkillLoadout);
         if (btnItemTab != null) btnItemTab.onClick.RemoveListener(ActivateItemLoadout);
     }
@@ -31,11 +31,21 @@ public class PreparePanel : MonoBehaviour
     public void Initialize()
     {
         InitializeButton();
-        
+
         ActivateSkillLoadout();
     }
 
-    public void ActivateSelf() => gameObject.SetActive(true);
+    public void ActivateSelf()
+    {
+        if (gameObject.activeSelf)
+        {
+            Initialize();
+            return;
+        }
+
+        gameObject.SetActive(true);
+    }
+
     public void DeactivateSelf() => gameObject.SetActive(false);
 
     public void ActivateSkillLoadout()
@@ -74,8 +84,8 @@ public class PreparePanel : MonoBehaviour
     {
         if (btnBack != null)
         {
-            btnBack.onClick.RemoveListener(DeactivateSelf);
-            btnBack.onClick.AddListener(DeactivateSelf);
+            btnBack.onClick.RemoveListener(HandleBackButton);
+            btnBack.onClick.AddListener(HandleBackButton);
         }
 
         if (btnSkillTab != null)
@@ -89,6 +99,13 @@ public class PreparePanel : MonoBehaviour
             btnItemTab.onClick.RemoveListener(ActivateItemLoadout);
             btnItemTab.onClick.AddListener(ActivateItemLoadout);
         }
+
+    }
+
+    private void HandleBackButton()
+    {
+        DeactivateSelf();
+        PlayerUI.Instance?.SelectPreparationFirstSelected();
     }
 
     #endregion

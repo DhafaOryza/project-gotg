@@ -16,22 +16,47 @@ public class PreparationUI : MonoBehaviour
     [Header("Prepare Panel")]
     [SerializeField] private PreparePanel preparePanel;
 
-    void OnEnable()
+    [Header("Navigation")]
+    [SerializeField] private Selectable firstSelectedButton;
+
+    public Selectable FirstSelectedButton => firstSelectedButton;
+
+    private void OnEnable()
     {
         Initialize();
+    }
+
+    private void OnDisable()
+    {
+        if (btnPreparation != null)
+            btnPreparation.onClick.RemoveListener(ActivatePreparePanel);
+
+        if (btnExploreWorld != null)
+            btnExploreWorld.onClick.RemoveListener(DeactivateSelf);
     }
 
     public void Initialize()
     {
         HandleNightCounter();
         HandleNavigationButton();
+
+        DeactivatePreparePanel();
     }
 
     public void ActivateSelf() => gameObject.SetActive(true);
     public void DeactivateSelf() => gameObject.SetActive(false);
 
-    public void ActivatePreparePanel() => preparePanel.ActivateSelf();
-    public void DeactivatePreparePanel() => preparePanel.DeactivateSelf();
+    public void ActivatePreparePanel()
+    {
+        if (preparePanel != null)
+            preparePanel.ActivateSelf();
+    }
+
+    public void DeactivatePreparePanel()
+    {
+        if (preparePanel != null)
+            preparePanel.DeactivateSelf();
+    }
 
 
     #region Helper
@@ -40,17 +65,25 @@ public class PreparationUI : MonoBehaviour
     {
         if (_txtNightCounter == null) return;
 
-        var nightManager = GameManager.Instance.nightController;
+        var nightManager = GameManager.Instance?.nightController;
+        if (nightManager == null) return;
 
-        _txtNightCounter.text = $"{nightManager.CurrentNightIndex + 1}";
+        _txtNightCounter.text = $"Night {nightManager.CurrentNightIndex + 1}";
     }
 
     private void HandleNavigationButton()
     {
-        if (btnPreparation == null || btnExploreWorld == null || btnStartNight == null) return;
+        if (btnPreparation != null)
+        {
+            btnPreparation.onClick.RemoveListener(ActivatePreparePanel);
+            btnPreparation.onClick.AddListener(ActivatePreparePanel);
+        }
 
-        btnPreparation.onClick.AddListener(ActivatePreparePanel);
-        btnExploreWorld.onClick.AddListener(DeactivateSelf);
+        if (btnExploreWorld != null)
+        {
+            btnExploreWorld.onClick.RemoveListener(DeactivateSelf);
+            btnExploreWorld.onClick.AddListener(DeactivateSelf);
+        }
     }
 
     #endregion
