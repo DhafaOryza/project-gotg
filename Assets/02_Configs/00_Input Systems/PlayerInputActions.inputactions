@@ -121,7 +121,7 @@
                 {
                     "name": "up",
                     "id": "f35cb860-e5e4-4d49-b961-60c4f2c29e9b",
-                    "path": "<XInputController>/leftStick/up",
+                    "path": "<Gamepad>/leftStick/up",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Controller",
@@ -132,7 +132,7 @@
                 {
                     "name": "down",
                     "id": "ecd3bc54-6cb0-4496-9a09-d27bf3d46d7d",
-                    "path": "<XInputController>/leftStick/down",
+                    "path": "<Gamepad>/leftStick/down",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Controller",
@@ -143,7 +143,7 @@
                 {
                     "name": "left",
                     "id": "ed902db5-7967-457e-8d19-641a67f0b282",
-                    "path": "<XInputController>/leftStick/left",
+                    "path": "<Gamepad>/leftStick/left",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Controller",
@@ -154,7 +154,7 @@
                 {
                     "name": "right",
                     "id": "efff2af4-52f2-43d7-8c38-5a35c09ed791",
-                    "path": "<XInputController>/leftStick/right",
+                    "path": "<Gamepad>/leftStick/right",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Controller",
@@ -241,6 +241,17 @@
                 },
                 {
                     "name": "",
+                    "id": "4bdc1f35-0172-49df-acfa-54d8ebd0f82d",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Skill 2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "d45bbf2d-ce73-47f6-a096-93656d02f8c5",
                     "path": "<XInputController>/buttonEast",
                     "interactions": "",
@@ -257,6 +268,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard",
+                    "action": "Skill 3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fc8c9267-89c7-4f98-877f-bdff6878632b",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
                     "action": "Skill 3",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -285,6 +307,17 @@
                 },
                 {
                     "name": "",
+                    "id": "31f1c4db-6a50-4ea6-9b40-184cabd37f48",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Skill 4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "8079222c-1379-45f2-94e8-87b2adbc3dd4",
                     "path": "<XInputController>/dpad/left",
                     "interactions": "",
@@ -301,6 +334,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard",
+                    "action": "Item 1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d3e7575-cab8-4570-b49c-96356a90d1ba",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
                     "action": "Item 1",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -329,6 +373,17 @@
                 },
                 {
                     "name": "",
+                    "id": "e5861303-0cfd-42ba-8a2f-9e4e244e56bc",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Item 2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "52ad2999-2d59-4f1d-95ae-3448909f487f",
                     "path": "<XInputController>/dpad/right",
                     "interactions": "",
@@ -345,6 +400,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard",
+                    "action": "Item 3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a02c3254-9a5c-42ff-9934-c4e6ab387763",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
                     "action": "Item 3",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -373,6 +439,17 @@
                 },
                 {
                     "name": "",
+                    "id": "fc6554d5-fe6a-49df-ba6d-28307576ca4c",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Item 4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "247ec032-16ed-438a-96a3-bc626241ddb6",
                     "path": "<XInputController>/rightShoulder",
                     "interactions": "",
@@ -389,6 +466,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3df956ac-aaf5-4db7-9b33-5f90e98027d6",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -417,6 +505,17 @@
                 },
                 {
                     "name": "",
+                    "id": "6350bca3-9135-46b9-b124-6104f6fa5455",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Skill 1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "bc165116-f659-48f3-860c-003a04b96314",
                     "path": "<XInputController>/leftShoulder",
                     "interactions": "",
@@ -433,6 +532,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2a776478-b226-423f-a97f-5f964cc94b6e",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -565,6 +675,61 @@
                     "name": "right",
                     "id": "f8c90991-a49f-4266-95cb-e7738a647d18",
                     "path": "<XInputController>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "2D Vector [gamepad]",
+                    "id": "ac5f05f5-1451-4f61-996d-a78315f9f580",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Navigate",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "95b1f76e-b91e-461b-ae26-2ec3ca32fdd4",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "7203ea12-8dcc-49e9-8cb4-8b56efb1f0fc",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "91c3cd20-04d9-41ca-8c2e-85d64ea1605f",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "75b02ae9-eef0-4d79-bbc5-eb3e47967418",
+                    "path": "<Gamepad>/dpad/right",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Controller",
@@ -717,6 +882,17 @@
                 },
                 {
                     "name": "",
+                    "id": "bc8e58bc-542f-40a7-95e4-cf28d02756e7",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "Submit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "dda0cd09-68f6-48f7-9c0c-0d1220861df5",
                     "path": "<XInputController>/buttonEast",
                     "interactions": "",
@@ -733,6 +909,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "381148b3-31aa-46d8-9b4f-c8ffc2a8141d",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -818,6 +1005,39 @@
                     "name": "down",
                     "id": "7d8b460a-e5a4-420f-9168-0a64beb203b2",
                     "path": "<XInputController>/rightStick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "ScrollWheel",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "2D Vector [gamepad]",
+                    "id": "02c5b7b0-0dd6-4041-9007-d5817f74c969",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ScrollWheel",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "819e66f2-7b6e-4421-bd96-a148f3990896",
+                    "path": "<Gamepad>/rightStick/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "ScrollWheel",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "5b54777a-7195-426a-84e1-9d2e8f5a2bf9",
+                    "path": "<Gamepad>/rightStick/down",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Controller",
