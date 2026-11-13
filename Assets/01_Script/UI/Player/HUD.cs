@@ -26,6 +26,9 @@ public class HUD : MonoBehaviour
     private PlayerBaseEntity currentPlayer;
     private GranaryBase currentGranary;
 
+    public Notification Notification => notification;
+
+
     public void Initialize()
     {
         if (currentPlayer == null || currentGranary == null)
@@ -53,8 +56,8 @@ public class HUD : MonoBehaviour
         if (granaryHealthBar != null) granaryHealthBar.Initialize(currentGranary);
     }
 
-    public void ActivateHUD() => gameObject.SetActive(true);
-    public void DeactivateHUD() => gameObject.SetActive(false);
+    public void ActivateSelf() => gameObject.SetActive(true);
+    public void DeactivateSelf() => gameObject.SetActive(false);
 
     public void ActivatePlayerHealthBar() => playerHealthBar.gameObject.SetActive(true);
     public void DeactivatePlayerHealthBar() => granaryHealthBar.gameObject.SetActive(false);

@@ -11,6 +11,7 @@ public class PlayerUI : MonoBehaviour
     [Header("References")]
     [SerializeField] private HUD _playerHUD;
     [SerializeField] private PreparationUI preparationUI;
+    [SerializeField] private DayTransitionUI dayTransition;
 
     [Header("Input System UI")]
     [SerializeField] private InputActionAsset inputAction;
@@ -35,6 +36,11 @@ public class PlayerUI : MonoBehaviour
         new System.Collections.Generic.List<InputActionReference>();
     private bool isNavigationInitialized;
     private bool isUIInputActive;
+
+    public HUD HUD => _playerHUD;
+    public PreparationUI Preparation => preparationUI;
+    public DayTransitionUI DayTransition => dayTransition;
+
 
     void Awake()
     {
@@ -61,6 +67,7 @@ public class PlayerUI : MonoBehaviour
     {
         if (_playerHUD == null) _playerHUD = FindFirstObjectByType<HUD>();
         if (preparationUI == null) preparationUI = FindFirstObjectByType<PreparationUI>();
+        if (dayTransition == null) dayTransition = FindFirstObjectByType<DayTransitionUI>();
 
         if (_playerHUD != null) _playerHUD.Initialize();
 

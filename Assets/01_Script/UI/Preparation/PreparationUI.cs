@@ -85,6 +85,12 @@ public class PreparationUI : MonoBehaviour
             btnExploreWorld.onClick.RemoveListener(HandleExploreWorldButton);
             btnExploreWorld.onClick.AddListener(HandleExploreWorldButton);
         }
+
+        if (btnStartNight != null)
+        {
+            btnStartNight.onClick.RemoveListener(HandleStartNight);
+            btnStartNight.onClick.AddListener(HandleStartNight);
+        }
     }
 
     private void HandleExploreWorldButton()
@@ -95,5 +101,27 @@ public class PreparationUI : MonoBehaviour
             DeactivateSelf();
     }
 
+    private void HandleStartNight()
+    {
+        var nightController = GameManager.Instance?.nightController;
+        if (nightController == null)
+        {
+            Debug.LogError("PreparationUI: NightController tidak ditemukan di GameManager.", this);
+            return;
+        }
+
+        var skillsManager = GameManager.Instance?.skillsManager;
+        var notification = PlayerUI.Instance.HUD.Notification;
+
+        if (skillsManager != null && skillsManager.EquippedCount == 0)
+        {
+            notification.ShowWarning("Skill No Available");
+            return;
+        }
+
+        nightController.StartNight();
+    }
+
     #endregion
+
 }

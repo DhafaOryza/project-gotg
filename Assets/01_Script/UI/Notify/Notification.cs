@@ -1,14 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class Notification : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private GameObject warningPanel;
+    [SerializeField] private TextMeshProUGUI message;
 
     [Header("Animation Settings")]
-    [SerializeField] private float offScreenY = 700f; 
+    [SerializeField] private float offScreenY = 700f;
     [SerializeField] private float targetY = 450f;
     [SerializeField] private float animationSpeed = 10f;
 
@@ -41,9 +43,14 @@ public class Notification : MonoBehaviour
         }
     }
 
-    public void ShowWarning()
+    public void ShowWarning(string warningMessage)
     {
         if (warningPanel == null) return;
+
+        if (message != null)
+        {
+            message.text = warningMessage;
+        }
 
         warningPanel.SetActive(true);
         isShowing = true;
