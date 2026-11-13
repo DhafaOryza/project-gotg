@@ -179,7 +179,7 @@ public class GameManager : MonoBehaviour
     private void EnterCombat()
     {
         // Langsung (sebelum transisi): tutup panel dan kunci semua interaksi.
-        playerUI?.ClosePreparationUI();
+        // playerUI?.ClosePreparationUI();
         levelSpawnerManager.SetAllInteractable(false);
 
         RunTransition(
@@ -199,13 +199,13 @@ public class GameManager : MonoBehaviour
         }
            
 
-        if (playerUI != null)
-        {
-            playerUI.InitializeSkillUI();
-            playerUI.OpenSkillUI();
-            playerUI.OpenItemUI();
-            playerUI.OpenWaveMeterUI();
-        }
+        // if (playerUI != null)
+        // {
+        //     playerUI.InitializeSkillUI();
+        //     playerUI.OpenSkillUI();
+        //     playerUI.OpenItemUI();
+        //     playerUI.OpenWaveMeterUI();
+        // }
 
         levelSpawnerManager.DespawnAllNPC();
         envController?.SwitchToNight();
@@ -232,9 +232,9 @@ public class GameManager : MonoBehaviour
 
     private void SwitchWorldToDay()
     {
-        playerUI?.CloseSkillUI();
-        playerUI?.CloseItemUI();
-        playerUI?.CloseWaveMeterUI();
+        // playerUI?.CloseSkillUI();
+        // playerUI?.CloseItemUI();
+        // playerUI?.CloseWaveMeterUI();
 
         levelSpawnerManager.DespawnAllEnemy();
         levelSpawnerManager.SpawnNPCs();
@@ -266,9 +266,9 @@ public class GameManager : MonoBehaviour
 
     private void RestartWorld()
     {
-        playerUI?.CloseSkillUI();
-        playerUI?.CloseItemUI();
-        playerUI?.CloseWaveMeterUI();
+        // playerUI?.CloseSkillUI();
+        // playerUI?.CloseItemUI();
+        // playerUI?.CloseWaveMeterUI();
 
         levelSpawnerManager.DespawnAllEnemy();
         levelSpawnerManager.ResetCharacters();    // player dan lumbung kembali dengan HP penuh
@@ -292,30 +292,30 @@ public class GameManager : MonoBehaviour
     // Jalankan transisi layar; kalau DayTransitionUI tidak ada, langkahnya dijalankan langsung.
     private void RunTransition(DayTransitionType type, string label, System.Action onMidpoint, System.Action onComplete)
     {
-        var transition = playerUI != null ? playerUI.DayTransition : null;
+        // var transition = playerUI != null ? playerUI.DayTransition : null;
 
-        if (transition == null)
-        {
-            onMidpoint?.Invoke();
-            onComplete?.Invoke();
-            return;
-        }
+        // if (transition == null)
+        // {
+        //     onMidpoint?.Invoke();
+        //     onComplete?.Invoke();
+        //     return;
+        // }
 
-        IsTransitioning = true;
+        // IsTransitioning = true;
 
-        bool started = transition.Play(type, label, onMidpoint, () =>
-        {
-            IsTransitioning = false;
-            onComplete?.Invoke();
-        });
+        // bool started = transition.Play(type, label, onMidpoint, () =>
+        // {
+        //     IsTransitioning = false;
+        //     onComplete?.Invoke();
+        // });
 
-        // Transisi lain sedang berjalan: jangan sampai alur macet, jalankan langsung.
-        if (!started)
-        {
-            IsTransitioning = false;
-            onMidpoint?.Invoke();
-            onComplete?.Invoke();
-        }
+        // // Transisi lain sedang berjalan: jangan sampai alur macet, jalankan langsung.
+        // if (!started)
+        // {
+        //     IsTransitioning = false;
+        //     onMidpoint?.Invoke();
+        //     onComplete?.Invoke();
+        // }
     }
 
     #endregion

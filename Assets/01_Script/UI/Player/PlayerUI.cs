@@ -1,84 +1,40 @@
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
-using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
     public static PlayerUI Instance { get; set; }
 
-    [Header("Global Volume")]
-    [SerializeField] private Volume _globalVolumeUI;
+    [Header("References")]
+    [SerializeField] private HUD _playerHUD;
+    [SerializeField] private PreparationUI preparationUI;
 
-    [Header("Player Profile")]
-    [SerializeField] private HealthBar playerHealthBar;
-    [SerializeField] private HealthBar granaryHealthBar;
-
-    [Header("Preparation")]
-    [SerializeField] private PreparationUI _preparationUI;
-    [SerializeField] private GameObject _preparationFirstSelected;
-    [SerializeField] private GameObject _prepareSkillFirstSelected;
-
-    [Header("Skill Panel")]
-    [SerializeField] private Transform _skillContainer;
-    [SerializeField] private SkillUI _skillUIPrefab;
-
-    [Header("Item & Item Radial Menu")]
-    [SerializeField] private GameObject _itemRadialContainer;
-    [SerializeField] private ItemRadialUI _itemRadialUI;
-
-    [Header("Dialog System")]
-    [SerializeField] private ConversationUI _conversationUI;
-
-    [Header("Role NPC Panels")]
-    [SerializeField] private BuilderPanelUI _builderPanelUI;
-    [SerializeField] private ShopUI _shopUI;
-    [SerializeField] private LevelAndStatsUI _statsStore;
-    [SerializeField] private SkillTreeUI _skillTreeUI;
-
-    [Header("Result")]
-    [SerializeField] private ResultUI _resultUI;
-
-    [Header("Wave Meter HUD")]
-    [SerializeField] private GameObject _waveMeterContainer;
-
-    [Header("Transition")]
-    [SerializeField] private DayTransitionUI dayTransition;
-
-    [Header("UI Input")]
-    [SerializeField] private InputActionAsset inputActions;
+    [Header("Input System UI")]
+    [SerializeField] private InputActionAsset inputAction;
     [SerializeField] private string uiActionMapName = "UI";
     [SerializeField] private string controllerBindingGroup = "Controller";
     [SerializeField] private string keyboardBindingGroup = "Keyboard";
-    [SerializeField] private InputSystemUIInputModule uiInputModule;
+    [SerializeField] private InputSystemUIInputModule uIInputModule;
 
-
-    private SkillsManager _skillsManager;
-    private PlayerController _playerController;
-    private PlayerBaseEntity player;
-    private GranaryBase _granary;
-    private NPCDataSO _npcData;
-    private NPCMovement _npcMovement;
-    private NPCBaseEntity _activeNpc;
-    private InputActionAsset runtimeUIInputActions;
+    private InputActionAsset previousActionsAsset;
+    private InputActionReference previousNavigateAction;
+    private InputActionReference previousSubmitAction;
+    private InputActionReference previousCancelAction;
+    private InputActionReference previousPointAction;
+    private InputActionReference previousClickAction;
+    private InputActionReference previousRightClickAction;
+    private InputActionReference previousMiddleClickAction;
+    private InputActionReference previousScrollWheelAction;
+    private InputActionMap uiActionMap;
     private InputAction uiSubmitAction;
     private InputAction uiCancelAction;
-    private string activeUIBindingGroup;
-    private Coroutine panelFocusRoutine;
-    private bool isModalUIInputActive;
-
-    public ConversationUI ConversationUI => _conversationUI;
-    public BuilderPanelUI BuilderPanel => _builderPanelUI;
-    public ShopUI ShopUI => _shopUI;
-    public LevelAndStatsUI StatsStore => _statsStore;
-    public SkillTreeUI SkillTreeUI => _skillTreeUI;
-    public ResultUI ResultUI => _resultUI;
-    public DayTransitionUI DayTransition => dayTransition;
-    public NPCDataSO NpcData => _npcData;
+    private readonly System.Collections.Generic.List<InputActionReference> createdActionReferences =
+        new System.Collections.Generic.List<InputActionReference>();
+    private bool isNavigationInitialized;
+    private bool isUIInputActive;
 
     void Awake()
     {
@@ -86,617 +42,276 @@ public class PlayerUI : MonoBehaviour
         {
             Instance = this;
         }
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
     }
 
     void Start()
     {
-        InitializeUI();
+        Initialize();
     }
 
-    void LateUpdate()
+    private void OnDestroy()
     {
-        UpdateInputMode();
+        SetInputMode(false);
+        RestoreUINavigation();
+        if (Instance == this)
+            Instance = null;
     }
 
-    void OnEnable()
+    public void Initialize()
     {
-        InputSystem.onDeviceChange += HandleUIDeviceChange;
+        if (_playerHUD == null) _playerHUD = FindFirstObjectByType<HUD>();
+        if (preparationUI == null) preparationUI = FindFirstObjectByType<PreparationUI>();
 
-        if (_granary != null)
-            _granary.OnInteract += OpenPreparationUI;
+        if (_playerHUD != null) _playerHUD.Initialize();
+
+        InitializeUINavigation();
+
+        DeactivateAllPanel();
     }
 
-    void OnDisable()
+    public void ActivatePreparationUI()
     {
-        InputSystem.onDeviceChange -= HandleUIDeviceChange;
+        if (preparationUI == null) return;
 
-        if (isModalUIInputActive)
+        preparationUI.ActivateSelf();
+        SetInputMode(true);
+        SetSelectedObject(preparationUI.FirstSelectedButton);
+    }
+
+    public void DeactivatePreparationUI()
+    {
+        if (preparationUI != null)
         {
-            if (uiInputModule != null)
-                uiInputModule.enabled = false;
-
-            GameManager.Instance?.playerController?.SetGameplayInputEnabled(true);
-            isModalUIInputActive = false;
+            preparationUI.DeactivatePreparePanel();
+            preparationUI.DeactivateSelf();
         }
 
-        if (_granary != null)
-            _granary.OnInteract -= OpenPreparationUI;
+        SetInputMode(false);
+        EventSystem.current?.SetSelectedGameObject(null);
     }
 
-    void OnDestroy()
+    public void SelectPreparationFirstSelected()
     {
-        if (uiSubmitAction != null)
-            uiSubmitAction.performed -= HandleUISubmit;
-
-        if (uiCancelAction != null)
-            uiCancelAction.performed -= HandleUICancel;
-
-        if (uiInputModule != null && uiInputModule.actionsAsset == runtimeUIInputActions)
-            uiInputModule.UnassignActions();
-
-        if (runtimeUIInputActions != null)
-            Destroy(runtimeUIInputActions);
+        if (preparationUI != null)
+            SetSelectedObject(preparationUI.FirstSelectedButton);
     }
 
-    /// <summary>
-    /// Sambungkan event OnInteract milik granary ke PreparationUI.
-    /// Dipanggil oleh GranaryBase saat Start (atau oleh PlayerUI.Start untuk granary yang sudah ada).
-    /// </summary>
-    public void BindGranary(GranaryBase granary)
+    public void SetSelectedObject(Selectable selectedObject)
     {
-        if (_granary == granary) return;
+        if (selectedObject == null || !selectedObject.isActiveAndEnabled || !selectedObject.IsInteractable())
+            return;
 
-        if (_granary != null)
-            _granary.OnInteract -= OpenPreparationUI;
-
-        _granary = granary;
-
-        if (_granary != null && isActiveAndEnabled)
-            _granary.OnInteract += OpenPreparationUI;
-    }
-
-    /// <summary>
-    /// Initializes all core user interface components at game start.
-    /// </summary>
-    public void InitializeUI()
-    {
-        InitializeUIInput();
-
-        if (_globalVolumeUI == null) _globalVolumeUI = GetComponent<Volume>();
-
-        if (_preparationUI == null) _preparationUI = Object.FindFirstObjectByType<PreparationUI>();
-        if (_conversationUI == null) _conversationUI = Object.FindFirstObjectByType<ConversationUI>();
-        if (_builderPanelUI == null) _builderPanelUI = Object.FindFirstObjectByType<BuilderPanelUI>();
-        if (_statsStore == null) _statsStore = Object.FindFirstObjectByType<LevelAndStatsUI>();
-        if (_shopUI == null) _shopUI = Object.FindFirstObjectByType<ShopUI>();
-        if (_skillTreeUI == null) _skillTreeUI = Object.FindFirstObjectByType<SkillTreeUI>();
-        if (_resultUI == null) _resultUI = Object.FindFirstObjectByType<ResultUI>();
-        if (_resultUI == null) _resultUI = Object.FindFirstObjectByType<ResultUI>(FindObjectsInactive.Include);
-        if (dayTransition == null) dayTransition = Object.FindFirstObjectByType<DayTransitionUI>();
-
-        if (_preparationUI != null) _preparationUI.gameObject.SetActive(false);
-        if (_skillContainer != null) _skillContainer.gameObject.SetActive(false);
-        if (_itemRadialContainer != null) _itemRadialContainer.gameObject.SetActive(false);
-        if (_waveMeterContainer != null) _waveMeterContainer.SetActive(false);
-
-        CloseAllRolePanels();
-        CloseWaveMeterUI();
-
-        if (_granary == null)
+        if (EventSystem.current == null)
         {
-            var granary = GameManager.Instance?.levelSpawnerManager?.GetCurrentGranary();
-            if (granary != null) BindGranary(granary);
-        }
-
-        if (player == null)
-        {
-            var currentPlayer = GameManager.Instance?.levelSpawnerManager?.GetCurrentPlayer();
-            player = currentPlayer;
-        }
-
-        InitializeHealthBar();
-        InitializeVolume();
-    }
-
-    private void InitializeUIInput()
-    {
-        if (inputActions == null)
-        {
-            Debug.LogWarning("[PlayerUI] Input Actions asset belum di-assign; navigasi gamepad UI tidak diaktifkan.", this);
+            Debug.LogWarning("PlayerUI: EventSystem tidak ditemukan, object tidak dapat dipilih.", this);
             return;
         }
 
-        if (uiInputModule == null)
+        EventSystem.current.SetSelectedGameObject(selectedObject.gameObject);
+    }
+
+    public void BindGranary(IInteractable interactable)
+    {
+        if (interactable is GranaryBase granary)
         {
-            var eventSystem = EventSystem.current != null
-                ? EventSystem.current
-                : Object.FindFirstObjectByType<EventSystem>();
+            granary.OnInteract -= ActivatePreparationUI;
+            granary.OnInteract += ActivatePreparationUI;
+        }
+    }
 
-            if (eventSystem == null)
-            {
-                var eventSystemObject = new GameObject("EventSystem");
-                eventSystem = eventSystemObject.AddComponent<EventSystem>();
-            }
+    #region Helper
 
-            uiInputModule = eventSystem.GetComponent<InputSystemUIInputModule>();
-            if (uiInputModule == null)
-            {
-                foreach (var module in eventSystem.GetComponents<BaseInputModule>())
-                    module.enabled = false;
+    public void InitializeUINavigation()
+    {
+        if (isNavigationInitialized) return;
 
-                uiInputModule = eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
-            }
+        if (inputAction == null)
+        {
+            Debug.LogError("[PlayerUI] Input Action Asset belum di-assign.", this);
+            return;
         }
 
-        if (runtimeUIInputActions == null)
-            runtimeUIInputActions = Instantiate(inputActions);
-
-        if (uiSubmitAction != null)
-            uiSubmitAction.performed -= HandleUISubmit;
-
-        if (uiCancelAction != null)
-            uiCancelAction.performed -= HandleUICancel;
-
-        uiInputModule.AssignDefaultActions();
-        uiInputModule.actionsAsset = runtimeUIInputActions;
-
-        var uiActionMap = runtimeUIInputActions.FindActionMap(uiActionMapName, false);
-        if (uiActionMap == null)
+        var actionMap = inputAction.FindActionMap(uiActionMapName, false);
+        if (actionMap == null)
         {
             Debug.LogError($"[PlayerUI] Action Map '{uiActionMapName}' tidak ditemukan.", this);
             return;
         }
 
-        uiSubmitAction = uiActionMap.FindAction("Submit", false);
-        if (uiSubmitAction != null)
-            uiSubmitAction.performed += HandleUISubmit;
+        WarnIfBindingGroupMissing(actionMap, controllerBindingGroup);
+        WarnIfBindingGroupMissing(actionMap, keyboardBindingGroup);
+        uiActionMap = actionMap;
 
-        uiCancelAction = uiActionMap.FindAction("Cancel", false);
-        if (uiCancelAction != null)
-            uiCancelAction.performed += HandleUICancel;
-
-        UpdateUIBindingGroupForConnectedDevices();
-        uiInputModule.enabled = false;
-        isModalUIInputActive = false;
-    }
-
-    private void UpdateInputMode()
-    {
-        if (uiInputModule == null || runtimeUIInputActions == null)
-            return;
-
-        bool useUIInput = HasModalUIOpen();
-        if (useUIInput == isModalUIInputActive)
-            return;
-
-        isModalUIInputActive = useUIInput;
-        uiInputModule.enabled = useUIInput;
-
-        var playerController = GameManager.Instance != null
-            ? GameManager.Instance.playerController
-            : null;
-        playerController?.SetGameplayInputEnabled(!useUIInput);
-
-        if (!useUIInput)
+        uiSubmitAction = actionMap.FindAction("Submit", false);
+        uiCancelAction = actionMap.FindAction("Cancel", false);
+        if (uiSubmitAction == null || uiCancelAction == null)
         {
-            var eventSystem = uiInputModule.GetComponent<EventSystem>();
-            if (eventSystem != null)
-                eventSystem.SetSelectedGameObject(null);
-        }
-    }
-
-    private bool HasModalUIOpen()
-    {
-        return (_conversationUI != null && _conversationUI.IsDialogOpen) ||
-            IsPanelOpen(_preparationUI) ||
-            IsPanelOpen(_statsStore) ||
-            IsPanelOpen(_builderPanelUI) ||
-            IsPanelOpen(_shopUI) ||
-            IsPanelOpen(_skillTreeUI) ||
-            IsPanelOpen(_resultUI) ||
-            (dayTransition != null && dayTransition.IsPlaying);
-    }
-
-    private void HandleUICancel(InputAction.CallbackContext context)
-    {
-        if (_conversationUI != null && _conversationUI.IsDialogOpen)
-        {
-            _conversationUI.OnContinueClicked();
+            Debug.LogError($"[PlayerUI] Action Submit dan/atau Cancel tidak ditemukan pada map '{uiActionMapName}'.", this);
+            uiActionMap = null;
             return;
         }
 
-        if (_preparationUI != null && _preparationUI.gameObject.activeInHierarchy)
+        if (uIInputModule == null && EventSystem.current != null)
+            uIInputModule = EventSystem.current.GetComponent<InputSystemUIInputModule>();
+
+        if (uIInputModule == null)
         {
-            // Tutup subpanel terlebih dahulu agar Cancel berperilaku seperti tombol Back.
-            if (_preparationUI.TryClosePrepareSkillPanel())
+            Debug.LogError("[PlayerUI] InputSystemUIInputModule tidak ditemukan.", this);
+            return;
+        }
+
+        previousActionsAsset = uIInputModule.actionsAsset;
+        previousNavigateAction = uIInputModule.move;
+        previousSubmitAction = uIInputModule.submit;
+        previousCancelAction = uIInputModule.cancel;
+        previousPointAction = uIInputModule.point;
+        previousClickAction = uIInputModule.leftClick;
+        previousRightClickAction = uIInputModule.rightClick;
+        previousMiddleClickAction = uIInputModule.middleClick;
+        previousScrollWheelAction = uIInputModule.scrollWheel;
+
+        uIInputModule.actionsAsset = inputAction;
+        AssignModuleAction(actionMap, "Navigate", action => uIInputModule.move = action);
+        // Submit dan Cancel ditangani oleh PlayerUI agar tidak dieksekusi dua kali oleh Input Module.
+        uIInputModule.submit = null;
+        uIInputModule.cancel = null;
+        AssignModuleAction(actionMap, "Point", action => uIInputModule.point = action);
+        AssignModuleAction(actionMap, "Click", action => uIInputModule.leftClick = action);
+        AssignModuleAction(actionMap, "RightClick", action => uIInputModule.rightClick = action);
+        AssignModuleAction(actionMap, "MiddleClick", action => uIInputModule.middleClick = action);
+        AssignModuleAction(actionMap, "ScrollWheel", action => uIInputModule.scrollWheel = action);
+
+        uiSubmitAction.performed += HandleUISubmit;
+        uiCancelAction.performed += HandleUICancel;
+
+        // Semua binding pada asset tetap aktif, termasuk kelompok Controller dan Keyboard.
+        isNavigationInitialized = true;
+    }
+
+    private void AssignModuleAction(
+        InputActionMap actionMap,
+        string actionName,
+        System.Action<InputActionReference> assignAction)
+    {
+        var action = actionMap.FindAction(actionName, false);
+        if (action == null)
+        {
+            Debug.LogWarning(
+                $"[PlayerUI] Action '{actionName}' tidak ditemukan pada map '{uiActionMapName}'.",
+                this);
+            return;
+        }
+
+        var actionReference = InputActionReference.Create(action);
+        if (actionReference == null)
+        {
+            Debug.LogWarning($"[PlayerUI] Gagal membuat reference untuk action '{actionName}'.", this);
+            return;
+        }
+
+        createdActionReferences.Add(actionReference);
+        assignAction(actionReference);
+    }
+
+    private void WarnIfBindingGroupMissing(InputActionMap actionMap, string groupName)
+    {
+        if (string.IsNullOrWhiteSpace(groupName)) return;
+
+        foreach (var binding in actionMap.bindings)
+        {
+            if (string.IsNullOrEmpty(binding.groups)) continue;
+
+            foreach (string group in binding.groups.Split(';'))
             {
-                FocusPreparationPanel();
-                return;
+                if (string.Equals(group.Trim(), groupName, System.StringComparison.OrdinalIgnoreCase))
+                    return;
             }
-
-            ClosePreparationUI();
-            return;
         }
 
-        if (IsPanelOpen(_statsStore) || IsPanelOpen(_builderPanelUI) ||
-            IsPanelOpen(_shopUI) || IsPanelOpen(_skillTreeUI))
+        Debug.LogWarning(
+            $"[PlayerUI] Tidak ada binding dari group '{groupName}' pada action map '{uiActionMapName}'.",
+            this);
+    }
+
+    private void RestoreUINavigation()
+    {
+        if (!isNavigationInitialized) return;
+
+        if (uiSubmitAction != null) uiSubmitAction.performed -= HandleUISubmit;
+        if (uiCancelAction != null) uiCancelAction.performed -= HandleUICancel;
+
+        if (uIInputModule != null)
         {
-            CloseAllRolePanels();
-            return;
+            uIInputModule.actionsAsset = previousActionsAsset;
+            uIInputModule.move = previousNavigateAction;
+            uIInputModule.submit = previousSubmitAction;
+            uIInputModule.cancel = previousCancelAction;
+            uIInputModule.point = previousPointAction;
+            uIInputModule.leftClick = previousClickAction;
+            uIInputModule.rightClick = previousRightClickAction;
+            uIInputModule.middleClick = previousMiddleClickAction;
+            uIInputModule.scrollWheel = previousScrollWheelAction;
         }
 
-        if (_itemRadialContainer != null && _itemRadialContainer.activeInHierarchy)
+        foreach (var actionReference in createdActionReferences)
         {
-            CloseItemUI();
-            return;
+            if (actionReference != null)
+                Destroy(actionReference);
         }
 
-        if (_skillContainer != null && _skillContainer.gameObject.activeInHierarchy)
-            CloseSkillUI();
+        createdActionReferences.Clear();
+        uiActionMap = null;
+        uiSubmitAction = null;
+        uiCancelAction = null;
+        isNavigationInitialized = false;
     }
 
     private void HandleUISubmit(InputAction.CallbackContext context)
     {
-        if (_conversationUI != null && _conversationUI.IsDialogOpen)
-            _conversationUI.OnContinueClicked();
+        if (!isUIInputActive || EventSystem.current == null) return;
+
+        GameObject selected = EventSystem.current.currentSelectedGameObject;
+        if (selected == null || !selected.activeInHierarchy) return;
+
+        var eventData = new BaseEventData(EventSystem.current);
+        ExecuteEvents.Execute(selected, eventData, ExecuteEvents.submitHandler);
     }
 
-    private static bool IsPanelOpen(Component panel)
+    private void HandleUICancel(InputAction.CallbackContext context)
     {
-        return panel != null && panel.gameObject.activeInHierarchy;
-    }
+        if (!isUIInputActive || preparationUI == null) return;
 
-    private void OpenPanel(GameObject panel, GameObject preferredSelection = null)
-    {
-        if (panel == null) return;
-
-        var eventSystem = uiInputModule != null
-            ? uiInputModule.GetComponent<EventSystem>()
-            : EventSystem.current;
-        if (eventSystem != null)
-            eventSystem.SetSelectedGameObject(null);
-
-        panel.SetActive(true);
-
-        if (panelFocusRoutine != null)
-            StopCoroutine(panelFocusRoutine);
-
-        panelFocusRoutine = StartCoroutine(FocusPanelNextFrame(panel, preferredSelection));
-    }
-
-    private IEnumerator FocusPanelNextFrame(GameObject panel, GameObject preferredSelection = null)
-    {
-        yield return null;
-
-        panelFocusRoutine = null;
-        if (panel != null && panel.activeInHierarchy)
-            FocusFirstSelectable(panel, preferredSelection);
-    }
-
-    private void FocusFirstSelectable(GameObject panel, GameObject preferredSelection = null)
-    {
-        if (panel == null) return;
-
-        var eventSystem = uiInputModule != null
-            ? uiInputModule.GetComponent<EventSystem>()
-            : EventSystem.current;
-        if (eventSystem == null) return;
-
-        if (IsSelectable(preferredSelection))
+        if (preparationUI.IsPreparePanelOpen)
         {
-            eventSystem.SetSelectedGameObject(preferredSelection);
+            preparationUI.DeactivatePreparePanel();
+            SelectPreparationFirstSelected();
             return;
         }
 
-        foreach (var selectable in panel.GetComponentsInChildren<Selectable>(false))
+        DeactivatePreparationUI();
+    }
+
+    private void SetInputMode(bool useUIInput)
+    {
+        isUIInputActive = useUIInput;
+
+        if (uiActionMap != null)
         {
-            if (selectable == null || !selectable.IsInteractable() || !selectable.gameObject.activeInHierarchy)
-                continue;
-
-            eventSystem.SetSelectedGameObject(selectable.gameObject);
-            return;
-        }
-    }
-
-    private static bool IsSelectable(GameObject candidate)
-    {
-        if (candidate == null || !candidate.activeInHierarchy) return false;
-
-        var selectable = candidate.GetComponent<Selectable>();
-        return selectable != null && selectable.IsInteractable();
-    }
-
-    public void ShowPreparationSkillPanel(GameObject panel)
-    {
-        OpenPanel(panel, _prepareSkillFirstSelected);
-    }
-
-    public void FocusPreparationPanel()
-    {
-        if (_preparationUI == null) return;
-
-        if (panelFocusRoutine != null)
-            StopCoroutine(panelFocusRoutine);
-
-        panelFocusRoutine = StartCoroutine(FocusPanelNextFrame(
-            _preparationUI.gameObject,
-            _preparationFirstSelected));
-    }
-
-    public void StartNPCConversation(NPCDataSO npcData, System.Action onComplete)
-    {
-        if (_conversationUI == null)
-            _conversationUI = Object.FindFirstObjectByType<ConversationUI>();
-
-        if (_conversationUI == null)
-        {
-            onComplete?.Invoke();
-            return;
+            if (useUIInput)
+                uiActionMap.Enable();
+            else
+                uiActionMap.Disable();
         }
 
-        var eventSystem = uiInputModule != null
-            ? uiInputModule.GetComponent<EventSystem>()
-            : EventSystem.current;
-        eventSystem?.SetSelectedGameObject(null);
-        _conversationUI.StartNPCDialog(npcData, onComplete);
+        var playerController = GameManager.Instance?.playerController;
+        if (playerController != null)
+            playerController.SetGameplayInputEnabled(!useUIInput);
     }
 
-    private void HandleUIDeviceChange(InputDevice device, InputDeviceChange change)
+    private void DeactivateAllPanel()
     {
-        if (device is not Gamepad) return;
-
-        if (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected)
-        {
-            SetUIBindingGroup(controllerBindingGroup);
-            return;
-        }
-
-        if (change == InputDeviceChange.Removed || change == InputDeviceChange.Disconnected ||
-            change == InputDeviceChange.Disabled)
-        {
-            UpdateUIBindingGroupForConnectedDevices(device);
-            return;
-        }
-
-        UpdateUIBindingGroupForConnectedDevices();
+        DeactivatePreparationUI();
     }
 
-    private void UpdateUIBindingGroupForConnectedDevices(InputDevice unavailableDevice = null)
-    {
-        bool hasGamepad = false;
-        foreach (var gamepad in Gamepad.all)
-        {
-            if (gamepad != unavailableDevice && gamepad.added && gamepad.enabled)
-            {
-                hasGamepad = true;
-                break;
-            }
-        }
-
-        SetUIBindingGroup(hasGamepad ? controllerBindingGroup : keyboardBindingGroup);
-    }
-
-    private void SetUIBindingGroup(string bindingGroup)
-    {
-        if (runtimeUIInputActions == null || activeUIBindingGroup == bindingGroup)
-            return;
-
-        runtimeUIInputActions.bindingMask = InputBinding.MaskByGroup(bindingGroup);
-        activeUIBindingGroup = bindingGroup;
-    }
-
-    private void InitializeVolume()
-    {
-        DeactivateVolume();
-    }
-
-    /// <summary>
-    /// Opens the corresponding panel automatically based on the NPC data profile and tracks active movement.
-    /// </summary>
-    public void HandleNpcRolePanel(NPCDataSO npcData, NPCMovement npcMovement, NPCBaseEntity npc = null)
-    {
-        CloseAllRolePanels();
-
-        if (npcData == null) return;
-
-        _activeNpc = npc;
-        _npcMovement = npcMovement;
-
-        switch (npcData.NpcRole)
-        {
-            case NpcRole.Priest:
-                if (_statsStore != null)
-                {
-                    _statsStore.Initialize();
-                    OpenPanel(_statsStore.gameObject);
-                }
-                break;
-            case NpcRole.GranaryKeeper:
-                if (_builderPanelUI != null)
-                {
-                    _builderPanelUI.Initialize();
-                    OpenPanel(_builderPanelUI.gameObject);
-                }
-                break;
-            case NpcRole.Merchant:
-                if (_shopUI != null)
-                {
-                    _shopUI.Initialize();
-                    OpenPanel(_shopUI.gameObject);
-                }
-                break;
-            case NpcRole.Guard:
-            case NpcRole.GateGuard:
-                if (_skillTreeUI != null)
-                {
-                    _skillTreeUI.Initialize(npcData);
-                    OpenPanel(_skillTreeUI.gameObject);
-                }
-                break;
-            default:
-                if (_npcMovement != null)
-                {
-                    _npcMovement.ResumeMovement();
-                }
-                _activeNpc = null;
-                _npcMovement = null;
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Closes all role-specific UI panels and resumes active NPC movement.
-    /// </summary>
-    public void CloseAllRolePanels()
-    {
-        CloseStatsStore();
-        CloseGranaryUI();
-        CloseShopUI();
-        CloseSkillTreeUI();
-
-        if (_npcMovement != null)
-        {
-            _npcMovement.ResumeMovement();
-            _npcMovement = null;
-            _activeNpc = null;
-        }
-    }
-
-    public void InitializeHealthBar()
-    {
-        playerHealthBar.Initialize(player);
-        granaryHealthBar.Initialize(_granary);
-    }
-
-    public void InitializeSkillUI()
-    {
-        _skillsManager = GameManager.Instance?.skillsManager;
-        _playerController = GameManager.Instance?.playerController;
-
-        if (_skillsManager == null || _playerController == null || _skillUIPrefab == null || _skillContainer == null)
-            return;
-
-        foreach (Transform child in _skillContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        var skills = _skillsManager.choosenSkills;
-        var keys = new List<string>
-        {
-            _playerController.GetSkillDisplayName(0),
-            _playerController.GetSkillDisplayName(1),
-            _playerController.GetSkillDisplayName(2),
-            _playerController.GetSkillDisplayName(3),
-        };
-
-        for (int i = 0; i < skills.Count && i < keys.Count; i++)
-        {
-            SkillUI currentSkill = Instantiate(_skillUIPrefab, _skillContainer);
-            currentSkill.Setup(i, keys[i], skills[i]);
-        }
-
-        if (skills.Count > SkillsManager.PassiveSlotIndex)
-        {
-            var passiveSkillData = skills[SkillsManager.PassiveSlotIndex];
-            SkillUI passiveSkillUI = Instantiate(_skillUIPrefab, _skillContainer);
-
-            passiveSkillUI.Setup(SkillsManager.PassiveSlotIndex, "", passiveSkillData);
-        }
-    }
-
-    public void ActivateVolume()
-    {
-        if (_globalVolumeUI == null) return;
-
-        _globalVolumeUI.weight = 1f;
-    }
-
-    public void DeactivateVolume()
-    {
-        if (_globalVolumeUI == null) return;
-
-        _globalVolumeUI.weight = 0f;
-    }
-
-    public void OpenPreparationUI()
-    {
-        if (_preparationUI != null)
-            OpenPanel(_preparationUI.gameObject, _preparationFirstSelected);
-    }
-
-    public void ClosePreparationUI()
-    {
-        _preparationUI?.gameObject.SetActive(false);
-
-        if (_granary != null)
-            _granary.ResumeSign();
-    }
-
-    public void OpenStatsStore() => OpenPanel(_statsStore != null ? _statsStore.gameObject : null);
-    public void CloseStatsStore() => _statsStore?.gameObject.SetActive(false);
-
-    public void OpenGranaryUI() => OpenPanel(_builderPanelUI != null ? _builderPanelUI.gameObject : null);
-    public void CloseGranaryUI() => _builderPanelUI?.gameObject.SetActive(false);
-
-    public void OpenShopUI() => OpenPanel(_shopUI != null ? _shopUI.gameObject : null);
-    public void CloseShopUI() => _shopUI?.gameObject.SetActive(false);
-
-    public void OpenSkillTreeUI() => OpenPanel(_skillTreeUI != null ? _skillTreeUI.gameObject : null);
-    public void CloseSkillTreeUI() => _skillTreeUI?.gameObject.SetActive(false);
-
-    public void OpenSkillUI() => OpenPanel(_skillContainer != null ? _skillContainer.gameObject : null);
-    public void CloseSkillUI() => _skillContainer?.gameObject.SetActive(false);
-
-    public void OpenWaveMeterUI() => _waveMeterContainer?.gameObject.SetActive(true);
-    public void CloseWaveMeterUI()
-    {
-        if (_waveMeterContainer != null)
-        {
-            var meter = _waveMeterContainer.GetComponentInChildren<WaveMeterUI>(true);
-            meter?.ResetWaveMeter();
-            _waveMeterContainer.SetActive(false);
-        }
-        else
-        {
-            var meter = FindFirstObjectByType<WaveMeterUI>();
-            if (meter != null)
-            {
-                meter.ResetWaveMeter();
-                meter.gameObject.SetActive(false);
-            }
-        }
-    }
-
-    public void OpenItemUI()
-    {
-        if (_itemRadialContainer != null)
-            OpenPanel(_itemRadialContainer);
-        if (_itemRadialUI != null)
-            _itemRadialUI.SyncWithManager();
-    }
-    public void CloseItemUI() => _itemRadialContainer?.gameObject.SetActive(false);
-    public void OpenResultUI(NightResult result)
-    {
-        if (_resultUI == null)
-        {
-            Debug.LogWarning("[PlayerUI] ResultUI tidak ditemukan di scene.");
-            return;
-        }
-
-        _resultUI.gameObject.SetActive(true);
-        _resultUI.Show(result);
-        FocusFirstSelectable(_resultUI.gameObject);
-    }
-    public void CloseResultUI() => _resultUI?.gameObject.SetActive(false);
-
-    internal void HandleNpcRolePanel(string npcId)
-    {
-        throw new System.NotImplementedException();
-    }
+    #endregion
 }
