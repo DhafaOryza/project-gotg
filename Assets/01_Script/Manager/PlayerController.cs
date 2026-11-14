@@ -466,7 +466,7 @@ public class PlayerController : MonoBehaviour
 
         if (currentGhost != null)
         {
-            Vector3 ghostPosition = origin + (Vector3)(currentAimDirection * skillData.maxRange);
+            Vector3 ghostPosition = origin + (Vector3)currentAimDirection;
             Quaternion ghostRotation = Quaternion.Euler(0f, 0f, angle);
 
             currentGhost.SetPositionandRotation(ghostPosition, ghostRotation);
