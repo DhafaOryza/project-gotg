@@ -2,13 +2,19 @@ using UnityEngine;
 
 public class NPCGranary : NPCBaseEntity
 {
+    protected override bool WillOpenPanel() => true;
+
     protected override void OnConversationEnded()
     {
         base.OnConversationEnded();
 
-        // if (PlayerUI.Instance != null && PlayerUI.Instance.BuilderPanel != null)
-        // {
-        //     PlayerUI.Instance.BuilderPanel.gameObject.SetActive(true);
-        // }
+        if (PlayerUI.Instance != null)
+        {
+            PlayerUI.Instance.HandleNpcRolePanel(_npcData, _npcMovement);
+        }
+        else
+        {
+            ResumeMovement();
+        }
     }
 }

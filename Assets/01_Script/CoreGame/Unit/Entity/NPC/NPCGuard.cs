@@ -2,13 +2,19 @@ using UnityEngine;
 
 public class NPCGuard : NPCBaseEntity
 {
+    protected override bool WillOpenPanel() => true;
+
     protected override void OnConversationEnded()
     {
         base.OnConversationEnded();
 
-        // if (PlayerUI.Instance != null && PlayerUI.Instance.SkillTreeUI != null)
-        // {
-        //     PlayerUI.Instance.SkillTreeUI.gameObject.SetActive(true);
-        // }
+        if (PlayerUI.Instance != null)
+        {
+            PlayerUI.Instance.HandleNpcRolePanel(_npcData, _npcMovement);
+        }
+        else
+        {
+            ResumeMovement();
+        }
     }
 }

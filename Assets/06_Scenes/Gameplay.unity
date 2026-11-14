@@ -23865,6 +23865,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1335566222037612149, guid: a7ff16326b2bee8a6abf7d8fbc7548a3, type: 3}
   m_PrefabInstance: {fileID: 1404126627}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1404126629 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 117413631445080122, guid: a7ff16326b2bee8a6abf7d8fbc7548a3, type: 3}
+  m_PrefabInstance: {fileID: 1404126627}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73840a7a4dfe2fa8291168082b0988ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCardUI
 --- !u!1 &1412303796
 GameObject:
   m_ObjectHideFlags: 0
@@ -35024,9 +35035,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2006842448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00000c1609d9950d0b3b8457f0577d24, type: 3}
+  m_Script: {fileID: 11500000, guid: 68b5811a7546dc312953dee8bad73ca9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MerchantUI
+  m_EditorClassIdentifier: Assembly-CSharp::ShopUI
+  _shopMainPanel: {fileID: 2006842448}
+  _exitButton: {fileID: 1160018956}
+  _contentContainer: {fileID: 582960244}
+  _cardPrefab: {fileID: 1404126629}
+  _txtCurrency: {fileID: 864527400}
+  _detailUI: {fileID: 66582165}
 --- !u!1 &2010907757
 GameObject:
   m_ObjectHideFlags: 0
@@ -35567,6 +35584,8 @@ MonoBehaviour:
   preparationUI: {fileID: 68443352}
   resultUI: {fileID: 1625419241}
   dayTransition: {fileID: 755990534}
+  conversationUI: {fileID: 1004403333}
+  shopUI: {fileID: 2006842450}
   inputAction: {fileID: -944628639613478452, guid: 6eb6d91bf1899884099fab393c77330b, type: 3}
   uiActionMapName: UI
   controllerBindingGroup: Controller
