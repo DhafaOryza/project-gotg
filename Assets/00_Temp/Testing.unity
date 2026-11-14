@@ -269,7 +269,7 @@ MonoBehaviour:
   cursorTransform: {fileID: 28413072}
   rootCanvas: {fileID: 2035140766}
   cursorSpeed: 1000
-  cursorMoveAction: {fileID: 7347355780603072331, guid: 6eb6d91bf1899884099fab393c77330b, type: 3}
+  cursorMoveAction: {fileID: -78125258827231133, guid: 6eb6d91bf1899884099fab393c77330b, type: 3}
   gamepadToggleButton: 32
   keyboardToggleKey: 40
 --- !u!114 &28413074
