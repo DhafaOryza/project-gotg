@@ -18,6 +18,7 @@ public class PlayerUI : MonoBehaviour
 
     [Header("NPC")]
     [SerializeField] private ShopUI shopUI;
+    [SerializeField] private SkillTreeUI skillTreeUI;
 
     [Header("Input System UI")]
     [SerializeField] private InputActionAsset inputAction;
@@ -149,10 +150,18 @@ public class PlayerUI : MonoBehaviour
             return;
         }
 
+        SetInputMode(true);
+
         switch (npcData.NpcRole)
         {
             case NpcRole.Merchant:
                 OpenNpcPanel(shopUI, npcMovement);
+                break;
+
+            case NpcRole.Guard:
+                if (skillTreeUI != null)
+                    skillTreeUI.Initialize(npcData);
+                OpenNpcPanel(skillTreeUI, npcMovement);
                 break;
 
             default:
@@ -175,6 +184,20 @@ public class PlayerUI : MonoBehaviour
     private void ResumeNpcAndInput(NPCMovement npcMovement)
     {
         npcMovement?.ResumeMovement();
+        SetInputMode(false);
+    }
+
+    /// <summary>
+    /// Closes all NPC role panels (shop, skill tree, etc.) and returns input to gameplay.
+    /// </summary>
+    public void CloseAllRolePanels()
+    {
+        if (shopUI != null && shopUI.gameObject.activeSelf)
+            shopUI.gameObject.SetActive(false);
+
+        if (skillTreeUI != null && skillTreeUI.gameObject.activeSelf)
+            skillTreeUI.gameObject.SetActive(false);
+
         SetInputMode(false);
     }
 

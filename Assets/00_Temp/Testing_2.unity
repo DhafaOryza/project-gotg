@@ -35577,6 +35577,9 @@ MonoBehaviour:
   preparationUI: {fileID: 68443352}
   resultUI: {fileID: 0}
   dayTransition: {fileID: 0}
+  conversationUI: {fileID: 0}
+  shopUI: {fileID: 0}
+  skillTreeUI: {fileID: 0}
   inputAction: {fileID: -944628639613478452, guid: 6eb6d91bf1899884099fab393c77330b, type: 3}
   uiActionMapName: UI
   controllerBindingGroup: Controller

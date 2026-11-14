@@ -10690,9 +10690,9 @@ GameObject:
   - component: {fileID: 622420958}
   - component: {fileID: 622420961}
   - component: {fileID: 622420960}
-  - component: {fileID: 622420959}
+  - component: {fileID: 622420962}
   m_Layer: 0
-  m_Name: SkillTree UI
+  m_Name: SkillNode UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10718,18 +10718,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &622420959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622420957}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 542c52964d0eb4a9583bdfc9dff4729b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SkillTreeUI
 --- !u!114 &622420960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10768,6 +10756,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 622420957}
   m_CullTransparentMesh: 1
+--- !u!114 &622420962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622420957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e037247790a39e9ee945381a2b0b7b6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillTreeUI
+  _skillTreeMainPanel: {fileID: 622420957}
+  _portraitImage: {fileID: 1501986126}
+  _skillSlotPrefab: {fileID: 0}
+  _tierHeaderPrefab: {fileID: 0}
+  _skillListContentContainer: {fileID: 0}
+  _detailIcon: {fileID: 0}
+  _detailNameText: {fileID: 0}
+  _detailDescText: {fileID: 0}
+  _detailCurrentStatText: {fileID: 0}
+  _detailNextStatText: {fileID: 0}
+  _upgradeButtonCostText: {fileID: 0}
+  _exitButton: {fileID: 0}
+  _upgradeButton: {fileID: 0}
 --- !u!1 &630951470
 GameObject:
   m_ObjectHideFlags: 0
@@ -15325,6 +15338,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d750f85c085d62439cfd4b3ff075e10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SliderBar
+  currentHp: {fileID: 0}
+  backgroundHp: {fileID: 0}
+  delayBeforeFollow: 0.5
+  lerpSpeed: 3
 --- !u!1 &819466021
 GameObject:
   m_ObjectHideFlags: 0
@@ -18249,6 +18266,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d750f85c085d62439cfd4b3ff075e10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SliderBar
+  currentHp: {fileID: 0}
+  backgroundHp: {fileID: 0}
+  delayBeforeFollow: 0.5
+  lerpSpeed: 3
 --- !u!114 &1033462465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24521,6 +24542,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d750f85c085d62439cfd4b3ff075e10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SliderBar
+  currentHp: {fileID: 0}
+  backgroundHp: {fileID: 0}
+  delayBeforeFollow: 0.5
+  lerpSpeed: 3
 --- !u!114 &1445936227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25294,6 +25319,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d750f85c085d62439cfd4b3ff075e10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SliderBar
+  currentHp: {fileID: 0}
+  backgroundHp: {fileID: 0}
+  delayBeforeFollow: 0.5
+  lerpSpeed: 3
 --- !u!1 &1463547428
 GameObject:
   m_ObjectHideFlags: 0
@@ -26260,6 +26289,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0c1507a02c4f6c169e40aa5046ef296, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuilderLevelUpDetail
+  _levelUpButton: {fileID: 0}
+  _levelUpCostText: {fileID: 0}
+  _currentLevelText: {fileID: 0}
+  _currentHealthText: {fileID: 0}
+  _currentHealthBar: {fileID: 0}
+  _nextLevelText: {fileID: 0}
+  _nextHealthText: {fileID: 0}
+  _nextHealthBar: {fileID: 0}
 --- !u!114 &1538575296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26336,6 +26373,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff7ac8566f1d3c0cea974312e734e013, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuilderRepairDetail
+  _repairButton: {fileID: 0}
+  _repairPriceText: {fileID: 0}
+  _healthText: {fileID: 0}
+  _healthBar: {fileID: 0}
 --- !u!1 &1542901462
 GameObject:
   m_ObjectHideFlags: 0
@@ -35586,6 +35627,7 @@ MonoBehaviour:
   dayTransition: {fileID: 755990534}
   conversationUI: {fileID: 1004403333}
   shopUI: {fileID: 2006842450}
+  skillTreeUI: {fileID: 0}
   inputAction: {fileID: -944628639613478452, guid: 6eb6d91bf1899884099fab393c77330b, type: 3}
   uiActionMapName: UI
   controllerBindingGroup: Controller
@@ -36266,6 +36308,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c88b5feff4902644f997d9e37c537e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelUpDetail
+  _levelUpButton: {fileID: 0}
+  _levelUpCostText: {fileID: 0}
+  _currentLevelText: {fileID: 0}
+  _currentHealthText: {fileID: 0}
+  _currentHealthBar: {fileID: 0}
+  _currentCooldownText: {fileID: 0}
+  _nextLevelText: {fileID: 0}
+  _nextHealthText: {fileID: 0}
+  _nextHealthBar: {fileID: 0}
+  _nextCooldownText: {fileID: 0}
 --- !u!114 &2103194735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36724,6 +36776,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b86acb5eec6b3814e89104cda5b36be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatsDetailUI
+  _statIcon: {fileID: 0}
+  _statName: {fileID: 0}
+  _statDescription: {fileID: 0}
+  _statLevel: {fileID: 0}
+  _currentValue: {fileID: 0}
+  _nextLevelValue: {fileID: 0}
+  _upgradeCost: {fileID: 0}
 --- !u!114 &2127263197
 MonoBehaviour:
   m_ObjectHideFlags: 0
