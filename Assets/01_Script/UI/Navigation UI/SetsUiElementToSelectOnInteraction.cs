@@ -35,10 +35,15 @@ public class SetsUiElementToSelectOnInteraction : MonoBehaviour
     public void JumpToElement()
     {
         if (eventSystem == null)
+        {
             Debug.Log("This item has no Event System references yet.", this);
+        }
 
         if (elementToSelect == null)
+        {            
             Debug.Log("This should jump where?", this);
+            return;
+        }
 
         eventSystem.SetSelectedGameObject(elementToSelect.gameObject);
     }

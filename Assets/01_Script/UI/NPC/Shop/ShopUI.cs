@@ -1,3 +1,4 @@
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -137,9 +138,17 @@ public class ShopUI : MonoBehaviour
         }
 
         if (_cards.Count > 0)
+        {            
             HandleCardSelected(_cards[0]);
+
+            // // Otomatis memilih kartu item pertama di EventSystem saat toko baru dibuka
+            // if (EventSystem.current != null)
+            //     EventSystem.current.SetSelectedGameObject(_cards[0].gameObject);
+        }
         else
+        {
             RefreshDetail();
+        }
     }
 
     private void ClearCards()
@@ -223,6 +232,17 @@ public class ShopUI : MonoBehaviour
             _currencyManager.AddMoney(price);
 
         RefreshDetail();
+
+        // Cek apakah item masih bisa dibeli lagi setelah transaksi ini
+        bool canStillAfford = _currencyManager != null && _currencyManager.Money >= item.price;
+        bool isStillAvailable = _itemManager != null && _itemManager.CanAddItem(item);
+
+        // Jika uang habis / slot penuh (tombol Buy menjadi mati), 
+        // segera kembalikan fokus kursor ke ItemCard agar navigasi TIDAK MACET!
+        if ((!canStillAfford || !isStillAvailable) && EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(_selectedCard.gameObject);
+        }
     }
 
     private void UnsubscribeManagers()
