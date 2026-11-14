@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private InputAction moveAction;
     private InputAction interactAction;
     private InputAction cancelAction;
+    private InputAction virtualCursorAction;
     private readonly InputAction[] skillActions = new InputAction[SkillSlotCount];
     private readonly InputAction[] itemActions = new InputAction[SkillSlotCount];
 
@@ -67,6 +68,7 @@ public class PlayerController : MonoBehaviour
     public bool IsMoving => hasTarget;
     public bool IsAiming => isAiming;
     public Vector2 CurrentAimDirection => currentAimDirection;
+    public InputAction VirtualCursorAction => virtualCursorAction;
 
     private void OnEnable()
     {
@@ -85,6 +87,7 @@ public class PlayerController : MonoBehaviour
             if (moveAction != null) moveAction.Disable();
             if (interactAction != null) interactAction.performed -= HandleInteract;
             if (cancelAction != null) cancelAction.performed -= HandleCancel;
+            if (virtualCursorAction != null) virtualCursorAction.Disable();
 
             foreach (var action in skillActions)
             {
@@ -110,6 +113,7 @@ public class PlayerController : MonoBehaviour
         moveAction = null;
         interactAction = null;
         cancelAction = null;
+        virtualCursorAction = null;
         System.Array.Clear(skillActions, 0, skillActions.Length);
         System.Array.Clear(itemActions, 0, itemActions.Length);
     }
@@ -136,7 +140,24 @@ public class PlayerController : MonoBehaviour
         moveAction = playerActionMap.FindAction("Move", false);
         interactAction = playerActionMap.FindAction("Interact", false);
         cancelAction = playerActionMap.FindAction("Cancel", false);
+        virtualCursorAction = runtimeInputActions.FindAction("Virtual Cursor", false);
 
+
+        //Virtual Cursor
+        if (virtualCursorAction == null)
+            virtualCursorAction = runtimeInputActions.FindAction("Virtual Cursor", false);
+
+        if (virtualCursorAction != null)
+        {
+            virtualCursorAction.Enable();
+            Debug.Log("<color=green>[PlayerController] Sukses menemukan dan mengaktifkan Action 'Virtual Cursor'!</color>");
+        }
+        else
+        {
+            Debug.LogError("[PlayerController] GAGAL: Action 'Virtual Cursor' tidak ditemukan di InputActionAsset!");
+        }
+        //
+        
         if (interactAction != null)
             interactAction.performed += HandleInteract;
 

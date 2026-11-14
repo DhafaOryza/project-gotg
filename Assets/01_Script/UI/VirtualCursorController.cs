@@ -8,7 +8,7 @@ public class VirtualCursorController : MonoBehaviour
     [Header("Cursor Settings")]
     [SerializeField] private RectTransform cursorTransform;
     [SerializeField] private Canvas rootCanvas;
-    [SerializeField] private float cursorSpeed = 1000f;
+    [SerializeField] private float cursorSpeed = 1200f;
 
     [Header("Input Action")]
     [Tooltip("Action 'Navigate - Virtual Cursor' (Vector2 Pass Through)")]
@@ -16,13 +16,14 @@ public class VirtualCursorController : MonoBehaviour
 
     [Header("Modular Toggle Settings")]
     [Tooltip("Pilih tombol gamepad dari dropdown (default: LeftTrigger / L2)")]
-    [SerializeField] private GamepadButton gamepadToggleButton = GamepadButton.LeftTrigger;
+    [SerializeField] private GamepadButton gamepadToggleButton = GamepadButton.Select;
     
     [Tooltip("Tombol keyboard alternatif untuk testing (default: Z)")]
     [SerializeField] private Key keyboardToggleKey = Key.Z;
 
     private bool isActive = false;
     private Vector2 currentScreenPosition;
+    private InputAction activeCursorAction;
 
     private void Awake()
     {
@@ -31,6 +32,11 @@ public class VirtualCursorController : MonoBehaviour
 
         currentScreenPosition = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
         SetCursorActive(false);
+    }
+
+    private void Start()
+    {
+        BindActiveAction();
     }
 
     private void OnEnable()
@@ -47,29 +53,24 @@ public class VirtualCursorController : MonoBehaviour
 
     private void Update()
     {
-        if (Gamepad.current != null && CheckGamepadButtonPressed(gamepadToggleButton))
-        {
-            SetCursorActive(!isActive);
-            Debug.Log($"[Virtual Cursor] Toggle via Gamepad ({gamepadToggleButton}): {isActive}");
-        }
+        if (activeCursorAction == null)
+            BindActiveAction();
 
-        if (Keyboard.current != null && Keyboard.current[keyboardToggleKey].wasPressedThisFrame)
-        {
+        if (Gamepad.current != null && CheckGamepadButtonPressed(gamepadToggleButton))
             SetCursorActive(!isActive);
-            Debug.Log($"[Virtual Cursor] Toggle via Keyboard ({keyboardToggleKey}): {isActive}");
-        }
+        
+        if (Keyboard.current != null && Keyboard.current[keyboardToggleKey].wasPressedThisFrame)
+            SetCursorActive(!isActive);
 
         if (!isActive) return;
 
         Vector2 stickInput = Vector2.zero;
-        if (cursorMoveAction != null)
-            stickInput = cursorMoveAction.action.ReadValue<Vector2>();
-        else if (Gamepad.current != null)
-            stickInput = Gamepad.current.leftStick.ReadValue();
+        if (activeCursorAction  != null)
+            stickInput = activeCursorAction.ReadValue<Vector2>();
 
         if (stickInput.sqrMagnitude > 0.01f)
         {
-            currentScreenPosition = stickInput * (cursorSpeed * Time.unscaledDeltaTime);
+            currentScreenPosition += stickInput * (cursorSpeed * Time.unscaledDeltaTime);
 
             currentScreenPosition.x = Mathf.Clamp(currentScreenPosition.x, 0f, Screen.width);
             currentScreenPosition.y = Mathf.Clamp(currentScreenPosition.y, 0f, Screen.height);
@@ -95,6 +96,22 @@ public class VirtualCursorController : MonoBehaviour
         cursorTransform.localPosition = localPoint;
     }
 
+    private void BindActiveAction()
+    {
+        var PlayerController = GameManager.Instance?.playerController;
+        if (PlayerController != null && PlayerController.VirtualCursorAction != null)
+        {
+            activeCursorAction = PlayerController.VirtualCursorAction;
+            activeCursorAction.Enable();
+            Debug.Log("<color=green>[VirtualCursor] Berhasil terhubung ke Action 'Virtual Cursor' PlayerController!</color>");
+        }
+        else if (cursorMoveAction != null)
+        {
+            activeCursorAction = cursorMoveAction.action;
+            activeCursorAction.Enable();
+        }
+    }
+
     public void SetCursorActive(bool active)
     {
         isActive = active;
@@ -102,15 +119,21 @@ public class VirtualCursorController : MonoBehaviour
         if (cursorTransform != null)
             cursorTransform.gameObject.SetActive(active);
 
-        if (active && Mouse.current != null)
+        if (active)
         {
-            currentScreenPosition = Mouse.current.position.ReadValue();
+            if (Mouse.current != null)
+                currentScreenPosition = Mouse.current.position.ReadValue();
+            else
+                currentScreenPosition = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+
             UpdateCursorVisualPosition();
         }
     }
 
     private bool CheckGamepadButtonPressed(GamepadButton button)
     {
-        return Gamepad.current[button].wasPressedThisFrame;
+        if (Gamepad.current == null) return false;
+        var btn = Gamepad.current[button];
+        return btn != null && btn.wasPressedThisFrame;
     }
 }
