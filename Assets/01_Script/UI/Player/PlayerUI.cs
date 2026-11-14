@@ -102,8 +102,18 @@ public class PlayerUI : MonoBehaviour
 
     public void ActivateResultUI(NightResult result)
     {
+        if (resultUI == null)
+        {
+            Debug.LogError("[PlayerUI] resultUI belum di-assign, ResultUI tidak bisa ditampilkan.", this);
+            return;
+        }
+
         resultUI.gameObject.SetActive(true);
         resultUI.Show(result);
+
+        // Hasil night berakhir saat Combat: UI input mode masih mati, jadi klik/Submit tidak sampai ke tombol.
+        SetInputMode(true);
+        SetSelectedObject(resultUI.ContinueButton);
     }
     public void DeactivateResultUI() => resultUI.gameObject.SetActive(false);
 

@@ -28100,6 +28100,7 @@ MonoBehaviour:
   iconKnockdown: {fileID: 0}
   iconGranary: {fileID: 0}
   _txtRewardAmount: {fileID: 534702993}
+  contentWrapper: {fileID: 405320519}
   _btnContinue: {fileID: 1362485152}
 --- !u!1 &1629140633
 GameObject:
