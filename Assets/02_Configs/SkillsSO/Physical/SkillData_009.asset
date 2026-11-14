@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: SKL_009
   displayName: 'Shovel Bash  '
-  description: 
+  description: Hit the enemy with a shovel and push him away.
   baseValue: 80
   currentLevel: 1
   maxLevel: 5
@@ -24,6 +24,7 @@ MonoBehaviour:
   skillType: 0
   targetMode: 1
   isProjectile: 0
+  executionType: 0
   icon: {fileID: 0}
   locked: 0
   targetType: 0
@@ -34,3 +35,4 @@ MonoBehaviour:
   skillPrefab: {fileID: 8946592561061051195, guid: ddb5636c84d7c484cb393c605e937288, type: 3}
   ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
   damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}
+  meleeVfxPrefab: {fileID: 5608127324126302073, guid: a1a7710649e623e418023da1848c7be6, type: 3}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: SKL_008
   displayName: 'Big Rock  '
-  description: 
+  description: Throws a large rock that deals high damage and causes a strong knockback.
   baseValue: 80
   currentLevel: 1
   maxLevel: 5
@@ -24,6 +24,7 @@ MonoBehaviour:
   skillType: 0
   targetMode: 1
   isProjectile: 1
+  executionType: 0
   icon: {fileID: 0}
   locked: 0
   targetType: 0

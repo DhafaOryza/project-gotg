@@ -36,6 +36,9 @@ public class ItemDataSO : ScriptableObject
     public int price = 100;
     public int stack;
     public int baseValue;
+    [Header("VFX")]
+    [Tooltip("Di-spawn di atas user saat item RECOVERY dipakai (auto-hilang setelah 2.5 detik).")]
+    public GameObject healVfxPrefab;
 
     public virtual bool Use(PlayerBaseEntity user)
     {
@@ -51,6 +54,13 @@ public class ItemDataSO : ScriptableObject
                 }
 
                 user.Heal(baseValue);
+
+                if (healVfxPrefab != null)
+                {
+                    GameObject fx = Instantiate(healVfxPrefab, user.transform.position + Vector3.up * 0.9f, Quaternion.identity);
+                    fx.transform.SetParent(user.transform, true);
+                    Destroy(fx, 2.5f);
+                }
                 return true;
 
             default:

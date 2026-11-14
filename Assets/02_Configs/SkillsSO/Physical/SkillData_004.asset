@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: SKL_004
   displayName: Axe Throw
-  description: 
+  description: Throw a spinning axe and deal damage to enemies.
   baseValue: 120
   currentLevel: 1
   maxLevel: 5
@@ -24,6 +24,7 @@ MonoBehaviour:
   skillType: 0
   targetMode: 0
   isProjectile: 1
+  executionType: 0
   icon: {fileID: 0}
   locked: 0
   targetType: 0

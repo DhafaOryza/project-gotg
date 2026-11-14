@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: SKL_002
   displayName: Heavy Hoe
-  description: 
+  description: Strikes the ground with a hoe, dealing damage in the area in front.
   baseValue: 90
   currentLevel: 1
   maxLevel: 5
@@ -35,3 +35,4 @@ MonoBehaviour:
   skillPrefab: {fileID: 8946592561061051195, guid: 4fee0c23e61edf84d9f4bceb8c67beb5, type: 3}
   ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
   damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}
+  meleeVfxPrefab: {fileID: 117771260789970860, guid: 5771112221febc54cae328fb8602e00f, type: 3}
