@@ -223,10 +223,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VirtualCursorController
   cursorTransform: {fileID: 28413072}
   rootCanvas: {fileID: 2035140766}
-  cursorSpeed: 1000
+  cursorSpeed: 800
   cursorMoveAction: {fileID: -78125258827231133, guid: 6eb6d91bf1899884099fab393c77330b, type: 3}
-  gamepadToggleButton: 13
-  keyboardToggleKey: 40
+  toggleButton: 13
+  clickButton: 33
 --- !u!1 &27661061
 GameObject:
   m_ObjectHideFlags: 0

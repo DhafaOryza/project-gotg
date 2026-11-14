@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -14,12 +15,12 @@ public class VirtualCursorController : MonoBehaviour
     [Tooltip("Action 'Navigate - Virtual Cursor' (Vector2 Pass Through)")]
     [SerializeField] private InputActionReference cursorMoveAction;
 
-    [Header("Modular Toggle Settings")]
-    [Tooltip("Pilih tombol gamepad dari dropdown (default: LeftTrigger / L2)")]
-    [SerializeField] private GamepadButton gamepadToggleButton = GamepadButton.Select;
-    
-    [Tooltip("Tombol keyboard alternatif untuk testing (default: Z)")]
-    [SerializeField] private Key keyboardToggleKey = Key.Z;
+    [Header("Gamepad Controls")]
+    [Tooltip("Tombol untuk menyalakan/mematikan kursor (Default: Select / Back)")]
+    [SerializeField] private GamepadButton toggleButton = GamepadButton.Select;
+
+    [Tooltip("Tombol untuk klik UI (Default: RightStickPress / R3)")]
+    [SerializeField] private GamepadButton clickButton = GamepadButton.RightStick;
 
     private bool isActive = false;
     private Vector2 currentScreenPosition;
@@ -49,6 +50,8 @@ public class VirtualCursorController : MonoBehaviour
     {
         if (cursorMoveAction != null)
             cursorMoveAction.action.Disable();
+
+        ReleaseMouseClick();
     }
 
     private void Update()
@@ -56,17 +59,19 @@ public class VirtualCursorController : MonoBehaviour
         if (activeCursorAction == null)
             BindActiveAction();
 
-        if (Gamepad.current != null && CheckGamepadButtonPressed(gamepadToggleButton))
-            SetCursorActive(!isActive);
-        
-        if (Keyboard.current != null && Keyboard.current[keyboardToggleKey].wasPressedThisFrame)
+        if (Gamepad.current != null && CheckGamepadButtonPressed(toggleButton))
             SetCursorActive(!isActive);
 
         if (!isActive) return;
 
+        if (activeCursorAction == null)
+            BindActiveAction();
+
         Vector2 stickInput = Vector2.zero;
         if (activeCursorAction  != null)
             stickInput = activeCursorAction.ReadValue<Vector2>();
+        else    
+            stickInput = Gamepad.current.rightStick.ReadValue();
 
         if (stickInput.sqrMagnitude > 0.01f)
         {
@@ -79,6 +84,31 @@ public class VirtualCursorController : MonoBehaviour
 
             if (Mouse.current != null)
                 InputState.Change(Mouse.current.position, currentScreenPosition);
+        }
+
+        HandleGamepadClick();
+    }
+
+    private void HandleGamepadClick()
+    {
+        if (Mouse.current == null) return;
+
+        if (CheckGamepadButtonPressed(clickButton))
+        {
+            using (StateEvent.From(Mouse.current, out var eventPtr))
+            {
+                Mouse.current.leftButton.WriteValueIntoEvent(1f, eventPtr);
+                InputSystem.QueueEvent(eventPtr);
+            }
+        }
+
+        if (CheckGamepadButtonReleased(clickButton))
+        {
+            using (StateEvent.From(Mouse.current, out var eventPtr))
+            {
+                Mouse.current.leftButton.WriteValueIntoEvent(0f, eventPtr);
+                InputSystem.QueueEvent(eventPtr);
+            }
         }
     }
 
@@ -128,6 +158,10 @@ public class VirtualCursorController : MonoBehaviour
 
             UpdateCursorVisualPosition();
         }
+        else
+        {
+            ReleaseMouseClick();
+        }
     }
 
     private bool CheckGamepadButtonPressed(GamepadButton button)
@@ -135,5 +169,23 @@ public class VirtualCursorController : MonoBehaviour
         if (Gamepad.current == null) return false;
         var btn = Gamepad.current[button];
         return btn != null && btn.wasPressedThisFrame;
+    }
+
+    private bool CheckGamepadButtonReleased(GamepadButton button)
+    {
+        if (Gamepad.current == null) return false;
+        var btn = Gamepad.current[button];
+        return btn != null && btn.wasReleasedThisFrame;
+    }
+
+    private void ReleaseMouseClick()
+    {
+        if (Mouse.current == null) return;
+
+        using (StateEvent.From(Mouse.current, out var eventPtr))
+        {
+            Mouse.current.leftButton.WriteValueIntoEvent(0f, eventPtr);
+            InputSystem.QueueEvent(eventPtr);
+        }
     }
 }
