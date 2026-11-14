@@ -86,6 +86,8 @@ public class ConversationUI : MonoBehaviour
 
     public void OnContinueClicked()
     {
+        if (!IsDialogOpen) return;
+
         if (_isTyping)
         {
             if (_typingCoroutine != null) StopCoroutine(_typingCoroutine);

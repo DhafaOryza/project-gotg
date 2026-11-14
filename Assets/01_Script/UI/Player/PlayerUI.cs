@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
@@ -13,6 +14,10 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private PreparationUI preparationUI;
     [SerializeField] private ResultUI resultUI;
     [SerializeField] private DayTransitionUI dayTransition;
+    [SerializeField] private ConversationUI conversationUI;
+
+    [Header("NPC")]
+    [SerializeField] private ShopUI shopUI;
 
     [Header("Input System UI")]
     [SerializeField] private InputActionAsset inputAction;
@@ -134,6 +139,43 @@ public class PlayerUI : MonoBehaviour
             granary.OnInteract -= ActivatePreparationUI;
             granary.OnInteract += ActivatePreparationUI;
         }
+    }
+
+    public void HandleNpcRolePanel(NPCDataSO npcData, NPCMovement npcMovement)
+    {
+        if (npcData == null)
+        {
+            ResumeNpcAndInput(npcMovement);
+            return;
+        }
+
+        switch (npcData.NpcRole)
+        {
+            case NpcRole.Merchant:
+                OpenNpcPanel(shopUI, npcMovement);
+                break;
+
+            default:
+                ResumeNpcAndInput(npcMovement);
+                break;
+        }
+    }
+
+    private void OpenNpcPanel(MonoBehaviour panel, NPCMovement npcMovement)
+    {
+        if (panel == null)
+        {
+            ResumeNpcAndInput(npcMovement);
+            return;
+        }
+
+        panel.gameObject.SetActive(true);
+    }
+
+    private void ResumeNpcAndInput(NPCMovement npcMovement)
+    {
+        npcMovement?.ResumeMovement();
+        SetInputMode(false);
     }
 
     #region Helper
@@ -285,6 +327,12 @@ public class PlayerUI : MonoBehaviour
 
     private void HandleUISubmit(InputAction.CallbackContext context)
     {
+        if (conversationUI != null && conversationUI.IsDialogOpen)
+        {
+            conversationUI.OnContinueClicked();
+            return;
+        }
+
         if (!isUIInputActive || EventSystem.current == null) return;
 
         GameObject selected = EventSystem.current.currentSelectedGameObject;
@@ -308,7 +356,7 @@ public class PlayerUI : MonoBehaviour
         DeactivatePreparationUI();
     }
 
-    private void SetInputMode(bool useUIInput)
+    public void SetInputMode(bool useUIInput)
     {
         isUIInputActive = useUIInput;
 

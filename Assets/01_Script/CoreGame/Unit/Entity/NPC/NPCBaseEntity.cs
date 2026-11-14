@@ -13,8 +13,8 @@ public class NPCBaseEntity : BaseEntity, IInteractable
 
     public bool isInteractable = true;
 
-    private NPCMovement _npcMovement;
-    private NPCDataSO _npcData => entityData as NPCDataSO;
+    protected NPCMovement _npcMovement;
+    protected NPCDataSO _npcData => entityData as NPCDataSO;
 
     private PlayerBaseEntity _player;
     private bool signVisible;
@@ -144,24 +144,41 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         OnInteract?.Invoke();
 
         if (_npcMovement != null)
-        {
             _npcMovement.PauseMovement();
-        }
     }
 
     private void HandleNpcConversation()
     {
         if (_npcData == null) return;
 
-        // if (PlayerUI.Instance != null)
-        // {
-        //     PlayerUI.Instance.StartNPCConversation(_npcData, OnConversationEnded);
-        //     return;
-        // }
+        var conversationUI = Object.FindAnyObjectByType<ConversationUI>();
+        if (conversationUI == null)
+        {
+            Debug.LogWarning($"[{name}] ConversationUI tidak ditemukan.", this);
+            OnConversationEnded();
+            return;
+        }
 
-        var conversationUI = Object.FindFirstObjectByType<ConversationUI>();
-        conversationUI?.StartNPCDialog(_npcData, OnConversationEnded);
+        PlayerUI.Instance?.SetInputMode(true);
+
+        conversationUI.StartNPCDialog(_npcData, HandleConversationFinished);
     }
+
+    private void HandleConversationFinished()
+    {
+        bool panelWillOpen = WillOpenPanel();
+
+        if (!panelWillOpen)
+            PlayerUI.Instance?.SetInputMode(false);
+
+        OnConversationEnded();
+    }
+
+    /// <summary>
+    /// Override this in subclasses that open a UI panel after the conversation ends.
+    /// Return true to keep UI input mode active while the panel is open.
+    /// </summary>
+    protected virtual bool WillOpenPanel() => false;
 
     #endregion
 

@@ -2,13 +2,19 @@ using UnityEngine;
 
 public class NPCMerchant : NPCBaseEntity
 {
+    protected override bool WillOpenPanel() => true;
+
     protected override void OnConversationEnded()
     {
         base.OnConversationEnded();
 
-        // if (PlayerUI.Instance != null && PlayerUI.Instance.ShopUI != null)
-        // {
-        //     PlayerUI.Instance.ShopUI.gameObject.SetActive(true);
-        // }
+        if (PlayerUI.Instance != null)
+        {
+            PlayerUI.Instance.HandleNpcRolePanel(_npcData, _npcMovement);
+        }
+        else
+        {
+            ResumeMovement();
+        }
     }
 }
