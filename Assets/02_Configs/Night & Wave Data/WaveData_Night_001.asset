@@ -13,20 +13,12 @@ MonoBehaviour:
   m_Name: WaveData_Night_001
   m_EditorClassIdentifier: Assembly-CSharp::WaveDataSO
   nameWaves: Night 1
-  timerPerWave: 30
+  timerPerWave: 5
   spawnIntervals:
   - 3
   - 5
   - 8
   waveEnemies:
-  - waveType: 0
-    spawnPerInterval: 3
-    enemyIds:
-    - {fileID: 11400000, guid: 74f8a8ad4c5776441ba7c38c3a39e2f6, type: 2}
-  - waveType: 0
-    spawnPerInterval: 3
-    enemyIds:
-    - {fileID: 11400000, guid: dcab1568c187547428576da8eaec722d, type: 2}
   - waveType: 0
     spawnPerInterval: 3
     enemyIds:

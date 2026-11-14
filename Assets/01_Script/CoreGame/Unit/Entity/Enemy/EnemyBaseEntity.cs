@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
 
     [Header("Attack Animation")]
     [SerializeField, Min(0.1f)] private float _attackEventFallbackTime = 1.5f;
+
+    [Header("Death Animation")]
+    [SerializeField, Min(0f)] private float _deathDespawnDelay = 0.5f;
 
     [Header("Facing")]
     [SerializeField] private Transform _visualRoot;
@@ -93,6 +97,27 @@ public class EnemyBaseEntity : BaseEntity, IPoolable
         CancelAttack();
         base.Die();
         GameManager.Instance.trackerBattle?.RegisterEnemyKilled();
+
+        if (rb != null)
+            rb.linearVelocity = Vector3.zero;
+
+        StartCoroutine(DeathSequence());
+    }
+
+    private IEnumerator DeathSequence()
+    {
+        if (_enemyAnimation != null && _enemyAnimation.PlayDeath())
+        {
+            yield return _enemyAnimation.WaitForDeathAnimation();
+        }
+        else
+        {
+            Debug.LogWarning($"[{name}] Death animation tidak dapat dimainkan. Pastikan Animator memiliki trigger 'Death'.", this);
+        }
+
+        if (_deathDespawnDelay > 0f)
+            yield return new WaitForSeconds(_deathDespawnDelay);
+
         ReturnToPool();
     }
 

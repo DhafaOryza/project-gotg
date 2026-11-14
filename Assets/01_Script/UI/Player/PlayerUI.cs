@@ -11,6 +11,7 @@ public class PlayerUI : MonoBehaviour
     [Header("References")]
     [SerializeField] private HUD _playerHUD;
     [SerializeField] private PreparationUI preparationUI;
+    [SerializeField] private ResultUI resultUI;
     [SerializeField] private DayTransitionUI dayTransition;
 
     [Header("Input System UI")]
@@ -39,6 +40,7 @@ public class PlayerUI : MonoBehaviour
 
     public HUD HUD => _playerHUD;
     public PreparationUI Preparation => preparationUI;
+    public ResultUI ResultUI => resultUI;
     public DayTransitionUI DayTransition => dayTransition;
 
 
@@ -67,6 +69,7 @@ public class PlayerUI : MonoBehaviour
     {
         if (_playerHUD == null) _playerHUD = FindFirstObjectByType<HUD>();
         if (preparationUI == null) preparationUI = FindFirstObjectByType<PreparationUI>();
+        if (resultUI == null) resultUI = FindFirstObjectByType<ResultUI>();
         if (dayTransition == null) dayTransition = FindFirstObjectByType<DayTransitionUI>();
 
         if (_playerHUD != null) _playerHUD.Initialize();
@@ -96,6 +99,13 @@ public class PlayerUI : MonoBehaviour
         SetInputMode(false);
         EventSystem.current?.SetSelectedGameObject(null);
     }
+
+    public void ActivateResultUI(NightResult result)
+    {
+        resultUI.gameObject.SetActive(true);
+        resultUI.Show(result);
+    }
+    public void DeactivateResultUI() => resultUI.gameObject.SetActive(false);
 
     public void SelectPreparationFirstSelected()
     {

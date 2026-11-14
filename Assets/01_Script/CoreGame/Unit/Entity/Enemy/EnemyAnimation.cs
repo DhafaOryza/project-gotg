@@ -1,17 +1,23 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyAnimation : MonoBehaviour
 {
     private static readonly int IsWalkingHash = Animator.StringToHash("IsWalking");
     private static readonly int AttackHash = Animator.StringToHash("Attack");
+    private static readonly int HitHash = Animator.StringToHash("Hit");
+    private static readonly int DeathHash = Animator.StringToHash("Death");
 
     [SerializeField] private Animator _animator;
     [SerializeField] private EnemyBaseEntity _enemyBaseEntity;
     [SerializeField] private float _movementThreshold = 0.1f;
+    [SerializeField] private string _deathStateName = "Death";
+    [SerializeField, Min(0f)] private float _deathStateEnterTimeout = 1f;
 
     private Rigidbody _enemyRigidbody;
     private bool _hasWalkingParameter;
     private bool _hasAttackParameter;
+    private bool _hasDeathParameter;
 
     private void Awake()
     {
@@ -55,6 +61,78 @@ public class EnemyAnimation : MonoBehaviour
     }
 
     /// <summary>
+    /// Starts the death animation. Returns false when the Animator has no Death trigger.
+    /// </summary>
+    public bool PlayDeath()
+    {
+        if (_animator == null || !_hasDeathParameter)
+            return false;
+
+        if (_hasWalkingParameter)
+            _animator.SetBool(IsWalkingHash, false);
+
+        _animator.ResetTrigger(DeathHash);
+        _animator.SetTrigger(DeathHash);
+        return true;
+    }
+
+    /// <summary>
+    /// Waits until the configured death state has played through once.
+    /// </summary>
+    public IEnumerator WaitForDeathAnimation()
+    {
+        if (_animator == null || string.IsNullOrEmpty(_deathStateName))
+            yield break;
+
+        float enterTimer = 0f;
+        bool enteredDeathState = false;
+
+        while (!enteredDeathState && enterTimer < _deathStateEnterTimeout)
+        {
+            enteredDeathState = IsDeathStateCurrentOrNext();
+            if (enteredDeathState) break;
+
+            enterTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!enteredDeathState)
+        {
+            Debug.LogWarning($"[{name}] Animator tidak masuk ke state '{_deathStateName}'.", this);
+            yield break;
+        }
+
+        bool beganPlayingDeathState = false;
+        while (true)
+        {
+            AnimatorStateInfo currentState = _animator.GetCurrentAnimatorStateInfo(0);
+            bool isCurrentDeathState = currentState.IsName(_deathStateName);
+
+            if (isCurrentDeathState)
+            {
+                beganPlayingDeathState = true;
+                if (currentState.normalizedTime >= 1f && !_animator.IsInTransition(0))
+                    yield break;
+            }
+            else if (beganPlayingDeathState)
+            {
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    private bool IsDeathStateCurrentOrNext()
+    {
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName(_deathStateName))
+            return true;
+
+        return _animator.IsInTransition(0) &&
+               _animator.GetNextAnimatorStateInfo(0).IsName(_deathStateName);
+    }
+
+    /// <summary>
     /// Clears leftover animator values. Call this when the enemy comes out of the pool.
     /// </summary>
     public void ResetAnimation()
@@ -62,6 +140,7 @@ public class EnemyAnimation : MonoBehaviour
         if (_animator == null) return;
 
         if (_hasAttackParameter) _animator.ResetTrigger(AttackHash);
+        if (_hasDeathParameter) _animator.ResetTrigger(DeathHash);
         if (_hasWalkingParameter) _animator.SetBool(IsWalkingHash, false);
     }
 
@@ -89,6 +168,9 @@ public class EnemyAnimation : MonoBehaviour
 
             if (parameter.nameHash == AttackHash && parameter.type == AnimatorControllerParameterType.Trigger)
                 _hasAttackParameter = true;
+
+            if (parameter.nameHash == DeathHash && parameter.type == AnimatorControllerParameterType.Trigger)
+                _hasDeathParameter = true;
         }
     }
 }

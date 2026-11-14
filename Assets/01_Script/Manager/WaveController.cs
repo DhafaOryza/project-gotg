@@ -201,9 +201,9 @@ public class WaveController : MonoBehaviour
 
         Debug.Log($"[WaveController] Night berakhir: {result}");
 
-        // var playerUI = PlayerUI.Instance;
-        // if (playerUI != null)
-        //     playerUI.OpenResultUI(result);
+        var playerUI = PlayerUI.Instance;
+        if (playerUI != null)
+            playerUI.ActivateResultUI(result);
     }
 
     // Dipicu BuildingBase.OnDied saat HP lumbung mencapai 0.
