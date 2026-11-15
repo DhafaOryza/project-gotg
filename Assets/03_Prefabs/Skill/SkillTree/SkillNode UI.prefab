@@ -108,8 +108,8 @@ GameObject:
   - component: {fileID: 1506478781053039784}
   - component: {fileID: 4216120480265133111}
   - component: {fileID: 1705725039832981241}
-  - component: {fileID: 8141475785489813140}
   - component: {fileID: 6542256546320947897}
+  - component: {fileID: 2804575257018642975}
   m_Layer: 0
   m_Name: SkillNode UI
   m_TagString: Untagged
@@ -223,24 +223,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8141475785489813140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 645701305543114283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9e44a40d121dfcd68a208fd8a6dfd10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSlot
-  _iconImage: {fileID: 6982379820022078707}
-  _nameText: {fileID: 4461774163049410976}
-  _descriptionText: {fileID: 1216738565693646776}
-  _costText: {fileID: 6699770652093429732}
-  _slotButton: {fileID: 1705725039832981241}
-  _lockOverlayObject: {fileID: 9009135077706529182}
 --- !u!114 &6542256546320947897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,6 +249,24 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2804575257018642975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645701305543114283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b565f668847730ae995a431e33a17ca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSlot
+  _iconImage: {fileID: 0}
+  _nameText: {fileID: 0}
+  _descriptionText: {fileID: 0}
+  _costText: {fileID: 0}
+  _slotButton: {fileID: 1705725039832981241}
+  _lockOverlayObject: {fileID: 9009135077706529182}
 --- !u!1 &2278665183028054838
 GameObject:
   m_ObjectHideFlags: 0

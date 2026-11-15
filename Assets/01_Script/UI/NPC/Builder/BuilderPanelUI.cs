@@ -20,8 +20,8 @@ public class BuilderPanelUI : MonoBehaviour
     [Header("Repair")]
     [SerializeField] private BuilderRepairDetail _repairDetail;
 
-    [Header("Stats")]
-    [SerializeField] private Transform _statsNodeContainer;
+    // [Header("Stats")]
+    // [SerializeField] private Transform _statsNodeContainer;
     // [SerializeField] private BuilderStatsNodeUI _statsNodePrefab;
     // [SerializeField] private BuilderStatsDetailUI _statsDetailUI;
 
@@ -83,9 +83,15 @@ public class BuilderPanelUI : MonoBehaviour
 
     private void CloseUI()
     {
-        gameObject.SetActive(false);
+        if (PlayerUI.Instance != null)
+        {
+            PlayerUI.Instance.CloseAllRolePanels();
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
-
     private void ShowLevelUpPanel()
     {
         if (_levelUpPanel != null) _levelUpPanel.SetActive(true);

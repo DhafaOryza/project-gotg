@@ -10839,17 +10839,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeUI
   _skillTreeMainPanel: {fileID: 622420957}
   _portraitImage: {fileID: 1501986126}
-  _skillSlotPrefab: {fileID: 0}
-  _tierHeaderPrefab: {fileID: 0}
-  _skillListContentContainer: {fileID: 0}
+  _skillSlotPrefab: {fileID: 2804575257018642975, guid: 9c09996c1eedbcc91809f0b4da983d77, type: 3}
+  _tierHeaderPrefab: {fileID: 645701305543114283, guid: 7c14179d12cba105c97ddcde68ede794, type: 3}
+  _skillListContentContainer: {fileID: 1796262248}
   _detailIcon: {fileID: 0}
   _detailNameText: {fileID: 0}
   _detailDescText: {fileID: 0}
   _detailCurrentStatText: {fileID: 0}
   _detailNextStatText: {fileID: 0}
   _upgradeButtonCostText: {fileID: 0}
-  _exitButton: {fileID: 0}
-  _upgradeButton: {fileID: 0}
+  _exitButton: {fileID: 1607330236}
+  _upgradeButton: {fileID: 621053001}
 --- !u!1 &630951470
 GameObject:
   m_ObjectHideFlags: 0
@@ -11598,7 +11598,7 @@ GameObject:
   - component: {fileID: 659798462}
   - component: {fileID: 659798465}
   - component: {fileID: 659798464}
-  - component: {fileID: 659798463}
+  - component: {fileID: 659798466}
   m_Layer: 0
   m_Name: Builder Panel UI
   m_TagString: Untagged
@@ -11627,18 +11627,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &659798463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659798461}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdc7fb49b93f38308ab89c954b276c94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GranaryUI
 --- !u!114 &659798464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11677,6 +11665,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 659798461}
   m_CullTransparentMesh: 1
+--- !u!114 &659798466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659798461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac3d3f39d43a81c8b3f155bde821a8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuilderPanelUI
+  _backButton: {fileID: 1667971087}
+  _levelUpTabButton: {fileID: 1798509436}
+  _levelUpPanel: {fileID: 1538575293}
+  _levelUpDetail: {fileID: 1538575300}
+  _repairDetail: {fileID: 1538575299}
+  _txtCurrency: {fileID: 978775407}
+  _granary: {fileID: 0}
 --- !u!1 &660263659
 GameObject:
   m_ObjectHideFlags: 0
@@ -16796,7 +16803,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &883308619
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18342,7 +18349,7 @@ GameObject:
   - component: {fileID: 1033462467}
   - component: {fileID: 1033462466}
   - component: {fileID: 1033462465}
-  - component: {fileID: 1033462464}
+  - component: {fileID: 1033462468}
   m_Layer: 0
   m_Name: Health Slider
   m_TagString: Untagged
@@ -18371,22 +18378,6 @@ RectTransform:
   m_AnchoredPosition: {x: 175, y: -45}
   m_SizeDelta: {x: 350, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1033462464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1033462462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d750f85c085d62439cfd4b3ff075e10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SliderBar
-  currentHp: {fileID: 0}
-  backgroundHp: {fileID: 0}
-  delayBeforeFollow: 0.5
-  lerpSpeed: 3
 --- !u!114 &1033462465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18440,6 +18431,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1033462462}
   m_CullTransparentMesh: 1
+--- !u!114 &1033462468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033462462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e882d5a99f1a7559ba8ca34a230cbaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SliderBar
+  currentHp: {fileID: 1127258528}
+  backgroundHp: {fileID: 2117438869}
+  delayBeforeFollow: 0.5
+  lerpSpeed: 3
 --- !u!1 &1038319831
 GameObject:
   m_ObjectHideFlags: 0
@@ -23506,9 +23513,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1365352392}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86ac0569b808e2245b715ee6402d1616, type: 3}
+  m_Script: {fileID: 11500000, guid: f11f35fdcd3f84310884967e3479c256, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatsStoreUI
+  m_EditorClassIdentifier: Assembly-CSharp::LevelAndStatsUI
+  _backButton: {fileID: 2000693405}
+  _levelUpTabButton: {fileID: 1480025991}
+  _statsTabButton: {fileID: 712917638}
+  _levelUpPanel: {fileID: 2103194730}
+  _statsPanel: {fileID: 1205652488}
+  _levelUpDetail: {fileID: 2103194736}
+  _statsNodeContainer: {fileID: 449927760}
+  _statsNodePrefab: {fileID: 1791390720007012664, guid: 6afa878be2def084bb52728abc9c38d7, type: 3}
+  _statsDetailUI: {fileID: 2127263198}
+  _txtCurrency: {fileID: 0}
 --- !u!1 &1385957333
 GameObject:
   m_ObjectHideFlags: 0
@@ -24655,7 +24672,7 @@ GameObject:
   - component: {fileID: 1445936229}
   - component: {fileID: 1445936228}
   - component: {fileID: 1445936227}
-  - component: {fileID: 1445936226}
+  - component: {fileID: 1445936230}
   m_Layer: 0
   m_Name: Health Slider
   m_TagString: Untagged
@@ -24684,22 +24701,6 @@ RectTransform:
   m_AnchoredPosition: {x: 175, y: -45}
   m_SizeDelta: {x: 350, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1445936226
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1445936224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d750f85c085d62439cfd4b3ff075e10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SliderBar
-  currentHp: {fileID: 0}
-  backgroundHp: {fileID: 0}
-  delayBeforeFollow: 0.5
-  lerpSpeed: 3
 --- !u!114 &1445936227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24753,6 +24754,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1445936224}
   m_CullTransparentMesh: 1
+--- !u!114 &1445936230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1445936224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e882d5a99f1a7559ba8ca34a230cbaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SliderBar
+  currentHp: {fileID: 1826314658}
+  backgroundHp: {fileID: 1015503710}
+  delayBeforeFollow: 0.5
+  lerpSpeed: 3
 --- !u!1 &1446271542
 GameObject:
   m_ObjectHideFlags: 0
@@ -26401,7 +26418,7 @@ GameObject:
   - component: {fileID: 1538575298}
   - component: {fileID: 1538575297}
   - component: {fileID: 1538575296}
-  - component: {fileID: 1538575295}
+  - component: {fileID: 1538575300}
   - component: {fileID: 1538575299}
   m_Layer: 0
   m_Name: Level Up Panel
@@ -26431,26 +26448,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -90, y: -79}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1538575295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1538575293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0c1507a02c4f6c169e40aa5046ef296, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BuilderLevelUpDetail
-  _levelUpButton: {fileID: 0}
-  _levelUpCostText: {fileID: 0}
-  _currentLevelText: {fileID: 0}
-  _currentHealthText: {fileID: 0}
-  _currentHealthBar: {fileID: 0}
-  _nextLevelText: {fileID: 0}
-  _nextHealthText: {fileID: 0}
-  _nextHealthBar: {fileID: 0}
 --- !u!114 &1538575296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26524,13 +26521,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 1538575293}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff7ac8566f1d3c0cea974312e734e013, type: 3}
+  m_Script: {fileID: 11500000, guid: d51aba3d612ea8cc298ceb59df4ddcfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuilderRepairDetail
-  _repairButton: {fileID: 0}
-  _repairPriceText: {fileID: 0}
-  _healthText: {fileID: 0}
-  _healthBar: {fileID: 0}
+  _repairButton: {fileID: 1613998679}
+  _repairPriceText: {fileID: 1970701171}
+  _healthText: {fileID: 1357887182}
+  _healthBar: {fileID: 1445936230}
+--- !u!114 &1538575300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538575293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a32b49c30ec4aa7689d9f0cefe241152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuilderLevelUpDetail
+  _levelUpButton: {fileID: 1233954687}
+  _levelUpCostText: {fileID: 2018258287}
+  _currentLevelText: {fileID: 2129915402}
+  _currentHealthText: {fileID: 2005982300}
+  _currentHealthBar: {fileID: 1033462468}
+  _nextLevelText: {fileID: 378693185}
+  _nextHealthText: {fileID: 1357887182}
+  _nextHealthBar: {fileID: 1445936230}
 --- !u!1 &1542901462
 GameObject:
   m_ObjectHideFlags: 0
@@ -35827,7 +35844,8 @@ MonoBehaviour:
   dayTransition: {fileID: 755990534}
   conversationUI: {fileID: 1004403333}
   shopUI: {fileID: 2006842450}
-  skillTreeUI: {fileID: 0}
+  skillNodeUI: {fileID: 622420962}
+  BuilderUI: {fileID: 659798466}
   inputAction: {fileID: -944628639613478452, guid: 6eb6d91bf1899884099fab393c77330b, type: 3}
   uiActionMapName: UI
   controllerBindingGroup: Controller
@@ -36449,7 +36467,7 @@ GameObject:
   - component: {fileID: 2103194733}
   - component: {fileID: 2103194732}
   - component: {fileID: 2103194735}
-  - component: {fileID: 2103194734}
+  - component: {fileID: 2103194736}
   m_Layer: 0
   m_Name: Level Up Panel
   m_TagString: Untagged
@@ -36516,28 +36534,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2103194730}
   m_CullTransparentMesh: 1
---- !u!114 &2103194734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2103194730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c88b5feff4902644f997d9e37c537e67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LevelUpDetail
-  _levelUpButton: {fileID: 0}
-  _levelUpCostText: {fileID: 0}
-  _currentLevelText: {fileID: 0}
-  _currentHealthText: {fileID: 0}
-  _currentHealthBar: {fileID: 0}
-  _currentCooldownText: {fileID: 0}
-  _nextLevelText: {fileID: 0}
-  _nextHealthText: {fileID: 0}
-  _nextHealthBar: {fileID: 0}
-  _nextCooldownText: {fileID: 0}
 --- !u!114 &2103194735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36564,6 +36560,28 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2103194736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2103194730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54e8921d00164df85808032b5538735b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelUpDetail
+  _levelUpButton: {fileID: 1989536817}
+  _levelUpCostText: {fileID: 1304227694}
+  _currentLevelText: {fileID: 0}
+  _currentHealthText: {fileID: 0}
+  _currentHealthBar: {fileID: 0}
+  _currentCooldownText: {fileID: 0}
+  _nextLevelText: {fileID: 0}
+  _nextHealthText: {fileID: 0}
+  _nextHealthBar: {fileID: 0}
+  _nextCooldownText: {fileID: 0}
 --- !u!1001 &2110779267
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36892,7 +36910,7 @@ GameObject:
   - component: {fileID: 2127263193}
   - component: {fileID: 2127263195}
   - component: {fileID: 2127263197}
-  - component: {fileID: 2127263196}
+  - component: {fileID: 2127263198}
   m_Layer: 0
   m_Name: Stats Node Detail
   m_TagString: Untagged
@@ -36984,25 +37002,6 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &2127263196
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127263191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b86acb5eec6b3814e89104cda5b36be5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatsDetailUI
-  _statIcon: {fileID: 0}
-  _statName: {fileID: 0}
-  _statDescription: {fileID: 0}
-  _statLevel: {fileID: 0}
-  _currentValue: {fileID: 0}
-  _nextLevelValue: {fileID: 0}
-  _upgradeCost: {fileID: 0}
 --- !u!114 &2127263197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37029,6 +37028,25 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2127263198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127263191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 268572b848a8cb0fbb7257ac85f9b2ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatsDetailUI
+  _statIcon: {fileID: 0}
+  _statName: {fileID: 0}
+  _statDescription: {fileID: 0}
+  _statLevel: {fileID: 0}
+  _currentValue: {fileID: 0}
+  _nextLevelValue: {fileID: 0}
+  _upgradeCost: {fileID: 0}
 --- !u!224 &2127562329 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3238819839294450875, guid: 0b857af43f8c9014b811f0cca53cdad8, type: 3}
@@ -37615,6 +37633,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5528f773e138fb44fb22a79d2ea28a8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuilderStatsDetailUI
+  _statIcon: {fileID: 0}
+  _statName: {fileID: 0}
+  _statDescription: {fileID: 0}
+  _statLevel: {fileID: 0}
+  _currentValue: {fileID: 0}
+  _nextLevelValue: {fileID: 0}
+  _upgradeCost: {fileID: 0}
 --- !u!114 &2142584025
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,7 +18,8 @@ public class PlayerUI : MonoBehaviour
 
     [Header("NPC")]
     [SerializeField] private ShopUI shopUI;
-    [SerializeField] private SkillTreeUI skillTreeUI;
+    [SerializeField] private SkillTreeUI skillNodeUI;
+    [SerializeField] private  BuilderPanelUI BuilderUI;
 
     [Header("Input System UI")]
     [SerializeField] private InputActionAsset inputAction;
@@ -48,6 +49,8 @@ public class PlayerUI : MonoBehaviour
     public PreparationUI Preparation => preparationUI;
     public ResultUI ResultUI => resultUI;
     public DayTransitionUI DayTransition => dayTransition;
+
+    private NPCMovement currentNpcMovement;
 
 
     void Awake()
@@ -159,9 +162,15 @@ public class PlayerUI : MonoBehaviour
                 break;
 
             case NpcRole.Guard:
-                if (skillTreeUI != null)
-                    skillTreeUI.Initialize(npcData);
-                OpenNpcPanel(skillTreeUI, npcMovement);
+                if (skillNodeUI != null)
+                    skillNodeUI.Initialize(npcData);
+                OpenNpcPanel(skillNodeUI, npcMovement);
+                break;
+
+            case NpcRole.GranaryKeeper:
+                if (BuilderUI != null)
+                    BuilderUI.Initialize();
+                OpenNpcPanel(BuilderUI, npcMovement);
                 break;
 
             default:
@@ -194,10 +203,30 @@ public class PlayerUI : MonoBehaviour
     {
         if (shopUI != null && shopUI.gameObject.activeSelf)
             shopUI.gameObject.SetActive(false);
-
-        if (skillTreeUI != null && skillTreeUI.gameObject.activeSelf)
-            skillTreeUI.gameObject.SetActive(false);
-
+    
+        if (skillNodeUI != null && skillNodeUI.gameObject.activeSelf)
+            skillNodeUI.gameObject.SetActive(false);
+    
+        if (BuilderUI != null && BuilderUI.gameObject.activeSelf)
+            BuilderUI.gameObject.SetActive(false);
+    
+        // 1. Resume NPC yang tersimpan jika ada
+        if (currentNpcMovement != null)
+        {
+            currentNpcMovement.ResumeMovement();
+            currentNpcMovement = null;
+        }
+    
+        // 2. Fallback: Cari semua NPCMovement di scene dan paksa resume
+        NPCMovement[] allNPCs = FindObjectsByType<NPCMovement>(FindObjectsSortMode.None);
+        foreach (var npc in allNPCs)
+        {
+            if (npc != null)
+            {
+                npc.ResumeMovement();
+            }
+        }
+    
         SetInputMode(false);
     }
 
@@ -367,16 +396,23 @@ public class PlayerUI : MonoBehaviour
 
     private void HandleUICancel(InputAction.CallbackContext context)
     {
-        if (!isUIInputActive || preparationUI == null) return;
+        if (!isUIInputActive) return;
 
-        if (preparationUI.IsPreparePanelOpen)
+        if (preparationUI != null && preparationUI.IsPreparePanelOpen)
         {
             preparationUI.DeactivatePreparePanel();
             SelectPreparationFirstSelected();
             return;
         }
 
-        DeactivatePreparationUI();
+        if (preparationUI != null && preparationUI.gameObject.activeSelf)
+        {
+            DeactivatePreparationUI();
+            return;
+        }
+
+        // Tangani cancel untuk panel NPC (Shop, SkillTree, Builder)
+        CloseAllRolePanels();
     }
 
     public void SetInputMode(bool useUIInput)

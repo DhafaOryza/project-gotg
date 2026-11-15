@@ -400,7 +400,7 @@ GameObject:
   - component: {fileID: 1048835471912584254}
   - component: {fileID: 4332517349307474710}
   - component: {fileID: 3855370040607047091}
-  - component: {fileID: 8014065273489527031}
+  - component: {fileID: 4249881383394729144}
   m_Layer: 0
   m_Name: Builder Stat Node
   m_TagString: Untagged
@@ -538,7 +538,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &8014065273489527031
+--- !u!114 &4249881383394729144
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -547,16 +547,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1854963007185525667}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18a4babc648f4c96d82c873c9f23d8ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 5284a47eb5123e11896074159bdf3a77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuilderStatsNodeUI
-  _statsIcon: {fileID: 2024394070558768637}
-  _statsType: {fileID: 2278465761519769250}
-  _statsDesc: {fileID: 9215754879923803926}
-  _statsLevel: {fileID: 5142010631410732672}
-  _selectButton: {fileID: 4332517349307474710}
-  _upgradeButton: {fileID: 1866350998032014252}
-  _upgradePrice: {fileID: 6735346394180832516}
+  _statsIcon: {fileID: 0}
+  _statsType: {fileID: 0}
+  _statsDesc: {fileID: 0}
+  _statsLevel: {fileID: 0}
+  _selectButton: {fileID: 0}
+  _upgradeButton: {fileID: 0}
+  _upgradePrice: {fileID: 0}
   _maxLevelText: MAX
   _affordableColor: {r: 1, g: 1, b: 1, a: 1}
   _unaffordableColor: {r: 1, g: 0.4, b: 0.4, a: 1}

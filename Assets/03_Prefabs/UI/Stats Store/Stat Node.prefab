@@ -399,8 +399,8 @@ GameObject:
   - component: {fileID: 7543297266251249616}
   - component: {fileID: 1048835471912584254}
   - component: {fileID: 4332517349307474710}
-  - component: {fileID: 1365726183856903939}
   - component: {fileID: 3855370040607047091}
+  - component: {fileID: 1791390720007012664}
   m_Layer: 0
   m_Name: Stat Node
   m_TagString: Untagged
@@ -512,28 +512,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1365726183856903939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1854963007185525667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b34623ab8bfceb640807cd3a9d761fbf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatsNodeUI
-  _statsIcon: {fileID: 2024394070558768637}
-  _statsType: {fileID: 2278465761519769250}
-  _statsDesc: {fileID: 9215754879923803926}
-  _statsLevel: {fileID: 5142010631410732672}
-  _selectButton: {fileID: 4332517349307474710}
-  _upgradeButton: {fileID: 1866350998032014252}
-  _upgradePrice: {fileID: 6735346394180832516}
-  _maxLevelText: MAX
-  _affordableColor: {r: 1, g: 1, b: 1, a: 1}
-  _unaffordableColor: {r: 1, g: 0.4, b: 0.4, a: 1}
 --- !u!114 &3855370040607047091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,6 +538,28 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1791390720007012664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854963007185525667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a320f5883a928e191a9d9a3d93eea6dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatsNodeUI
+  _statsIcon: {fileID: 0}
+  _statsType: {fileID: 0}
+  _statsDesc: {fileID: 0}
+  _statsLevel: {fileID: 0}
+  _selectButton: {fileID: 0}
+  _upgradeButton: {fileID: 0}
+  _upgradePrice: {fileID: 0}
+  _maxLevelText: MAX
+  _affordableColor: {r: 1, g: 1, b: 1, a: 1}
+  _unaffordableColor: {r: 1, g: 0.4, b: 0.4, a: 1}
 --- !u!1 &1895347779811923321
 GameObject:
   m_ObjectHideFlags: 0
