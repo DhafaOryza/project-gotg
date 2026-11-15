@@ -84,8 +84,8 @@ public class SkillTreeUI : MonoBehaviour
 
         if (_exitButton != null)
         {
-            _exitButton.onClick.RemoveAllListeners();
             _exitButton.onClick.AddListener(CloseUI);
+            _exitButton.onClick.RemoveAllListeners();
         }
     }
 
@@ -217,13 +217,8 @@ public class SkillTreeUI : MonoBehaviour
     /// <summary>
     /// Closes the skill tree panel UI through PlayerUI to ensure active NPC resumes wandering.
     /// </summary>
-    public void CloseUI()
+    private void CloseUI()
     {
-        if (_skillTreeMainPanel != null)
-        {
-            _skillTreeMainPanel.SetActive(false);
-        }
-
         if (PlayerUI.Instance != null)
         {
             PlayerUI.Instance.CloseAllRolePanels();

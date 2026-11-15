@@ -19,7 +19,8 @@ public class PlayerUI : MonoBehaviour
     [Header("NPC")]
     [SerializeField] private ShopUI shopUI;
     [SerializeField] private SkillTreeUI skillNodeUI;
-    [SerializeField] private  BuilderPanelUI BuilderUI;
+    [SerializeField] private BuilderPanelUI BuilderUI;
+    [SerializeField] private LevelAndStatsUI LevelNodeUI;
 
     [Header("Input System UI")]
     [SerializeField] private InputActionAsset inputAction;
@@ -147,6 +148,8 @@ public class PlayerUI : MonoBehaviour
 
     public void HandleNpcRolePanel(NPCDataSO npcData, NPCMovement npcMovement)
     {
+        currentNpcMovement = npcMovement;
+        
         if (npcData == null)
         {
             ResumeNpcAndInput(npcMovement);
@@ -171,6 +174,12 @@ public class PlayerUI : MonoBehaviour
                 if (BuilderUI != null)
                     BuilderUI.Initialize();
                 OpenNpcPanel(BuilderUI, npcMovement);
+                break;
+
+            case NpcRole.Priest:
+                if (LevelNodeUI != null)
+                    LevelNodeUI.Initialize();
+                OpenNpcPanel(LevelNodeUI, npcMovement);
                 break;
 
             default:
@@ -203,20 +212,23 @@ public class PlayerUI : MonoBehaviour
     {
         if (shopUI != null && shopUI.gameObject.activeSelf)
             shopUI.gameObject.SetActive(false);
-    
+
         if (skillNodeUI != null && skillNodeUI.gameObject.activeSelf)
             skillNodeUI.gameObject.SetActive(false);
-    
+
         if (BuilderUI != null && BuilderUI.gameObject.activeSelf)
             BuilderUI.gameObject.SetActive(false);
-    
+
+        if (LevelNodeUI != null && LevelNodeUI.gameObject.activeSelf)
+            LevelNodeUI.gameObject.SetActive(false);
+
         // 1. Resume NPC yang tersimpan jika ada
         if (currentNpcMovement != null)
         {
             currentNpcMovement.ResumeMovement();
             currentNpcMovement = null;
         }
-    
+
         // 2. Fallback: Cari semua NPCMovement di scene dan paksa resume
         NPCMovement[] allNPCs = FindObjectsByType<NPCMovement>(FindObjectsSortMode.None);
         foreach (var npc in allNPCs)
@@ -226,7 +238,7 @@ public class PlayerUI : MonoBehaviour
                 npc.ResumeMovement();
             }
         }
-    
+
         SetInputMode(false);
     }
 
@@ -428,8 +440,19 @@ public class PlayerUI : MonoBehaviour
         }
 
         var playerController = GameManager.Instance?.playerController;
+        if (playerController == null)
+        {
+            playerController = FindFirstObjectByType<PlayerController>();
+        }
+
         if (playerController != null)
+        {
             playerController.SetGameplayInputEnabled(!useUIInput);
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerUI] PlayerController tidak ditemukan! Pastikan PlayerController ada di scene.");
+        }
     }
 
     private void DeactivateAllPanel()
