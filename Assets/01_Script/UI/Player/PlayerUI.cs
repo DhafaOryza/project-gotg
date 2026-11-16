@@ -222,21 +222,10 @@ public class PlayerUI : MonoBehaviour
         if (LevelNodeUI != null && LevelNodeUI.gameObject.activeSelf)
             LevelNodeUI.gameObject.SetActive(false);
 
-        // 1. Resume NPC yang tersimpan jika ada
         if (currentNpcMovement != null)
         {
             currentNpcMovement.ResumeMovement();
             currentNpcMovement = null;
-        }
-
-        // 2. Fallback: Cari semua NPCMovement di scene dan paksa resume
-        NPCMovement[] allNPCs = FindObjectsByType<NPCMovement>(FindObjectsSortMode.None);
-        foreach (var npc in allNPCs)
-        {
-            if (npc != null)
-            {
-                npc.ResumeMovement();
-            }
         }
 
         SetInputMode(false);
@@ -408,23 +397,41 @@ public class PlayerUI : MonoBehaviour
 
     private void HandleUICancel(InputAction.CallbackContext context)
     {
-        if (!isUIInputActive) return;
+        if (isUIInputActive)
+        {            
+            if (preparationUI != null && preparationUI.IsPreparePanelOpen)
+            {
+                preparationUI.DeactivatePreparePanel();
+                SelectPreparationFirstSelected();
+                return;
+            }
 
-        if (preparationUI != null && preparationUI.IsPreparePanelOpen)
-        {
-            preparationUI.DeactivatePreparePanel();
-            SelectPreparationFirstSelected();
-            return;
+            if (preparationUI != null && preparationUI.gameObject.activeSelf)
+            {
+                DeactivatePreparationUI();
+                return;
+            }
         }
 
-        if (preparationUI != null && preparationUI.gameObject.activeSelf)
-        {
-            DeactivatePreparationUI();
-            return;
-        }
 
-        // Tangani cancel untuk panel NPC (Shop, SkillTree, Builder)
-        CloseAllRolePanels();
+        bool anyPanelWasOpen = IsAnyRolePanelOpen();
+
+        if (anyPanelWasOpen)
+        {
+            CloseAllRolePanels();
+        }
+    }
+
+    /// <summary>
+    /// Returns true if at least one NPC role panel is currently visible.
+    /// </summary>
+    public bool IsAnyRolePanelOpen()
+    {
+        if (shopUI != null && shopUI.gameObject.activeSelf) return true;
+        if (skillNodeUI != null && skillNodeUI.gameObject.activeSelf) return true;
+        if (BuilderUI != null && BuilderUI.gameObject.activeSelf) return true;
+        if (LevelNodeUI != null && LevelNodeUI.gameObject.activeSelf) return true;
+        return false;
     }
 
     public void SetInputMode(bool useUIInput)
