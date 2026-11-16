@@ -18,6 +18,9 @@ public class BuilderLevelUpDetail : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _nextHealthText;
     [SerializeField] private SliderBar _nextHealthBar;
 
+    [Header("Navigation")]
+    [SerializeField] private Selectable _fallbackSelectable; 
+
     private BuildingBase _granary;
     private CurrencyManager _currencyManager;
 
@@ -136,10 +139,19 @@ public class BuilderLevelUpDetail : MonoBehaviour
 
         if (_levelUpButton != null)
         {
-            _levelUpButton.interactable = hasGranary
+            // Tentukan apakah tombol masih bisa di-interact
+            bool canInteract = hasGranary
+                && !_granary.IsMaxLevel
                 && _granary.CanLevelUp
                 && _currencyManager != null
                 && _currencyManager.Money >= _granary.GetLevelUpPrice();
+
+            _levelUpButton.interactable = canInteract;
+
+            if (!canInteract)
+            {
+                PlayerUI.Instance?.RedirectFocus(_levelUpButton, _fallbackSelectable);
+            }
         }
     }
 }

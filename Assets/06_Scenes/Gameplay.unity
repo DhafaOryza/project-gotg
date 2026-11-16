@@ -4600,9 +4600,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 700516546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 222.5, y: -150}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &338846215
@@ -6811,9 +6811,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1394943583}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 222.5, y: -384}
   m_SizeDelta: {x: 680, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &425839915
@@ -10943,6 +10943,7 @@ MonoBehaviour:
   _upgradeButtonCostText: {fileID: 0}
   _exitButton: {fileID: 1607330236}
   _upgradeButton: {fileID: 621053001}
+  firstSelectedButton: {fileID: 0}
 --- !u!1 &630951470
 GameObject:
   m_ObjectHideFlags: 0
@@ -11698,7 +11699,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &659798462
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11776,6 +11777,7 @@ MonoBehaviour:
   _levelUpDetail: {fileID: 1538575300}
   _repairDetail: {fileID: 1538575299}
   _txtCurrency: {fileID: 978775407}
+  firstSelectedButton: {fileID: 1233954687}
   _granary: {fileID: 0}
 --- !u!1 &660263659
 GameObject:
@@ -14518,9 +14520,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1394943583}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 222.5, y: -150}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &763195192
@@ -15567,6 +15569,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d750f85c085d62439cfd4b3ff075e10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SliderBar
+  currentHp: {fileID: 0}
+  backgroundHp: {fileID: 0}
+  delayBeforeFollow: 0.5
+  lerpSpeed: 3
 --- !u!1 &819466021
 GameObject:
   m_ObjectHideFlags: 0
@@ -16898,7 +16904,6 @@ GameObject:
   - component: {fileID: 883308619}
   - component: {fileID: 883308621}
   - component: {fileID: 883308620}
-  - component: {fileID: 883308622}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -16969,23 +16974,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 883308618}
   m_CullTransparentMesh: 1
---- !u!114 &883308622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 883308618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 674ea4738109f894d96302e9ad4c2f6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ParentSelectableNavigation
-  includeNestedSelectables: 0
-  upRoot: []
-  downRoot: []
-  leftRoot: []
-  rightRoot: []
 --- !u!1001 &886191882
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19126,9 +19114,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 700516546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 222.5, y: -384}
   m_SizeDelta: {x: 680, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1060400676
@@ -23663,6 +23651,7 @@ MonoBehaviour:
   _statsNodeContainer: {fileID: 449927760}
   _statsNodePrefab: {fileID: 1791390720007012664, guid: 6afa878be2def084bb52728abc9c38d7, type: 3}
   _statsDetailUI: {fileID: 2127263198}
+  firstSelectedButton: {fileID: 0}
   _txtCurrency: {fileID: 0}
 --- !u!1 &1385957333
 GameObject:
@@ -25628,6 +25617,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d750f85c085d62439cfd4b3ff075e10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SliderBar
+  currentHp: {fileID: 0}
+  backgroundHp: {fileID: 0}
+  delayBeforeFollow: 0.5
+  lerpSpeed: 3
 --- !u!1 &1463547428
 GameObject:
   m_ObjectHideFlags: 0
@@ -26662,6 +26655,7 @@ MonoBehaviour:
   _repairPriceText: {fileID: 1970701171}
   _healthText: {fileID: 1357887182}
   _healthBar: {fileID: 1445936230}
+  _fallbackSelectable: {fileID: 1798509436}
 --- !u!114 &1538575300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26682,6 +26676,7 @@ MonoBehaviour:
   _nextLevelText: {fileID: 378693185}
   _nextHealthText: {fileID: 1357887182}
   _nextHealthBar: {fileID: 1445936230}
+  _fallbackSelectable: {fileID: 1798509436}
 --- !u!1 &1542901462
 GameObject:
   m_ObjectHideFlags: 0
@@ -31142,7 +31137,6 @@ GameObject:
   - component: {fileID: 1798509437}
   - component: {fileID: 1798509436}
   - component: {fileID: 1798509435}
-  - component: {fileID: 1798509439}
   m_Layer: 0
   m_Name: Level Up - Button
   m_TagString: Untagged
@@ -31233,19 +31227,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1798509437}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1798509439}
-        m_TargetAssemblyTypeName: SetsUiElementToSelectOnInteraction, Assembly-CSharp
-        m_MethodName: JumpToElement
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1798509437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31284,22 +31266,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1798509433}
   m_CullTransparentMesh: 1
---- !u!114 &1798509439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798509433}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0dcf684499740445a1f26f654ae8428, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SetsUiElementToSelectOnInteraction
-  eventSystem: {fileID: 1240337731}
-  elementToSelect: {fileID: 1613998679}
-  showVisualization: 0
-  navigationColour: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &1798892118
 GameObject:
   m_ObjectHideFlags: 0
@@ -35501,6 +35467,7 @@ MonoBehaviour:
   _cardPrefab: {fileID: 1404126629}
   _txtCurrency: {fileID: 864527400}
   _detailUI: {fileID: 66582165}
+  firstSelectedButton: {fileID: 0}
 --- !u!1 &2010907757
 GameObject:
   m_ObjectHideFlags: 0
@@ -35932,7 +35899,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2035140763
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37833,6 +37800,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5528f773e138fb44fb22a79d2ea28a8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuilderStatsDetailUI
+  _statIcon: {fileID: 0}
+  _statName: {fileID: 0}
+  _statDescription: {fileID: 0}
+  _statLevel: {fileID: 0}
+  _currentValue: {fileID: 0}
+  _nextLevelValue: {fileID: 0}
+  _upgradeCost: {fileID: 0}
 --- !u!114 &2142584025
 MonoBehaviour:
   m_ObjectHideFlags: 0

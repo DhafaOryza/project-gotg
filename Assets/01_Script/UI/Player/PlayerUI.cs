@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -206,6 +207,38 @@ public class PlayerUI : MonoBehaviour
             default:
                 ResumeNpcAndInput(npcMovement);
                 break;
+        }
+    }
+
+    /// <summary>
+    /// Mengalihkan fokus controller dari tombol yang baru saja dinonaktifkan ke tombol lain.
+    /// </summary>
+    public void RedirectFocus(Selectable currentButton, Selectable fallback = null)
+    {
+        if (EventSystem.current == null || currentButton == null) return;
+
+        // Cari tombol terdekat yang masih interactable (Left, Right, Up, Down)
+        Selectable nextTarget = currentButton.FindSelectableOnLeft()
+                             ?? currentButton.FindSelectableOnRight()
+                             ?? currentButton.FindSelectableOnUp()
+                             ?? currentButton.FindSelectableOnDown()
+                             ?? fallback;
+
+        StartCoroutine(RedirectFocusRoutine(nextTarget, fallback));
+    }
+
+    private IEnumerator RedirectFocusRoutine(Selectable target, Selectable fallback)
+    {
+        yield return null; // Tunggu 1 frame agar EventSystem selesai memproses event klik
+
+        Selectable finalTarget = (target != null && target.isActiveAndEnabled && target.IsInteractable()) 
+            ? target 
+            : fallback;
+
+        if (finalTarget != null && finalTarget.isActiveAndEnabled && finalTarget.IsInteractable())
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(finalTarget.gameObject);
         }
     }
 

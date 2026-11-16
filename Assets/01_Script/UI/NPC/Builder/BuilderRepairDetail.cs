@@ -10,6 +10,9 @@ public class BuilderRepairDetail : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _healthText;
     [SerializeField] private SliderBar _healthBar;
 
+    [Header("Navigation")]
+    [SerializeField] private Selectable _fallbackSelectable; 
+
     private BuildingBase _granary;
     private CurrencyManager _currencyManager;
 
@@ -115,9 +118,19 @@ public class BuilderRepairDetail : MonoBehaviour
 
         if (_repairButton != null)
         {
-            _repairButton.interactable = canRepair
+            // Tentukan apakah tombol masih bisa di-interact
+            bool canInteract = hasGranary
+                && !_granary.IsMaxLevel
+                && _granary.CanLevelUp
                 && _currencyManager != null
-                && _currencyManager.Money >= _granary.RepairPrice;
+                && _currencyManager.Money >= _granary.GetLevelUpPrice();
+
+            _repairButton.interactable = canInteract;
+
+            if (!canInteract)
+            {
+                PlayerUI.Instance?.RedirectFocus(_repairButton, _fallbackSelectable);
+            }
         }
     }
 }

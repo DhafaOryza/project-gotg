@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class BuilderPanelUI : MonoBehaviour
@@ -28,11 +29,11 @@ public class BuilderPanelUI : MonoBehaviour
     [Header("Currency")]
     [SerializeField] private TextMeshProUGUI _txtCurrency;
 
-    [Header("Granary")]
-    [SerializeField] private GranaryBase _granary;
-
     [Header("Navigation")]
     [SerializeField] private Selectable firstSelectedButton;
+
+    [Header("Granary")]
+    [SerializeField] private GranaryBase _granary;
 
     public Selectable FirstSelectedButton => firstSelectedButton;
 
