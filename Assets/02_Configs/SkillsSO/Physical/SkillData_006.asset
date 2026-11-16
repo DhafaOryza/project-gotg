@@ -36,3 +36,5 @@ MonoBehaviour:
   ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
   damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}
   meleeVfxPrefab: {fileID: 1527040604417744607, guid: 302e58157dc14d94d9c4901b09fdeab6, type: 3}
+  meleeVfxSpawnOffset: {x: 0, y: -1, z: 0}
+  meleeVfxForwardDistance: 1

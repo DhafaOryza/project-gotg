@@ -60,6 +60,10 @@ public class SkillDataSO : ScriptableObject
     public GameObject damageTextPrefab;
     [Tooltip("Di-spawn sekali pakai di attack point untuk skill melee (bukan projectile).")]
     public GameObject meleeVfxPrefab;
+    [Tooltip("Offset world-space (tidak ikut rotasi aim) untuk posisi spawn VFX melee. Pakai Y negatif untuk efek yang menempel ke tanah (mis. Hammer Smash).")]
+    public Vector3 meleeVfxSpawnOffset = Vector3.zero;
+    [Tooltip("Jarak dorong tambahan ke depan (mengikuti arah hadap/aim horizontal) agar efek tidak terlalu menempel ke player.")]
+    public float meleeVfxForwardDistance = 0f;
 
     public bool IsLocked => locked;
 
@@ -105,9 +109,27 @@ public class SkillDataSO : ScriptableObject
         }
 
         // Melee VFX: sekali pakai, mengikuti rotasi arah serang, lalu hancur sendiri.
+        // meleeVfxSpawnOffset dipakai dalam world-space sehingga tidak ikut berputar saat aim miring/atas/bawah.
+        // meleeVfxForwardDistance mendorong efek lebih jauh ke depan sesuai arah hadap player.
         if (meleeVfxPrefab != null)
         {
-            GameObject fx = Instantiate(meleeVfxPrefab, spawnPos, rotation);
+            Vector3 fxPos = spawnPos + meleeVfxSpawnOffset;
+            if (meleeVfxForwardDistance != 0f)
+            {
+                // Arah hadap diambil dari posisi attackPoint relatif ke player (selalu benar, tidak peduli konfigurasi flip sprite).
+                float dirX;
+                if (user != null)
+                {
+                    float dx = attackPoint != null ? attackPoint.position.x - user.transform.position.x : aimDirection.x;
+                    dirX = Mathf.Abs(dx) > 0.001f ? Mathf.Sign(dx) : (Mathf.Abs(aimDirection.x) > 0.01f ? Mathf.Sign(aimDirection.x) : 1f);
+                }
+                else
+                {
+                    dirX = Mathf.Abs(aimDirection.x) > 0.01f ? Mathf.Sign(aimDirection.x) : 1f;
+                }
+                fxPos.x += dirX * meleeVfxForwardDistance;
+            }
+            GameObject fx = Instantiate(meleeVfxPrefab, fxPos, rotation);
             Destroy(fx, 2f);
         }
 

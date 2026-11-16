@@ -14,6 +14,9 @@ public class SkillProjectile : MonoBehaviour
     [Tooltip("Kalau aktif, projectile menembus musuh dan bisa mengenai banyak musuh.")]
     [SerializeField] private bool piercing = false;
 
+    [Tooltip("Kecepatan putar visual proyektil (derajat/sekon) di layar. 0 = visual tidak berputar.")]
+    [SerializeField] private float spinSpeed = 0f;
+
     private BaseEntity _owner;
     private int _damage;
     private float _maxRange;
@@ -21,6 +24,7 @@ public class SkillProjectile : MonoBehaviour
     private bool _isPiercing;
     private bool _isLucky;
     private GameObject _damageTextPrefab;
+    private Transform _visual;
     private readonly HashSet<BaseEntity> alreadyHit = new HashSet<BaseEntity>();
 
     public void Setup(BaseEntity owner, int damage, float maxRange, bool isAOE ,bool isLucky = false, GameObject damageTextPrefab = null)
@@ -45,12 +49,18 @@ public class SkillProjectile : MonoBehaviour
         rb.useGravity = false;
 
         Destroy(gameObject, lifetime);
+
+        // Cari child "Visual" untuk animasi putar; root jangan diputar karena arah geraknya dari rotasi root.
+        _visual = transform.Find("Visual");
     }
 
     private void Update()
     {
         // Bergerak ke arah "kanan" prefab; arahnya diatur lewat rotasi saat spawn.
         transform.Translate(Vector3.right * speed * Time.deltaTime, Space.Self);
+        if (spinSpeed != 0f && _visual != null)
+            _visual.Rotate(Vector3.forward, spinSpeed * Time.deltaTime, Space.Self);
+
         float distanceTraveled = Vector3.Distance(_spawnPosition, transform.position);
         if (distanceTraveled >= _maxRange)
             Destroy(gameObject);
