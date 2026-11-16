@@ -16,8 +16,13 @@ public class LevelAndStatsUI : MonoBehaviour
     [SerializeField] private StatsNodeUI _statsNodePrefab;
     [SerializeField] private StatsDetailUI _statsDetailUI;
 
+    [Header("Navigation")]
+    [SerializeField] private Selectable firstSelectedButton;
+    
     [Header("Currency References")]
     [SerializeField] private TextMeshProUGUI _txtCurrency;
+
+    public Selectable FirstSelectedButton => firstSelectedButton;
 
     private PlayerBaseEntity playerBaseEntity;
     private CurrencyManager currencyManager;
@@ -72,6 +77,8 @@ public class LevelAndStatsUI : MonoBehaviour
     {
         // Player dicari saat panel dibuka (bukan di Awake): player bisa baru di-spawn setelah panel ini dibuat.
         playerBaseEntity = GameManager.Instance?.levelSpawnerManager?.GetCurrentPlayer();
+
+        PlayerUI.Instance?.SetSelectedObject(firstSelectedButton);
 
         InitializeStatsNode();
         IntializeCurrency();

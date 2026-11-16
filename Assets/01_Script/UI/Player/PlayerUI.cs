@@ -82,6 +82,7 @@ public class PlayerUI : MonoBehaviour
         if (resultUI == null) resultUI = FindFirstObjectByType<ResultUI>();
         if (dayTransition == null) dayTransition = FindFirstObjectByType<DayTransitionUI>();
         if (shopUI == null) shopUI = FindFirstObjectByType<ShopUI>();
+        if (LevelNodeUI == null) LevelNodeUI = FindAnyObjectByType<LevelAndStatsUI>();
 
         if (_playerHUD != null) _playerHUD.Initialize();
 
@@ -118,16 +119,16 @@ public class PlayerUI : MonoBehaviour
     }
     public void DeactivateResultUI() => resultUI.gameObject.SetActive(false);
 
-    public void SelectPreparationFirstSelected()
+    public void SelectButtonFirstSelected()
     {
         if (preparationUI != null)
         {
             SetSelectedObject(preparationUI.FirstSelectedButton);
         }
 
-        if (shopUI != null)
+        if (LevelNodeUI != null)
         {
-            SetSelectedObject(shopUI.FirstSelectedButton);    
+            SetSelectedObject(LevelNodeUI.FirstSelectedButton);
         }
     }
 
@@ -188,6 +189,7 @@ public class PlayerUI : MonoBehaviour
                 if (LevelNodeUI != null)
                     LevelNodeUI.Initialize();
                 OpenNpcPanel(LevelNodeUI, npcMovement);
+                SelectButtonFirstSelected();
                 break;
 
             default:
@@ -410,7 +412,7 @@ public class PlayerUI : MonoBehaviour
             if (preparationUI != null && preparationUI.IsPreparePanelOpen)
             {
                 preparationUI.DeactivatePreparePanel();
-                SelectPreparationFirstSelected();
+                SelectButtonFirstSelected();
                 return;
             }
 

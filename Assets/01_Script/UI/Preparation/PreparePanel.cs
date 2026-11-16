@@ -119,7 +119,7 @@ public class PreparePanel : MonoBehaviour
     private void HandleBackButton()
     {
         DeactivateSelf();
-        PlayerUI.Instance?.SelectPreparationFirstSelected();
+        PlayerUI.Instance?.SelectButtonFirstSelected();
     }
 
     private static void RefreshPanelNavigation(GameObject panel)
