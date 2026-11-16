@@ -23,27 +23,29 @@ public class ResultUI : MonoBehaviour
     [Header("Bottom Reward Bar")]
     [SerializeField] private TextMeshProUGUI _txtRewardAmount;
 
+    [Header("Content Wrapper")]
+    [Tooltip("Parent dari kartu, reward bar, dan tombol Continue. Diaktifkan saat panel Result dibuka.")]
+    [SerializeField] private GameObject contentWrapper; // "Content Wrapper" — m_IsActive 0 di scene
+
     [Header("Buttons")]
     [SerializeField] private Button _btnContinue;
 
     private NightResult _lastResult = NightResult.Clear;
 
-    private void Awake()
-    {
-        if (_btnContinue != null)
-            _btnContinue.onClick.AddListener(HandleContinueButton);
-    }
+    public Button ContinueButton => _btnContinue;
 
-    private void OnDestroy()
-    {
-        if (_btnContinue != null)
-            _btnContinue.onClick.RemoveListener(HandleContinueButton);
-    }
+    // Tombol Continue sudah dipunyai persistent onClick di scene (ResultUI.HandleContinueButton),
+    // jadi tidak perlu AddListener lagi di sini — klik akan tetap jalan sekali saja.
 
     public void Show(NightResult result)
     {
         _lastResult = result;
         bool won = result == NightResult.Clear;
+
+        // Content Wrapper berisi kartu/reward/tombol Continue dan default inactive di scene: aktifkan di sini.
+        if (contentWrapper == null)
+            contentWrapper = transform.Find("Content Wrapper")?.gameObject;
+        contentWrapper?.SetActive(true);
 
         if (_clearHeader != null) _clearHeader.SetActive(won);
         if (_loseHeader != null) _loseHeader.SetActive(!won);
@@ -93,6 +95,8 @@ public class ResultUI : MonoBehaviour
         if (gameManager.SetState(target))
         {
             gameObject.SetActive(false);
+            // Kembalikan ke input mode gameplay; ActivateResultUI mengaktifkan UI input mode.
+            PlayerUI.Instance?.DeactivatePreparationUI();
         }
     }
 }

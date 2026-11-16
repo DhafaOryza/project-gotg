@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: SKL_006
   displayName: 'Hammer Smash  '
-  description: 
+  description: Strike the ground with a hammer to create a small shockwave.
   baseValue: 60
   currentLevel: 1
   maxLevel: 5
@@ -24,6 +24,7 @@ MonoBehaviour:
   skillType: 0
   targetMode: 1
   isProjectile: 0
+  executionType: 0
   icon: {fileID: 0}
   locked: 0
   targetType: 0
@@ -34,3 +35,4 @@ MonoBehaviour:
   skillPrefab: {fileID: 8946592561061051195, guid: b2fcb1da6d2d2684f9c1caf10eb674e5, type: 3}
   ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
   damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}
+  meleeVfxPrefab: {fileID: 1527040604417744607, guid: 302e58157dc14d94d9c4901b09fdeab6, type: 3}

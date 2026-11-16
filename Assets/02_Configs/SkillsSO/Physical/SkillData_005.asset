@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: SKL_005
   displayName: 'Woodcutter Swing  '
-  description: 
+  description: A powerful axe swing that deals high damage but has a longer cooldown.
   baseValue: 180
   currentLevel: 1
   maxLevel: 5
@@ -24,6 +24,7 @@ MonoBehaviour:
   skillType: 0
   targetMode: 1
   isProjectile: 0
+  executionType: 0
   icon: {fileID: 0}
   locked: 0
   targetType: 0
@@ -34,3 +35,4 @@ MonoBehaviour:
   skillPrefab: {fileID: 8946592561061051195, guid: 2e843b269412ee44aabf1376d58465b8, type: 3}
   ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
   damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}
+  meleeVfxPrefab: {fileID: 6542696324424305083, guid: 8b7e6e4f0371a8641b8062a2447e2f59, type: 3}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: SKL_007
   displayName: Rock Throw
-  description: 
+  description: Throw stones at the enemy from a distance.
   baseValue: 40
   currentLevel: 1
   maxLevel: 5
@@ -23,7 +23,8 @@ MonoBehaviour:
   typeRange: 1
   skillType: 0
   targetMode: 0
-  isProjectile: 0
+  isProjectile: 1
+  executionType: 0
   icon: {fileID: 0}
   locked: 0
   targetType: 0
@@ -34,3 +35,4 @@ MonoBehaviour:
   skillPrefab: {fileID: 8946592561061051195, guid: 7fb2210582c50f54aa36ff9ba0c5f1fc, type: 3}
   ghostPreviewPrefab: {fileID: 7836781342000382809, guid: 923997bc754d85e49b531d20a8215065, type: 3}
   damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}
+  meleeVfxPrefab: {fileID: 0}

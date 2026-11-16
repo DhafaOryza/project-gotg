@@ -33,6 +33,28 @@ public class PlayerPassiveController : MonoBehaviour
         return false;
     }
 
+    [Header("VFX")]
+    [Tooltip("Di-spawn di atas user saat heal terjadi (looping aura).")]
+    [SerializeField] private GameObject healVfxPrefab;
+
+    private GameObject healVfxInstance;
+
+    private void SpawnHealVfx()
+    {
+        if (healVfxPrefab == null || healVfxInstance != null) return;
+
+        healVfxInstance = Instantiate(healVfxPrefab, player.transform.position + Vector3.up * 0.9f, Quaternion.identity);
+        healVfxInstance.transform.SetParent(player.transform, true);
+    }
+
+    private void DestroyHealVfx()
+    {
+        if (healVfxInstance == null) return;
+
+        Destroy(healVfxInstance);
+        healVfxInstance = null;
+    }
+
     public void HandleEnemyKilled()
     {
         var passive = GetEquippedPassive();
@@ -41,6 +63,9 @@ public class PlayerPassiveController : MonoBehaviour
 
         if (currentRegenCouroutine != null)
             StopCoroutine(currentRegenCouroutine);
+
+        DestroyHealVfx(); // jangan sampai aura lama dobel dengan regen yang baru
+        SpawnHealVfx();
 
         currentRegenCouroutine = StartCoroutine(RegendHPRoutine(passive.duration, passive.effectValue));
     }
@@ -56,6 +81,7 @@ public class PlayerPassiveController : MonoBehaviour
             // Debug.Log($"<color=cyan>[PASSIVE REGEN] +{healPerSecond} HP ({timer}/{duration}s)</color>");
         }
 
+        DestroyHealVfx();
         currentRegenCouroutine = null;
     }
 
@@ -66,5 +92,7 @@ public class PlayerPassiveController : MonoBehaviour
             StopCoroutine(currentRegenCouroutine);
             currentRegenCouroutine = null;
         }
+
+        DestroyHealVfx();
     }
 }

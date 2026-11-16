@@ -58,6 +58,8 @@ public class SkillDataSO : ScriptableObject
     public GameObject skillPrefab;
     public GameObject ghostPreviewPrefab;
     public GameObject damageTextPrefab;
+    [Tooltip("Di-spawn sekali pakai di attack point untuk skill melee (bukan projectile).")]
+    public GameObject meleeVfxPrefab;
 
     public bool IsLocked => locked;
 
@@ -100,6 +102,13 @@ public class SkillDataSO : ScriptableObject
                 projectile.Setup(user, finalDamage, maxRange, isAOE, isLucky, damageTextPrefab);
             }
             return true;
+        }
+
+        // Melee VFX: sekali pakai, mengikuti rotasi arah serang, lalu hancur sendiri.
+        if (meleeVfxPrefab != null)
+        {
+            GameObject fx = Instantiate(meleeVfxPrefab, spawnPos, rotation);
+            Destroy(fx, 2f);
         }
 
         Vector3 boxCenter = spawnPos + (Vector3)(aimDirection.normalized * (maxRange * 0.5f));

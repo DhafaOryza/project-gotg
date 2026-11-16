@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: SKL_016
   displayName: 'Hay Bale Drop  '
-  description: 
+  description: Drops a bale of hay from above, dealing area damage.
   baseValue: 150
   currentLevel: 1
   maxLevel: 5
@@ -24,6 +24,7 @@ MonoBehaviour:
   skillType: 0
   targetMode: 1
   isProjectile: 1
+  executionType: 0
   icon: {fileID: 0}
   locked: 0
   targetType: 0

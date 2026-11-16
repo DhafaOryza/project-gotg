@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
   skillId: SKL_001
   displayName: Haymaker
-  description: 
+  description: Swing a large pitchfork forward to deal area-of-effect damage.
   baseValue: 80
   currentLevel: 1
   maxLevel: 5
@@ -35,3 +35,4 @@ MonoBehaviour:
   skillPrefab: {fileID: 4207328673673525399, guid: 86b3eba05849fa44baf23404adca7508, type: 3}
   ghostPreviewPrefab: {fileID: 1145289087756962324, guid: 0adc392940707c14ebfabbbd2b0f2591, type: 3}
   damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}
+  meleeVfxPrefab: {fileID: 4543884592605721123, guid: e417af6966f94ee49aa3d9a2e1ec9e11, type: 3}
