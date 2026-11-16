@@ -131,9 +131,14 @@ public class PlayerUI : MonoBehaviour
             SetSelectedObject(LevelNodeUI.FirstSelectedButton);
         }
 
-        if (LevelNodeUI != null)
+        if (BuilderUI != null)
         {
-            SetSelectedObject(LevelNodeUI.FirstSelectedButton);
+            SetSelectedObject(BuilderUI.FirstSelectedButton);
+        }
+
+        if (skillNodeUI != null)
+        {
+            SetSelectedObject(skillNodeUI.FirstSelectedButton);
         }
     }
 

@@ -28,6 +28,11 @@ public class SkillTreeUI : MonoBehaviour
     [SerializeField] private Button _exitButton;
     [SerializeField] private Button _upgradeButton;
 
+    [Header("Navigation")]
+    [SerializeField] private Selectable firstSelectedButton;
+
+    public Selectable FirstSelectedButton => firstSelectedButton;
+
     private List<GameObject> _spawnedUIElements = new List<GameObject>();
     private SkillDataSO _selectedSkillData;
     private SkillNodeSlot _selectedSlot;
@@ -57,6 +62,8 @@ public class SkillTreeUI : MonoBehaviour
         {
             SetupProfile(_npcData.NpcPortrait);
         }
+
+        PlayerUI.Instance?.SetSelectedObject(firstSelectedButton);
     }
 
     /// <summary>
