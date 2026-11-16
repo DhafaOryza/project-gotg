@@ -59,13 +59,13 @@ public class ParentSelectableNavigation : MonoBehaviour
         {
             AssignNavigation(selectables);
 
-            // Otomatis memilih item card pertama saat panel/container aktif
-            if (UnityEngine.EventSystems.EventSystem.current != null)
-            {
-                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
-                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(selectables[0].gameObject);
-            }
-            // ---------------------------
+            // // Otomatis memilih item card pertama saat panel/container aktif
+            // if (UnityEngine.EventSystems.EventSystem.current != null)
+            // {
+            //     UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+            //     UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(selectables[0].gameObject);
+            // }
+            // // ---------------------------
         }
 
         refreshRoutine = null;

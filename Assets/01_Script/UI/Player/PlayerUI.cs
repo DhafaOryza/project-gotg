@@ -81,6 +81,7 @@ public class PlayerUI : MonoBehaviour
         if (preparationUI == null) preparationUI = FindFirstObjectByType<PreparationUI>();
         if (resultUI == null) resultUI = FindFirstObjectByType<ResultUI>();
         if (dayTransition == null) dayTransition = FindFirstObjectByType<DayTransitionUI>();
+        if (shopUI == null) shopUI = FindFirstObjectByType<ShopUI>();
 
         if (_playerHUD != null) _playerHUD.Initialize();
 
@@ -120,7 +121,14 @@ public class PlayerUI : MonoBehaviour
     public void SelectPreparationFirstSelected()
     {
         if (preparationUI != null)
+        {
             SetSelectedObject(preparationUI.FirstSelectedButton);
+        }
+
+        if (shopUI != null)
+        {
+            SetSelectedObject(shopUI.FirstSelectedButton);    
+        }
     }
 
     public void SetSelectedObject(Selectable selectedObject)

@@ -22,6 +22,11 @@ public class ShopUI : MonoBehaviour
     [Header("Detail")]
     [SerializeField] private ItemDetailUI _detailUI;
 
+    [Header("Navigation")]
+    [SerializeField] private Selectable firstSelectedButton;
+
+    public Selectable FirstSelectedButton => firstSelectedButton;
+
     private CurrencyManager _currencyManager;
     private ItemManager _itemManager;
     private readonly List<ItemCardUI> _cards = new List<ItemCardUI>();
@@ -77,6 +82,8 @@ public class ShopUI : MonoBehaviour
 
         RefreshCurrency();
         BuildCards();
+
+        PlayerUI.Instance?.SetSelectedObject(firstSelectedButton);
     }
 
     private void HandleCurrencyChanged()
@@ -92,10 +99,8 @@ public class ShopUI : MonoBehaviour
 
         gameObject.SetActive(false);
 
-        // Shop tutup: kembalikan ke gameplay input, matikan UI input.
-        PlayerUI.Instance?.SetInputMode(false);
-
-        GameManager.Instance?.playerController?.SetGameplayInputEnabled(true);
+        EventSystem.current?.SetSelectedGameObject(null);
+        PlayerUI.Instance?.CloseAllRolePanels();
     }
 
     #region Cards
@@ -141,9 +146,7 @@ public class ShopUI : MonoBehaviour
         {            
             HandleCardSelected(_cards[0]);
 
-            // // Otomatis memilih kartu item pertama di EventSystem saat toko baru dibuka
-            // if (EventSystem.current != null)
-            //     EventSystem.current.SetSelectedGameObject(_cards[0].gameObject);
+            PlayerUI.Instance?.SetSelectedObject(_cards[0].GetComponent<Selectable>());
         }
         else
         {
