@@ -51,6 +51,7 @@ public class PlayerUI : MonoBehaviour
     public PreparationUI Preparation => preparationUI;
     public ResultUI ResultUI => resultUI;
     public DayTransitionUI DayTransition => dayTransition;
+    public ConversationUI ConversationUI => conversationUI;
 
     private NPCMovement currentNpcMovement;
 
@@ -80,6 +81,7 @@ public class PlayerUI : MonoBehaviour
     {
         if (_playerHUD == null) _playerHUD = FindFirstObjectByType<HUD>();
         if (preparationUI == null) preparationUI = FindFirstObjectByType<PreparationUI>();
+        if (conversationUI == null) conversationUI = FindAnyObjectByType<ConversationUI>();
         if (resultUI == null) resultUI = FindFirstObjectByType<ResultUI>();
         if (dayTransition == null) dayTransition = FindFirstObjectByType<DayTransitionUI>();
         if (shopUI == null) shopUI = FindFirstObjectByType<ShopUI>();

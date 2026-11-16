@@ -151,7 +151,13 @@ public class NPCBaseEntity : BaseEntity, IInteractable
     {
         if (_npcData == null) return;
 
-        var conversationUI = Object.FindAnyObjectByType<ConversationUI>();
+        var conversationUI = PlayerUI.Instance != null ? PlayerUI.Instance.ConversationUI : null;
+
+        if (conversationUI == null)
+        {
+            conversationUI = Object.FindAnyObjectByType<ConversationUI>(FindObjectsInactive.Include);
+        }
+
         if (conversationUI == null)
         {
             Debug.LogWarning($"[{name}] ConversationUI tidak ditemukan.", this);
