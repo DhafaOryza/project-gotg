@@ -91,8 +91,8 @@ public class SkillTreeUI : MonoBehaviour
 
         if (_exitButton != null)
         {
-            _exitButton.onClick.AddListener(CloseUI);
             _exitButton.onClick.RemoveAllListeners();
+            _exitButton.onClick.AddListener(CloseUI);
         }
     }
 

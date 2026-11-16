@@ -87,7 +87,14 @@ public class LevelAndStatsUI : MonoBehaviour
 
     private void CloseUI()
     {
-        gameObject.SetActive(false);
+        if (PlayerUI.Instance != null)
+        {
+            PlayerUI.Instance.CloseAllRolePanels();
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void ShowLevelUpPanel()
