@@ -145,8 +145,6 @@ public class ShopUI : MonoBehaviour
         if (_cards.Count > 0)
         {            
             HandleCardSelected(_cards[0]);
-
-            PlayerUI.Instance?.SetSelectedObject(_cards[0].GetComponent<Selectable>());
         }
         else
         {

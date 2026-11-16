@@ -124,22 +124,23 @@ public class PlayerUI : MonoBehaviour
 
     public void SelectButtonFirstSelected()
     {
-        if (preparationUI != null)
+        if (shopUI != null && shopUI.gameObject.activeInHierarchy)
+        {
+            SetSelectedObject(shopUI.FirstSelectedButton);
+        }
+        else if (preparationUI != null && preparationUI.gameObject.activeInHierarchy)
         {
             SetSelectedObject(preparationUI.FirstSelectedButton);
         }
-
-        if (LevelNodeUI != null)
+        else if (LevelNodeUI != null && LevelNodeUI.gameObject.activeInHierarchy)
         {
             SetSelectedObject(LevelNodeUI.FirstSelectedButton);
         }
-
-        if (BuilderUI != null)
+        else if (BuilderUI != null && BuilderUI.gameObject.activeInHierarchy)
         {
             SetSelectedObject(BuilderUI.FirstSelectedButton);
         }
-
-        if (skillNodeUI != null)
+        else if (skillNodeUI != null && skillNodeUI.gameObject.activeInHierarchy)
         {
             SetSelectedObject(skillNodeUI.FirstSelectedButton);
         }
@@ -184,6 +185,7 @@ public class PlayerUI : MonoBehaviour
         {
             case NpcRole.Merchant:
                 OpenNpcPanel(shopUI, npcMovement);
+                SelectButtonFirstSelected();
                 break;
 
             case NpcRole.Guard:
