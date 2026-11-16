@@ -130,6 +130,11 @@ public class PlayerUI : MonoBehaviour
         {
             SetSelectedObject(LevelNodeUI.FirstSelectedButton);
         }
+
+        if (LevelNodeUI != null)
+        {
+            SetSelectedObject(LevelNodeUI.FirstSelectedButton);
+        }
     }
 
     public void SetSelectedObject(Selectable selectedObject)
@@ -183,6 +188,7 @@ public class PlayerUI : MonoBehaviour
                 if (BuilderUI != null)
                     BuilderUI.Initialize();
                 OpenNpcPanel(BuilderUI, npcMovement);
+                SelectButtonFirstSelected();
                 break;
 
             case NpcRole.Priest:

@@ -31,6 +31,11 @@ public class BuilderPanelUI : MonoBehaviour
     [Header("Granary")]
     [SerializeField] private GranaryBase _granary;
 
+    [Header("Navigation")]
+    [SerializeField] private Selectable firstSelectedButton;
+
+    public Selectable FirstSelectedButton => firstSelectedButton;
+
     private CurrencyManager _currencyManager;
     // private readonly List<BuilderStatsNodeUI> _nodes = new List<BuilderStatsNodeUI>();
     // private BuilderStatsNodeUI _selectedNode;
@@ -77,6 +82,8 @@ public class BuilderPanelUI : MonoBehaviour
 
         // Repair is set up here, not in ShowLevelUpPanel, so it works whichever tab is open.
         if (_repairDetail != null) _repairDetail.Initialize(_granary);
+
+        PlayerUI.Instance?.SetSelectedObject(firstSelectedButton);
 
         ShowLevelUpPanel();
     }
