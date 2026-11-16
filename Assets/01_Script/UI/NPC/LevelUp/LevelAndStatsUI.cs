@@ -15,12 +15,12 @@ public class LevelAndStatsUI : MonoBehaviour
     [SerializeField] private Transform _statsNodeContainer;
     [SerializeField] private StatsNodeUI _statsNodePrefab;
     [SerializeField] private StatsDetailUI _statsDetailUI;
-
-    [Header("Navigation")]
-    [SerializeField] private Selectable firstSelectedButton;
     
     [Header("Currency References")]
     [SerializeField] private TextMeshProUGUI _txtCurrency;
+
+    [Header("Navigation")]
+    [SerializeField] private Selectable firstSelectedButton;
 
     public Selectable FirstSelectedButton => firstSelectedButton;
 
@@ -135,7 +135,17 @@ public class LevelAndStatsUI : MonoBehaviour
         }
 
         if (nodes.Count > 0)
+        {
             HandleNodeSelected(nodes[0]);
+
+            if (_statsTabButton != null)
+            {
+                var nav = _statsTabButton.navigation;
+                // Ambil selectable pertama dari node (kartu node itu sendiri)
+                nav.selectOnDown = nodes[0].GetComponentInChildren<Selectable>();
+                _statsTabButton.navigation = nav;
+            }
+        }
     }
 
     private void HandleNodeSelected(StatsNodeUI selected)

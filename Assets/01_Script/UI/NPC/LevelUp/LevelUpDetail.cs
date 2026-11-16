@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class LevelUpDetail : MonoBehaviour
@@ -19,6 +20,9 @@ public class LevelUpDetail : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI _nextHealthText;
 	[SerializeField] private SliderBar _nextHealthBar;
 	[SerializeField] private TextMeshProUGUI _nextCooldownText;
+
+	[Header("Navigation")]
+	[SerializeField] private Selectable _fallbackSelectable;
 
 	private PlayerBaseEntity player;
 	private CurrencyManager currencyManager;
@@ -123,6 +127,20 @@ public class LevelUpDetail : MonoBehaviour
 				: "MAX";
 
 		if (_levelUpButton != null)
-			_levelUpButton.interactable = canLevelUp && currencyManager.Money >= player.GetCharacterLevelUpPrice();
+		{
+			bool canInteract = canLevelUp && currencyManager.Money >= player.GetCharacterLevelUpPrice();
+
+			// Cek apakah tombol ini sedang aktif dipilih sebelum interactable dimatikan
+			bool wasSelected = EventSystem.current != null 
+				&& EventSystem.current.currentSelectedGameObject == _levelUpButton.gameObject;
+
+			_levelUpButton.interactable = canInteract;
+
+			// Alihkan fokus jika tombol menjadi mati saat sedang ditekan
+			if (!canInteract && wasSelected)
+			{
+				PlayerUI.Instance?.RedirectFocus(_levelUpButton, _fallbackSelectable);
+			}
+		}
 	}
 }
