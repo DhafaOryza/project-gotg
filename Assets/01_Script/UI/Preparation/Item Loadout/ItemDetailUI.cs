@@ -18,6 +18,7 @@ public class ItemDetailUI : MonoBehaviour
     [SerializeField] private Color _unaffordableColor = new Color(1f, 0.4f, 0.4f);
 
     public event Action OnBuyClicked;
+    public Button BuyButton => _buyButton;
 
     private void Awake()
     {

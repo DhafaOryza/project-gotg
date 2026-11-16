@@ -1,4 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ItemLoadoutPanel : MonoBehaviour
 {
@@ -11,6 +14,7 @@ public class ItemLoadoutPanel : MonoBehaviour
     [SerializeField] private Transform itemSlotContainer;
     [SerializeField] private ItemSlotUI itemSlotPrefab;
 
+    private readonly List<ItemCardUI> _spawnedCards = new List<ItemCardUI>();
 
     private void OnEnable()
     {
@@ -20,12 +24,17 @@ public class ItemLoadoutPanel : MonoBehaviour
 
     private void OnDisable()
     {
-        var itemManager = GameManager.Instance?.itemManager;
-        if (itemManager != null)
-            itemManager.OnChosenItemsChanged -= GenerateItemSlot;
+        UnsubscribeFromItemManager();
+        ClearCards();
     }
 
     public void Initialize()
+    {
+        GenerateItemCard();
+        GenerateItemSlot();
+    }
+
+    private void RefreshAll()
     {
         GenerateItemCard();
         GenerateItemSlot();
@@ -37,17 +46,101 @@ public class ItemLoadoutPanel : MonoBehaviour
     {
         if (itemContainer == null || itemCardPrefab == null) return;
 
-        ClearContainer(itemContainer);
+        ClearCards();
 
-        var items = GameSessionData.GetOrCreate()?.items;
-        if (items == null) return;
+        var itemManager = GameManager.Instance?.itemManager;
+        if (itemManager == null) return;
 
-        foreach (var item in items)
+        foreach (var owned in itemManager.Inventory)
         {
-            if (item == null || item.stack <= 0) continue;
+            if (owned == null || owned.data == null || !owned.HasStock) 
+                continue;
+
+            // Sembunyikan kartu jika sudah terpasang di loadout
+            if (itemManager.IsEquipped(owned.data)) 
+                continue;
 
             ItemCardUI card = Instantiate(itemCardPrefab, itemContainer);
-            card.Initialize(item);
+            card.Initialize(owned.data);
+            card.SetDraggable(true);
+
+            card.OnSelected += HandleCardClicked;
+            _spawnedCards.Add(card);
+        }
+    }
+
+    private void HandleCardClicked(ItemCardUI card)
+    {
+        if (card == null || card.Data == null) return;
+
+        var itemManager = GameManager.Instance?.itemManager;
+        if (itemManager == null) return;
+
+        // Cari slot kosong pertama
+        int emptySlotIndex = -1;
+        for (int i = 0; i < ItemManager.MaxSlots; i++)
+        {
+            if (itemManager.GetItem(i) == null)
+            {
+                emptySlotIndex = i;
+                break;
+            }
+        }
+
+        if (emptySlotIndex != -1)
+        {
+            // 1. Simpan index kartu sebelum kartu dipindahkan dan dihancurkan
+            int submittedIndex = card.transform.GetSiblingIndex();
+
+            // 2. Pasang item ke slot
+            itemManager.EquipItems(emptySlotIndex, card.Data);
+
+            // 3. Pindahkan fokus kursor navigasi ke kartu berikutnya (sama seperti SkillCard)
+            FocusNextItemCard(submittedIndex);
+        }
+        else
+        {
+            Debug.LogWarning("[ItemLoadoutPanel] Semua slot loadout sudah penuh!");
+        }
+    }
+
+    /// <summary>
+    /// Mengalihkan fokus controller ke kartu berikutnya agar navigasi tidak hilang
+    /// </summary>
+    public void FocusNextItemCard(int targetIndex)
+    {
+        StartCoroutine(FocusNextCardRoutine(targetIndex));
+    }
+
+    private IEnumerator FocusNextCardRoutine(int targetIndex)
+    {
+        // Tunggu 1 frame agar kartu lama selesai dihancurkan dan kartu baru selesai di-spawn
+        yield return null;
+
+        // Jika masih ada sisa kartu di dalam kontainer:
+        if (_spawnedCards.Count > 0)
+        {
+            // Pilih kartu di index yang sama (yang otomatis bergeser menggantikan kartu lama)
+            // Jika kartu terakhir yang ditekan, clamp ke kartu paling akhir
+            int nextIndex = Mathf.Clamp(targetIndex, 0, _spawnedCards.Count - 1);
+            Selectable nextCard = _spawnedCards[nextIndex].GetComponent<Selectable>();
+
+            if (nextCard != null && nextCard.isActiveAndEnabled && nextCard.IsInteractable())
+            {
+                PlayerUI.Instance?.SetSelectedObject(nextCard);
+                yield break;
+            }
+        }
+
+        // Jika semua kartu sudah habis (semua item sudah dipasang ke slot):
+        // Pindahkan fokus ke slot item pertama
+        if (itemSlotContainer != null && itemSlotContainer.childCount > 0)
+        {
+            Selectable firstSlot = itemSlotContainer.GetChild(0).GetComponentInChildren<Selectable>();
+            if (firstSlot != null && firstSlot.isActiveAndEnabled && firstSlot.IsInteractable())
+            {
+                PlayerUI.Instance?.SetSelectedObject(firstSlot);
+            }
         }
     }
 
@@ -55,10 +148,10 @@ public class ItemLoadoutPanel : MonoBehaviour
     {
         if (itemSlotContainer == null || itemSlotPrefab == null) return;
 
+        ClearContainer(itemSlotContainer);
+
         var itemManager = GameManager.Instance?.itemManager;
         if (itemManager == null) return;
-
-        ClearContainer(itemSlotContainer);
 
         for (int i = 0; i < ItemManager.MaxSlots; i++)
         {
@@ -76,12 +169,35 @@ public class ItemLoadoutPanel : MonoBehaviour
         var itemManager = GameManager.Instance?.itemManager;
         if (itemManager == null) return;
 
-        itemManager.OnChosenItemsChanged -= GenerateItemSlot;
-        itemManager.OnChosenItemsChanged += GenerateItemSlot;
+        itemManager.OnChosenItemsChanged -= RefreshAll;
+        itemManager.OnChosenItemsChanged += RefreshAll;
+    }
+
+    private void UnsubscribeFromItemManager()
+    {
+        var itemManager = GameManager.Instance?.itemManager;
+        if (itemManager == null) return;
+
+        itemManager.OnChosenItemsChanged -= RefreshAll;
+    }
+
+    private void ClearCards()
+    {
+        foreach (var card in _spawnedCards)
+        {
+            if (card != null)
+                card.OnSelected -= HandleCardClicked;
+        }
+        _spawnedCards.Clear();
+
+        if (itemContainer != null)
+            ClearContainer(itemContainer);
     }
 
     private static void ClearContainer(Transform container)
     {
+        if (container == null) return;
+
         for (int i = container.childCount - 1; i >= 0; i--)
             Destroy(container.GetChild(i).gameObject);
     }

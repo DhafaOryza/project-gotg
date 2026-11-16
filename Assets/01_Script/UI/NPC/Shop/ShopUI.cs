@@ -24,6 +24,7 @@ public class ShopUI : MonoBehaviour
 
     [Header("Navigation")]
     [SerializeField] private Selectable firstSelectedButton;
+    [SerializeField] private Selectable _fallbackSelectable; 
 
     public Selectable FirstSelectedButton => firstSelectedButton;
 
@@ -64,7 +65,6 @@ public class ShopUI : MonoBehaviour
 
     public void Initialize()
     {
-        // Managers are fetched here, before subscribing, because they can still be null in Awake.
         UnsubscribeManagers();
 
         GameManager gameManager = GameManager.Instance;
@@ -83,7 +83,19 @@ public class ShopUI : MonoBehaviour
         RefreshCurrency();
         BuildCards();
 
-        PlayerUI.Instance?.SetSelectedObject(firstSelectedButton);
+        Selectable targetInitial = firstSelectedButton;
+
+        if (targetInitial == null && _cards.Count > 0)
+        {
+            targetInitial = _cards[0].GetComponent<Selectable>();
+        }
+
+        if (targetInitial == null)
+        {
+            targetInitial = _fallbackSelectable != null ? _fallbackSelectable : _exitButton;
+        }
+
+        PlayerUI.Instance?.SetSelectedObject(targetInitial);
     }
 
     private void HandleCurrencyChanged()
@@ -161,7 +173,6 @@ public class ShopUI : MonoBehaviour
             card.OnSelected -= HandleCardSelected;
         }
 
-        // Clear every existing entry in the container, including objects not tracked by this instance.
         if (_contentContainer != null)
         {
             for (int i = _contentContainer.childCount - 1; i >= 0; i--)
@@ -234,15 +245,24 @@ public class ShopUI : MonoBehaviour
 
         RefreshDetail();
 
-        // Cek apakah item masih bisa dibeli lagi setelah transaksi ini
-        bool canStillAfford = _currencyManager != null && _currencyManager.Money >= item.price;
-        bool isStillAvailable = _itemManager != null && _itemManager.CanAddItem(item);
+        bool isBuyButtonDisabled = _detailUI != null && 
+                                   _detailUI.BuyButton != null && 
+                                   !_detailUI.BuyButton.interactable;
 
-        // Jika uang habis / slot penuh (tombol Buy menjadi mati), 
-        // segera kembalikan fokus kursor ke ItemCard agar navigasi TIDAK MACET!
-        if ((!canStillAfford || !isStillAvailable) && EventSystem.current != null)
+        if (isBuyButtonDisabled)
         {
-            EventSystem.current.SetSelectedGameObject(_selectedCard.gameObject);
+            if (PlayerUI.Instance != null && _detailUI.BuyButton != null)
+            {
+                Selectable fallbackTarget = (_selectedCard != null) 
+                    ? _selectedCard.GetComponent<Selectable>() 
+                    : _fallbackSelectable;
+
+                PlayerUI.Instance.RedirectFocus(_detailUI.BuyButton, fallbackTarget);
+            }
+            else
+            {
+                ShiftFocusToFallback();
+            }
         }
     }
 
@@ -260,6 +280,30 @@ public class ShopUI : MonoBehaviour
         if (_txtCurrency == null || _currencyManager == null) return;
 
         _txtCurrency.text = $"{_currencyManager.Money}";
+    }
+
+    /// <summary>
+    /// Memindahkan fokus kursor secara aman ke kartu yang sedang aktif, fallback, atau tombol Exit.
+    /// </summary>
+    public void ShiftFocusToFallback()
+    {
+
+        Selectable target = _selectedCard != null ? _selectedCard.GetComponent<Selectable>() : null;
+
+        if (target == null || !target.isActiveAndEnabled || !target.IsInteractable())
+        {
+            target = _fallbackSelectable;
+        }
+
+        if (target == null || !target.isActiveAndEnabled || !target.IsInteractable())
+        {
+            target = _exitButton;
+        }
+
+        if (target != null)
+        {
+            PlayerUI.Instance?.SetSelectedObject(target);
+        }
     }
 
     #endregion
