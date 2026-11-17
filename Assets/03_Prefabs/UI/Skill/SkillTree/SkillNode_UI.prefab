@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 6542256546320947897}
   - component: {fileID: 2804575257018642975}
   m_Layer: 0
-  m_Name: SkillNode UI
+  m_Name: SkillNode_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -261,10 +261,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b565f668847730ae995a431e33a17ca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSlot
-  _iconImage: {fileID: 0}
-  _nameText: {fileID: 0}
-  _descriptionText: {fileID: 0}
-  _costText: {fileID: 0}
+  _iconImage: {fileID: 6982379820022078707}
+  _nameText: {fileID: 4461774163049410976}
+  _descriptionText: {fileID: 1216738565693646776}
+  _costText: {fileID: 6699770652093429732}
   _slotButton: {fileID: 1705725039832981241}
   _lockOverlayObject: {fileID: 9009135077706529182}
 --- !u!1 &2278665183028054838
