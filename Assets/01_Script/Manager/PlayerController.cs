@@ -69,6 +69,7 @@ public class PlayerController : MonoBehaviour
     public bool IsAiming => isAiming;
     public Vector2 CurrentAimDirection => currentAimDirection;
     public InputAction VirtualCursorAction => virtualCursorAction;
+    public bool IsUsingController => activeBindingGroup == controllerBindingGroup;
 
     private void OnEnable()
     {

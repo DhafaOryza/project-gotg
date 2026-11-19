@@ -48,6 +48,8 @@ public class PlayerUI : MonoBehaviour
     private bool isUIInputActive;
 
     public HUD HUD => _playerHUD;
+    public bool IsUIInputActive => isUIInputActive;
+    public InputAction UINavigateAction => uiActionMap?.FindAction("Navigate", false);
     public PreparationUI Preparation => preparationUI;
     public ResultUI ResultUI => resultUI;
     public DayTransitionUI DayTransition => dayTransition;
@@ -130,7 +132,14 @@ public class PlayerUI : MonoBehaviour
         SetInputMode(true);
         SetSelectedObject(resultUI.ContinueButton);
     }
-    public void DeactivateResultUI() => resultUI.gameObject.SetActive(false);
+    public void DeactivateResultUI()
+    {
+        if (resultUI != null)
+            resultUI.gameObject.SetActive(false);
+
+        SetInputMode(false);
+        EventSystem.current?.SetSelectedGameObject(null);
+    }
 
     public void SelectButtonFirstSelected()
     {
@@ -533,6 +542,7 @@ public class PlayerUI : MonoBehaviour
     private void DeactivateAllPanel()
     {
         DeactivatePreparationUI();
+        CloseAllRolePanels();
     }
 
     #endregion

@@ -10,8 +10,6 @@ public class StatsNodeUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _statsDesc;
     [SerializeField] private TextMeshProUGUI _statsLevel;
     [SerializeField] private Button _selectButton;
-    [SerializeField] private Button _upgradeButton;
-    [SerializeField] private TextMeshProUGUI _upgradePrice;
 
     [Header("Price Display")]
     [Tooltip("Teks harga saat stat sudah level maksimal.")]
@@ -36,18 +34,12 @@ public class StatsNodeUI : MonoBehaviour
 
         if (_selectButton != null)
             _selectButton.onClick.AddListener(HandleSelectButton);
-
-        if (_upgradeButton != null)
-            _upgradeButton.onClick.AddListener(HandleUpgradeButton);
     }
 
     void OnDestroy()
     {
         if (_selectButton != null)
             _selectButton.onClick.RemoveListener(HandleSelectButton);
-
-        if (_upgradeButton != null)
-            _upgradeButton.onClick.RemoveListener(HandleUpgradeButton);
 
         UnsubscribeCurrency();
     }
@@ -74,51 +66,9 @@ public class StatsNodeUI : MonoBehaviour
         return currencyManager != null && price >= 0 && currencyManager.Money >= price;
     }
 
-    /// <summary>True kalau stat belum level maksimal DAN uang cukup untuk upgrade berikutnya.</summary>
-    public bool CanUpgrade()
-    {
-        if (stats == null || stats.IsMaxLevel) return false;
-
-        return CanAfford(stats.GetUpgradePrice());
-    }
-
     #endregion
 
     #region Upgrade
-
-    private void HandleUpgradeButton()
-    {
-        OnSelected?.Invoke(this);
-
-        // Validasi ulang saat diklik: uang bisa berubah sejak tampilan terakhir disegarkan.
-        if (!CanUpgrade())
-        {
-            Refresh();
-            return;
-        }
-
-        var player = GetPlayer();
-        if (player == null) return;
-
-        int price = stats.GetUpgradePrice();
-
-        if (!currencyManager.SpendMoney(price))
-        {
-            Refresh();
-            return;
-        }
-
-        // Level naik + max HP dihitung ulang (Vitality). Kalau gagal (mis. sudah maksimal), uang dikembalikan.
-        if (!player.LevelUpAdditionalStat(stats))
-        {
-            currencyManager.AddMoney(price);
-            Refresh();
-            return;
-        }
-
-        Refresh();
-        OnUpgraded?.Invoke(this);
-    }
 
     private void HandleSelectButton()
     {
@@ -138,8 +88,6 @@ public class StatsNodeUI : MonoBehaviour
             if (_statsType != null) _statsType.text = string.Empty;
             if (_statsDesc != null) _statsDesc.text = string.Empty;
             if (_statsLevel != null) _statsLevel.text = string.Empty;
-            if (_upgradePrice != null) _upgradePrice.text = string.Empty;
-            if (_upgradeButton != null) _upgradeButton.interactable = false;
             return;
         }
 
@@ -147,19 +95,6 @@ public class StatsNodeUI : MonoBehaviour
         if (_statsType != null) _statsType.text = stats.Type.ToString();
         if (_statsDesc != null) _statsDesc.text = stats.Description;
         if (_statsLevel != null) _statsLevel.text = $"Lv. {stats.Level}/{stats.MaxLevel}";
-
-        bool canUpgrade = CanUpgrade();
-
-        if (_upgradePrice != null)
-        {
-            _upgradePrice.text = stats.IsMaxLevel ? _maxLevelText : stats.GetUpgradePrice().ToString();
-
-            // Harga berwarna merah kalau uang tidak cukup (khusus saat belum level maksimal).
-            _upgradePrice.color = stats.IsMaxLevel || canUpgrade ? _affordableColor : _unaffordableColor;
-        }
-
-        if (_upgradeButton != null)
-            _upgradeButton.interactable = canUpgrade;
     }
 
     // Uang berubah (dari mana pun: hadiah, belanja, upgrade lain): tombol dan warna harga ikut diperbarui.
@@ -174,10 +109,5 @@ public class StatsNodeUI : MonoBehaviour
     {
         if (currencyManager != null)
             currencyManager.OnChange -= HandleCurrencyChanged;
-    }
-
-    private PlayerBaseEntity GetPlayer()
-    {
-        return GameManager.Instance?.levelSpawnerManager?.GetCurrentPlayer();
     }
 }

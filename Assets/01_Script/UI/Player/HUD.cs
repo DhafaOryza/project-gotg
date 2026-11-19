@@ -60,7 +60,10 @@ public class HUD : MonoBehaviour
     public void DeactivateSelf() => gameObject.SetActive(false);
 
     public void ActivatePlayerHealthBar() => playerHealthBar.gameObject.SetActive(true);
-    public void DeactivatePlayerHealthBar() => granaryHealthBar.gameObject.SetActive(false);
+    public void DeactivatePlayerHealthBar() => playerHealthBar.gameObject.SetActive(false);
+
+    public void ActivateGranaryHealthBar() => granaryHealthBar.gameObject.SetActive(true);
+    public void DeactivateGranaryHealthBar() => granaryHealthBar.gameObject.SetActive(false);
 
     public void ActivateSkillHUD()
     {
@@ -135,11 +138,13 @@ public class HUD : MonoBehaviour
 
     private void ClearSkillContainer()
     {
-        if (skillContainer.childCount == 0 || skillContainer.childCount <= 0) return;
-
-        foreach (Transform child in skillContainer)
+        // Hapus semua child dari belakang. Detach dulu supaya langsung hilang dari layout
+        // (Destroy baru dieksekusi di akhir frame), lalu destroy GameObject-nya.
+        for (int i = skillContainer.childCount - 1; i >= 0; i--)
         {
-            Destroy(child);
+            Transform child = skillContainer.GetChild(i);
+            child.SetParent(null);
+            Destroy(child.gameObject);
         }
     }
 

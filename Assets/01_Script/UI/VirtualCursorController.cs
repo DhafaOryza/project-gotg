@@ -1,5 +1,6 @@
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
@@ -11,20 +12,25 @@ public class VirtualCursorController : MonoBehaviour
     [SerializeField] private Canvas rootCanvas;
     [SerializeField] private float cursorSpeed = 1200f;
 
+    [Header("Selection Sync")]
+    [Tooltip("Kalau ada tombol yang ter-select (mis. lewat navigasi), cursor pindah ke tengah tombol itu.")]
+    [SerializeField] private bool moveCursorToSelected = true;
+    [Tooltip("Kalau cursor berada di atas tombol, tombol itu otomatis ter-select.")]
+    [SerializeField] private bool selectOnCursorHover = true;
+
     [Header("Input Action")]
-    [Tooltip("Action 'Navigate - Virtual Cursor' (Vector2 Pass Through)")]
+    [Tooltip("Action untuk menggerakkan cursor (mis. UI/Virtual Cursor = stick kanan). Kalau kosong, cursor memakai action Navigate dari UI action map.")]
     [SerializeField] private InputActionReference cursorMoveAction;
 
-    [Header("Gamepad Controls")]
-    [Tooltip("Tombol untuk menyalakan/mematikan kursor (Default: Select / Back)")]
-    [SerializeField] private GamepadButton toggleButton = GamepadButton.Select;
-
-    [Tooltip("Tombol untuk klik UI (Default: RightStickPress / R3)")]
-    [SerializeField] private GamepadButton clickButton = GamepadButton.RightStick;
-
-    private bool isActive = false;
+    private bool isActive;
     private Vector2 currentScreenPosition;
     private InputAction activeCursorAction;
+
+    // Selection yang terakhir kali sudah disinkronkan dengan cursor.
+    private GameObject lastSelectedObject;
+    private PointerEventData hoverPointerData;
+    private EventSystem hoverEventSystem;
+    private readonly List<RaycastResult> hoverRaycastResults = new List<RaycastResult>();
 
     private void Awake()
     {
@@ -35,81 +41,186 @@ public class VirtualCursorController : MonoBehaviour
         SetCursorActive(false);
     }
 
-    private void Start()
-    {
-        BindActiveAction();
-    }
-
     private void OnEnable()
     {
-        if (cursorMoveAction != null)
-            cursorMoveAction.action.Enable();
+        InputSystem.onDeviceChange += HandleDeviceChange;
     }
 
     private void OnDisable()
     {
-        if (cursorMoveAction != null)
-            cursorMoveAction.action.Disable();
-
-        ReleaseMouseClick();
+        InputSystem.onDeviceChange -= HandleDeviceChange;
+        SetCursorActive(false);
     }
 
     private void Update()
     {
-        if (activeCursorAction == null)
-            BindActiveAction();
-
-        if (Gamepad.current != null && CheckGamepadButtonPressed(toggleButton))
-            SetCursorActive(!isActive);
-
+        SyncCursorWithUIInputMode();
         if (!isActive) return;
 
-        if (activeCursorAction == null)
-            BindActiveAction();
+        BindActiveActionIfNeeded();
+
+        // Tombol ter-select (lewat navigasi, dsb.) -> cursor pindah ke tombol itu.
+        SyncCursorToSelection();
 
         Vector2 stickInput = Vector2.zero;
-        if (activeCursorAction  != null)
+        if (activeCursorAction != null && activeCursorAction.enabled)
             stickInput = activeCursorAction.ReadValue<Vector2>();
-        else    
+        else if (Gamepad.current != null)
             stickInput = Gamepad.current.rightStick.ReadValue();
 
         if (stickInput.sqrMagnitude > 0.01f)
         {
-            currentScreenPosition += stickInput * (cursorSpeed * Time.unscaledDeltaTime);
+            SetCursorScreenPosition(currentScreenPosition + stickInput * (cursorSpeed * Time.unscaledDeltaTime));
 
-            currentScreenPosition.x = Mathf.Clamp(currentScreenPosition.x, 0f, Screen.width);
-            currentScreenPosition.y = Mathf.Clamp(currentScreenPosition.y, 0f, Screen.height);
-
-            UpdateCursorVisualPosition();
-
-            if (Mouse.current != null)
-                InputState.Change(Mouse.current.position, currentScreenPosition);
+            // Cursor berada di atas tombol -> tombol itu otomatis ter-select.
+            SyncSelectionToCursor();
         }
 
-        HandleGamepadClick();
     }
 
-    private void HandleGamepadClick()
+    private void SyncCursorWithUIInputMode()
     {
-        if (Mouse.current == null) return;
+        var playerUI = PlayerUI.Instance;
+        var playerController = GameManager.Instance?.playerController;
 
-        if (CheckGamepadButtonPressed(clickButton))
+        bool shouldBeActive = playerUI != null
+            && playerUI.IsUIInputActive
+            && playerController != null
+            && playerController.IsUsingController
+            && Gamepad.current != null;
+
+        if (isActive != shouldBeActive)
+            SetCursorActive(shouldBeActive);
+
+        if (isActive)
+            BindActiveActionIfNeeded();
+    }
+
+    private void BindActiveActionIfNeeded()
+    {
+        // Prioritas: Cursor Move Action dari Inspector (mis. UI/Virtual Cursor = stick kanan).
+        // Navigate (D-pad/panah) tidak dipakai menggerakkan cursor kalau action ini terisi,
+        // supaya D-pad hanya menavigasi selection dan cursor yang mengikutinya.
+        if (cursorMoveAction != null && cursorMoveAction.action != null)
         {
-            using (StateEvent.From(Mouse.current, out var eventPtr))
-            {
-                Mouse.current.leftButton.WriteValueIntoEvent(1f, eventPtr);
-                InputSystem.QueueEvent(eventPtr);
-            }
+            if (activeCursorAction != cursorMoveAction.action)
+                activeCursorAction = cursorMoveAction.action;
+            return;
         }
 
-        if (CheckGamepadButtonReleased(clickButton))
+        // Fallback: kalau Cursor Move Action kosong, pakai Navigate dari UI action map.
+        var playerUI = PlayerUI.Instance;
+        InputAction uiNavigateAction = playerUI != null ? playerUI.UINavigateAction : null;
+
+        if (uiNavigateAction != null && activeCursorAction != uiNavigateAction)
+            activeCursorAction = uiNavigateAction;
+    }
+
+    private void HandleDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (device is Gamepad)
+            SyncCursorWithUIInputMode();
+    }
+
+    #region Selection Sync
+
+    /// <summary>
+    /// Selection -> cursor. Kalau selection berubah (mis. karena navigasi controller),
+    /// cursor dipindah ke tengah tombol yang baru ter-select.
+    /// </summary>
+    private void SyncCursorToSelection()
+    {
+        var eventSystem = EventSystem.current;
+        GameObject selected = eventSystem != null ? eventSystem.currentSelectedGameObject : null;
+
+        if (selected == lastSelectedObject) return;
+        lastSelectedObject = selected;
+
+        if (!moveCursorToSelected || selected == null) return;
+
+        if (TryGetScreenCenter(selected, out Vector2 screenPoint))
+            SetCursorScreenPosition(screenPoint);
+    }
+
+    /// <summary>
+    /// Cursor -> selection. Kalau cursor berada di atas tombol, tombol itu di-select.
+    /// </summary>
+    private void SyncSelectionToCursor()
+    {
+        if (!selectOnCursorHover) return;
+
+        var eventSystem = EventSystem.current;
+        if (eventSystem == null) return;
+
+        Selectable hovered = GetSelectableUnderCursor(eventSystem);
+        if (hovered == null) return;
+
+        GameObject target = hovered.gameObject;
+        if (eventSystem.currentSelectedGameObject == target) return;
+
+        // Tandai sudah tersinkron supaya SyncCursorToSelection tidak menarik cursor
+        // ke tengah tombol (cursor sudah berada di atasnya).
+        lastSelectedObject = target;
+        eventSystem.SetSelectedGameObject(target);
+    }
+
+    private Selectable GetSelectableUnderCursor(EventSystem eventSystem)
+    {
+        if (hoverPointerData == null || hoverEventSystem != eventSystem)
         {
-            using (StateEvent.From(Mouse.current, out var eventPtr))
-            {
-                Mouse.current.leftButton.WriteValueIntoEvent(0f, eventPtr);
-                InputSystem.QueueEvent(eventPtr);
-            }
+            hoverEventSystem = eventSystem;
+            hoverPointerData = new PointerEventData(eventSystem);
         }
+
+        hoverPointerData.position = currentScreenPosition;
+
+        hoverRaycastResults.Clear();
+        eventSystem.RaycastAll(hoverPointerData, hoverRaycastResults);
+        if (hoverRaycastResults.Count == 0) return null;
+
+        // Hasil pertama = elemen UI paling atas di bawah cursor (teks/ikon di dalam tombol ikut terhitung).
+        GameObject top = hoverRaycastResults[0].gameObject;
+        if (top == null) return null;
+
+        Selectable selectable = top.GetComponentInParent<Selectable>();
+        if (selectable == null || !selectable.isActiveAndEnabled || !selectable.IsInteractable())
+            return null;
+
+        return selectable;
+    }
+
+    private static bool TryGetScreenCenter(GameObject target, out Vector2 screenPoint)
+    {
+        screenPoint = default;
+
+        var rect = target.transform as RectTransform;
+        if (rect == null) return false;
+
+        Camera uiCamera = null;
+        Canvas canvas = target.GetComponentInParent<Canvas>();
+        if (canvas != null)
+        {
+            canvas = canvas.rootCanvas;
+            if (canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+                uiCamera = canvas.worldCamera;
+        }
+
+        Vector3 worldCenter = rect.TransformPoint(rect.rect.center);
+        screenPoint = RectTransformUtility.WorldToScreenPoint(uiCamera, worldCenter);
+        return true;
+    }
+
+    #endregion
+
+    private void SetCursorScreenPosition(Vector2 screenPosition)
+    {
+        currentScreenPosition = new Vector2(
+            Mathf.Clamp(screenPosition.x, 0f, Screen.width),
+            Mathf.Clamp(screenPosition.y, 0f, Screen.height));
+
+        UpdateCursorVisualPosition();
+        if (Mouse.current != null)
+            InputState.Change(Mouse.current.position, currentScreenPosition);
     }
 
     private void UpdateCursorVisualPosition()
@@ -126,22 +237,6 @@ public class VirtualCursorController : MonoBehaviour
         cursorTransform.localPosition = localPoint;
     }
 
-    private void BindActiveAction()
-    {
-        var PlayerController = GameManager.Instance?.playerController;
-        if (PlayerController != null && PlayerController.VirtualCursorAction != null)
-        {
-            activeCursorAction = PlayerController.VirtualCursorAction;
-            activeCursorAction.Enable();
-            Debug.Log("<color=green>[VirtualCursor] Berhasil terhubung ke Action 'Virtual Cursor' PlayerController!</color>");
-        }
-        else if (cursorMoveAction != null)
-        {
-            activeCursorAction = cursorMoveAction.action;
-            activeCursorAction.Enable();
-        }
-    }
-
     public void SetCursorActive(bool active)
     {
         isActive = active;
@@ -149,43 +244,26 @@ public class VirtualCursorController : MonoBehaviour
         if (cursorTransform != null)
             cursorTransform.gameObject.SetActive(active);
 
+        // Reset supaya selection yang sedang aktif langsung disinkronkan ke cursor di Update berikutnya.
+        lastSelectedObject = null;
+
         if (active)
         {
+            BindActiveActionIfNeeded();
+
             if (Mouse.current != null)
                 currentScreenPosition = Mouse.current.position.ReadValue();
             else
                 currentScreenPosition = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
 
             UpdateCursorVisualPosition();
+            if (Mouse.current != null)
+                InputState.Change(Mouse.current.position, currentScreenPosition);
         }
         else
         {
-            ReleaseMouseClick();
+            activeCursorAction = null;
         }
     }
 
-    private bool CheckGamepadButtonPressed(GamepadButton button)
-    {
-        if (Gamepad.current == null) return false;
-        var btn = Gamepad.current[button];
-        return btn != null && btn.wasPressedThisFrame;
-    }
-
-    private bool CheckGamepadButtonReleased(GamepadButton button)
-    {
-        if (Gamepad.current == null) return false;
-        var btn = Gamepad.current[button];
-        return btn != null && btn.wasReleasedThisFrame;
-    }
-
-    private void ReleaseMouseClick()
-    {
-        if (Mouse.current == null) return;
-
-        using (StateEvent.From(Mouse.current, out var eventPtr))
-        {
-            Mouse.current.leftButton.WriteValueIntoEvent(0f, eventPtr);
-            InputSystem.QueueEvent(eventPtr);
-        }
-    }
 }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,13 +8,11 @@ public class LevelAndStatsUI : MonoBehaviour
     [SerializeField] private Button _backButton;
     [SerializeField] private Button _levelUpTabButton;
     [SerializeField] private Button _statsTabButton;
-    [SerializeField] private GameObject _levelUpPanel;
-    [SerializeField] private GameObject _statsPanel;
-    [SerializeField] private LevelUpDetail _levelUpDetail;
-    [SerializeField] private Transform _statsNodeContainer;
-    [SerializeField] private StatsNodeUI _statsNodePrefab;
-    [SerializeField] private StatsDetailUI _statsDetailUI;
-    
+
+    [Header("Panels")]
+    [SerializeField] private LevelPanel _levelPanel;
+    [SerializeField] private StatsPanel _statsPanel;
+
     [Header("Currency References")]
     [SerializeField] private TextMeshProUGUI _txtCurrency;
 
@@ -24,173 +21,90 @@ public class LevelAndStatsUI : MonoBehaviour
 
     public Selectable FirstSelectedButton => firstSelectedButton;
 
-    private PlayerBaseEntity playerBaseEntity;
     private CurrencyManager currencyManager;
-    private readonly List<StatsNodeUI> nodes = new List<StatsNodeUI>();
-    private StatsNodeUI selectedNode;
 
-    void Awake()
+    public void ActivateSelf() => gameObject.SetActive(true);
+    public void DeactivateSelf()
+    {
+        if (PlayerUI.Instance != null)
+            PlayerUI.Instance.CloseAllRolePanels();
+        else
+            gameObject.SetActive(false);
+    }
+
+    public void ActivateLevelPanel() => _levelPanel?.ActivateSelf();
+    public void DeactivateLevelPanel() => _levelPanel?.DeactivateSelf();
+
+    public void ActivateStatsPanel() => _statsPanel?.ActivateSelf();
+    public void DeactivateStatsPanel() => _statsPanel?.DeactivateSelf();
+
+    private void OnEnable()
+    {
+        Initialize();
+    }
+
+    private void OnDisable()
+    {
+        Unsubscribe();
+        GameManager.Instance?.playerUI?.SetInputMode(false);
+    }
+
+    public void Initialize()
+    {
+        Unsubscribe();
+
+        currencyManager = GameManager.Instance?.currencyManager;
+        if (currencyManager != null)
+            currencyManager.OnChange += UpdateCurrencyText;
+
+        UpdateCurrencyText();
+        ActivateLevelPanel();
+        DeactivateStatsPanel();
+        SubscribeButtons();
+    }
+
+    private void SubscribeButtons()
     {
         if (_backButton != null)
-        {
-            _backButton.onClick.AddListener(CloseUI);
-        }
+            _backButton.onClick.AddListener(DeactivateSelf);
 
         if (_levelUpTabButton != null)
-            _levelUpTabButton.onClick.AddListener(ShowLevelUpPanel);
+            _levelUpTabButton.onClick.AddListener(ShowLevelPanel);
 
         if (_statsTabButton != null)
             _statsTabButton.onClick.AddListener(ShowStatsPanel);
     }
 
-    void OnDestroy()
+    private void Unsubscribe()
     {
+        if (currencyManager != null)
+            currencyManager.OnChange -= UpdateCurrencyText;
+
         if (_backButton != null)
-            _backButton.onClick.RemoveListener(CloseUI);
+            _backButton.onClick.RemoveListener(DeactivateSelf);
 
         if (_levelUpTabButton != null)
-            _levelUpTabButton.onClick.RemoveListener(ShowLevelUpPanel);
+            _levelUpTabButton.onClick.RemoveListener(ShowLevelPanel);
 
         if (_statsTabButton != null)
             _statsTabButton.onClick.RemoveListener(ShowStatsPanel);
     }
 
-    void OnEnable()
+    private void ShowLevelPanel()
     {
-        // currencyManager harus diambil SEBELUM berlangganan (sebelumnya masih null saat panel pertama kali dibuka).
-        currencyManager = GameManager.Instance?.currencyManager;
-        if (currencyManager != null)
-            currencyManager.OnChange += OnChangeCurrency;
-
-        Initialize();
-    }
-
-    void OnDisable()
-    {
-        if (currencyManager != null)
-            currencyManager.OnChange -= OnChangeCurrency;
-
-        ClearNodes();
-    }
-
-    public void Initialize()
-    {
-        // Player dicari saat panel dibuka (bukan di Awake): player bisa baru di-spawn setelah panel ini dibuat.
-        playerBaseEntity = GameManager.Instance?.levelSpawnerManager?.GetCurrentPlayer();
-
-        PlayerUI.Instance?.SetSelectedObject(firstSelectedButton);
-
-        InitializeStatsNode();
-        IntializeCurrency();
-        ShowLevelUpPanel();
-    }
-
-    private void CloseUI()
-    {
-        if (PlayerUI.Instance != null)
-        {
-            PlayerUI.Instance.CloseAllRolePanels();
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
-    }
-
-    private void ShowLevelUpPanel()
-    {
-        if (_levelUpPanel != null) _levelUpPanel.SetActive(true);
-        if (_statsPanel != null) _statsPanel.SetActive(false);
-        _levelUpDetail?.Initialize();
+        ActivateLevelPanel();
+        DeactivateStatsPanel();
     }
 
     private void ShowStatsPanel()
     {
-        if (_levelUpPanel != null) _levelUpPanel.SetActive(false);
-        if (_statsPanel != null) _statsPanel.SetActive(true);
+        ActivateStatsPanel();
+        DeactivateLevelPanel();
     }
 
-    public void IntializeCurrency()
+    private void UpdateCurrencyText()
     {
-        if (_txtCurrency == null || currencyManager == null) return;
-
-        _txtCurrency.text = $"{currencyManager.Money}";
-    }
-
-    private void OnChangeCurrency()
-    {
-        IntializeCurrency();
-    }
-
-    public void InitializeStatsNode()
-    {
-        // Bersihkan dulu, kalau tidak setiap panel dibuka node-nya bertambah ganda.
-        ClearNodes();
-
-        if (playerBaseEntity == null || _statsNodePrefab == null || _statsNodeContainer == null) return;
-
-        var stats = playerBaseEntity.AdditionalStats;
-        if (stats == null) return;
-
-        foreach (var stat in stats)
-        {
-            var statNode = Instantiate(_statsNodePrefab, _statsNodeContainer);
-            statNode.Initialize(stat);
-            statNode.OnSelected += HandleNodeSelected;
-            statNode.OnUpgraded += HandleNodeUpgraded;
-            nodes.Add(statNode);
-        }
-
-        if (nodes.Count > 0)
-        {
-            HandleNodeSelected(nodes[0]);
-
-            if (_statsTabButton != null)
-            {
-                var nav = _statsTabButton.navigation;
-                // Ambil selectable pertama dari node (kartu node itu sendiri)
-                nav.selectOnDown = nodes[0].GetComponentInChildren<Selectable>();
-                _statsTabButton.navigation = nav;
-            }
-        }
-    }
-
-    private void HandleNodeSelected(StatsNodeUI selected)
-    {
-        selectedNode = selected;
-        _statsDetailUI?.Show(selected != null ? selected.Stats : null);
-    }
-
-    // Setelah satu upgrade, node lain disegarkan (node sendiri sudah menyegarkan diri; uang juga memicu OnChange).
-    private void HandleNodeUpgraded(StatsNodeUI upgradedNode)
-    {
-        RefreshAllNodes();
-
-        if (selectedNode == upgradedNode)
-            _statsDetailUI?.Show(upgradedNode.Stats);
-    }
-
-    public void RefreshAllNodes()
-    {
-        foreach (var node in nodes)
-        {
-            if (node != null) node.Refresh();
-        }
-    }
-
-    private void ClearNodes()
-    {
-        foreach (var node in nodes)
-        {
-            if (node == null) continue;
-
-            node.OnSelected -= HandleNodeSelected;
-            node.OnUpgraded -= HandleNodeUpgraded;
-            Destroy(node.gameObject);
-        }
-
-        nodes.Clear();
-        selectedNode = null;
-        _statsDetailUI?.Clear();
+        if (_txtCurrency != null && currencyManager != null)
+            _txtCurrency.text = currencyManager.Money.ToString();
     }
 }
