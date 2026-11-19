@@ -68,7 +68,7 @@ public class ItemLoadoutPanel : MonoBehaviour
             _spawnedCards.Add(card);
         }
 
-        itemContainer.GetComponent<ContainerAnimator>()?.Refresh(false);
+        itemContainer.GetComponent<ContainerAnimator>()?.Refresh();
     }
 
     private void HandleCardClicked(ItemCardUI card)
