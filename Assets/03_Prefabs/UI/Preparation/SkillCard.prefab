@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 5005865100417974586}
   - component: {fileID: 4896227312971155252}
   - component: {fileID: 6233656311480788964}
+  - component: {fileID: 4954632118850416464}
   m_Layer: 0
   m_Name: SkillCard
   m_TagString: Untagged
@@ -341,6 +342,22 @@ MonoBehaviour:
   skillCooldown: {fileID: 885734669649311898}
   selectButton: {fileID: 5005865100417974586}
   dragSourceAlpha: 0.5
+--- !u!114 &4954632118850416464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2830667066100223872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58b286bdbd6439f4fa05205acb83fdc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonHoverScaler
+  normalScale: {x: 1, y: 1, z: 1}
+  hoveredScale: {x: 1.1, y: 1.1, z: 1}
+  pressedScale: {x: 0.92, y: 0.92, z: 1}
+  transitionSpeed: 16
 --- !u!1 &3797223323691529598
 GameObject:
   m_ObjectHideFlags: 0
