@@ -4,17 +4,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>
-/// Attach to the Content transform of a scroll view or any container.
-/// Animates all direct children when the container becomes active,
-/// and adds a press-shrink effect to any Selectable among them.
-/// </summary>
 public class ContainerAnimator : MonoBehaviour
 {
     public enum AnimationType
-    {
+    { 
         PopUp,
-        Slide,
+        Slide
     }
 
     [Header("Animation Type")]
@@ -40,29 +35,32 @@ public class ContainerAnimator : MonoBehaviour
 
     [Header("Press Shrink")]
     [SerializeField] private bool _enablePressShrink = true;
-    [SerializeField, Range(0.5f, 1f)] private float _pressScale = 0.9f;
+    [SerializeField, Range(0.5f, 1f)] private float _pressScale = 0.85f;
     [SerializeField, Min(0f)] private float _pressDuration = 0.08f;
 
-    public enum SlideDirection
-    {
-        Left,
-        Right,
-        Up,
-        Down,
+    public enum SlideDirection 
+    { 
+        Left, 
+        Right, 
+        Up, 
+        Down 
     }
 
     private readonly List<RectTransform> _children = new List<RectTransform>();
     private readonly List<PressShrinkHandler> _handlers = new List<PressShrinkHandler>();
     private Coroutine _animationCoroutine;
+    private bool _hasPlayed;
 
     private void OnEnable()
     {
-        // Wait one frame so newly instantiated children are ready.
+        _hasPlayed = false;
         StartCoroutine(PlayAfterFrame());
     }
 
     private void OnDisable()
     {
+        _hasPlayed = false;
+
         if (_animationCoroutine != null)
         {
             StopCoroutine(_animationCoroutine);
@@ -70,22 +68,46 @@ public class ContainerAnimator : MonoBehaviour
         }
     }
 
-    private void OnTransformChildrenChanged()
+    /// <summary>
+    /// Dipanggil saat isi container berubah (misal kartu berkurang/bertambah).
+    /// </summary>
+    /// <param name="replayIntro">
+    /// Set TRUE hanya jika ingin memainkan animasi muncul untuk semua kartu (misal saat kartu kembali penuh).
+    /// Set FALSE jika hanya ingin memperbarui listener klik/tekan (Press Shrink) tanpa mengganggu kartu lain.
+    /// </param>
+    public void Refresh(bool replayIntro = false)
     {
-        if (isActiveAndEnabled)
+        if (!isActiveAndEnabled) return;
+
+        if (replayIntro)
+        {
+            _hasPlayed = false;
             StartCoroutine(PlayAfterFrame());
+        }
+        else
+        {
+            // Hanya pasang ulang event klik/shrink ke kartu yang ada tanpa mengulang animasi intro
+            StartCoroutine(RegisterHandlersOnly());
+        }
     }
 
     private IEnumerator PlayAfterFrame()
     {
+        if (_hasPlayed) yield break;
+
         yield return null;
         CollectChildren();
         PlayAnimation();
     }
 
+    private IEnumerator RegisterHandlersOnly()
+    {
+        yield return null;
+        CollectChildren();
+    }
+
     private void CollectChildren()
     {
-        // Remove old press handlers before collecting new children.
         foreach (var handler in _handlers)
         {
             if (handler != null)
@@ -102,13 +124,13 @@ public class ContainerAnimator : MonoBehaviour
 
             if (!_enablePressShrink) continue;
 
-            // Add a press handler to the child or to any Selectable inside it.
             var selectable = child.GetComponentInChildren<Selectable>(false);
             if (selectable == null) continue;
 
             var target = selectable.GetComponent<RectTransform>();
             if (target == null) continue;
 
+            // Pasang handler animasi tekan khusus ke kartu ini
             var handler = selectable.gameObject.AddComponent<PressShrinkHandler>();
             handler.Setup(target, _pressScale, _pressDuration);
             _handlers.Add(handler);
@@ -118,6 +140,8 @@ public class ContainerAnimator : MonoBehaviour
     private void PlayAnimation()
     {
         if (_children.Count == 0) return;
+
+        _hasPlayed = true;
 
         if (_animationCoroutine != null)
             StopCoroutine(_animationCoroutine);
@@ -176,7 +200,6 @@ public class ContainerAnimator : MonoBehaviour
     {
         Vector2 offset = GetSlideOffset();
 
-        // Store original anchored positions and push children to start offset.
         var origins = new Vector2[_children.Count];
         for (int i = 0; i < _children.Count; i++)
         {
@@ -223,57 +246,40 @@ public class ContainerAnimator : MonoBehaviour
     {
         return _slideFrom switch
         {
-            SlideDirection.Left => new Vector2(-_slideStartOffset, 0f),
-            SlideDirection.Right => new Vector2(_slideStartOffset, 0f),
-            SlideDirection.Up => new Vector2(0f, _slideStartOffset),
-            SlideDirection.Down => new Vector2(0f, -_slideStartOffset),
+            SlideDirection.Left  => new Vector2(-_slideStartOffset, 0f),
+            SlideDirection.Right => new Vector2( _slideStartOffset, 0f),
+            SlideDirection.Up    => new Vector2(0f,  _slideStartOffset),
+            SlideDirection.Down  => new Vector2(0f, -_slideStartOffset),
             _ => new Vector2(_slideStartOffset, 0f),
         };
     }
 
     #endregion
-
-    /// <summary>
-    /// Call this after adding children dynamically (e.g. after GenerateSkillCard finishes).
-    /// </summary>
-    public void Refresh()
-    {
-        if (isActiveAndEnabled)
-            StartCoroutine(PlayAfterFrame());
-    }
 }
 
 /// <summary>
-/// Added at runtime to a child Selectable. Shrinks it on press and restores on release.
-/// Destroyed when the container rebuilds its children list.
+/// Handler mandiri yang ditempelkan ke setiap kartu untuk menangani efek tekan/klik.
 /// </summary>
-public class PressShrinkHandler : MonoBehaviour,
-    IPointerDownHandler, IPointerUpHandler, ISelectHandler, IDeselectHandler
+public class PressShrinkHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     private RectTransform _target;
     private float _pressScale;
     private float _duration;
-    private Vector3 _originalScale;
     private Coroutine _coroutine;
-    private bool _isSetup;
 
     public void Setup(RectTransform target, float pressScale, float duration)
     {
         _target = target;
         _pressScale = pressScale;
         _duration = duration;
-        _originalScale = target.localScale;
-        _isSetup = true;
     }
 
     public void OnPointerDown(PointerEventData eventData) => AnimateTo(_pressScale);
-    public void OnPointerUp(PointerEventData eventData) => AnimateTo(1f);
-    public void OnSelect(BaseEventData eventData) => AnimateTo(_pressScale);
-    public void OnDeselect(BaseEventData eventData) => AnimateTo(1f);
+    public void OnPointerUp(PointerEventData eventData)   => AnimateTo(1f);
 
     private void AnimateTo(float targetScale)
     {
-        if (!_isSetup || _target == null) return;
+        if (_target == null || !gameObject.activeInHierarchy) return;
 
         if (_coroutine != null)
             StopCoroutine(_coroutine);
@@ -299,12 +305,20 @@ public class PressShrinkHandler : MonoBehaviour,
         _coroutine = null;
     }
 
+    private void OnDisable()
+    {
+        if (_coroutine != null)
+            StopCoroutine(_coroutine);
+
+        if (_target != null)
+            _target.localScale = Vector3.one;
+    }
+
     private void OnDestroy()
     {
         if (_coroutine != null)
             StopCoroutine(_coroutine);
 
-        // Restore scale when handler is removed to avoid stuck-shrunken items.
         if (_target != null)
             _target.localScale = Vector3.one;
     }

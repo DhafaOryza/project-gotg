@@ -87,6 +87,8 @@ public class SkillLoadoutPanel : MonoBehaviour
 
         RefreshSkillCardNavigation();
         GetComponentInParent<PreparePanel>()?.RefreshNavigation();
+
+        skillContainer.GetComponent<ContainerAnimator>()?.Refresh(false);
     }
 
     private void RefreshSkillCardNavigation()
