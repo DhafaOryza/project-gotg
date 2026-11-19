@@ -10966,7 +10966,7 @@ MonoBehaviour:
   _skillTreeMainPanel: {fileID: 622420957}
   _portraitImage: {fileID: 1501986126}
   _skillSlotPrefab: {fileID: 2804575257018642975, guid: 9c09996c1eedbcc91809f0b4da983d77, type: 3}
-  _tierHeaderPrefab: {fileID: 645701305543114283, guid: 7c14179d12cba105c97ddcde68ede794, type: 3}
+  _tierHeaderPrefab: {fileID: 0}
   _skillListContentContainer: {fileID: 1796262248}
   _detailIcon: {fileID: 181295467}
   _detailNameText: {fileID: 1040529607}
