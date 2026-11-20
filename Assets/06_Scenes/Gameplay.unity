@@ -2348,15 +2348,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: c2a18a57adfadc04d80407aea66a3f1c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -102
+      value: -18.88
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: c2a18a57adfadc04d80407aea66a3f1c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -20.21
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: c2a18a57adfadc04d80407aea66a3f1c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 75.26
+      value: 6.89
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: c2a18a57adfadc04d80407aea66a3f1c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2400,7 +2400,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6687692657458445719, guid: c2a18a57adfadc04d80407aea66a3f1c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 24.34
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2968,15 +2968,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: a9a81186210541345a52f39de0e4cbf3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -70.97
+      value: 6.35
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: a9a81186210541345a52f39de0e4cbf3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -19.119999
+      value: -0.51
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: a9a81186210541345a52f39de0e4cbf3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 81.63
+      value: 7.19
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: a9a81186210541345a52f39de0e4cbf3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5451,15 +5451,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: 394eba8983d3bde468e29e3e9630852a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -58.18
+      value: 23.5
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: 394eba8983d3bde468e29e3e9630852a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -17.67
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: 394eba8983d3bde468e29e3e9630852a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 81.39
+      value: 10.6
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: 394eba8983d3bde468e29e3e9630852a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7447,6 +7447,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b1037004ea98e1ddbed9a84dfd281d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ContainerAnimator
+  _animationType: 0
+  _duration: 0.35
+  _staggerDelay: 0.04
+  _popUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.6
+      value: 1.1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8
+      value: 0.95
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _slideFrom: 1
+  _slideStartOffset: 300
+  _slideCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _enablePressShrink: 1
+  _pressScale: 0.85
+  _pressDuration: 0.08
 --- !u!1 &454003800
 GameObject:
   m_ObjectHideFlags: 0
@@ -8088,11 +8162,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1390603739173170495, guid: 316b282ec947a754c8aec6acfccb8cd9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.1
+      value: -1.23
       objectReference: {fileID: 0}
     - target: {fileID: 1390603739173170495, guid: 316b282ec947a754c8aec6acfccb8cd9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.62
+      value: 1.32
       objectReference: {fileID: 0}
     - target: {fileID: 1390603739173170495, guid: 316b282ec947a754c8aec6acfccb8cd9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10490,6 +10564,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b1037004ea98e1ddbed9a84dfd281d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ContainerAnimator
+  _animationType: 0
+  _duration: 0.35
+  _staggerDelay: 0.04
+  _popUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.6
+      value: 1.1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8
+      value: 0.95
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _slideFrom: 1
+  _slideStartOffset: 300
+  _slideCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _enablePressShrink: 1
+  _pressScale: 0.85
+  _pressDuration: 0.08
 --- !u!1 &585367988
 GameObject:
   m_ObjectHideFlags: 0
@@ -12838,7 +12986,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 140534040648771076, guid: c519a1cccb4b14a498d8be5ba4c4ac54, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 140534040648771076, guid: c519a1cccb4b14a498d8be5ba4c4ac54, type: 3}
       propertyPath: m_LocalPosition.z
@@ -14349,7 +14497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2707529728595846201, guid: 035b290fe6884fd46a233fbfbf060d4d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -17.77
+      value: -21.8
       objectReference: {fileID: 0}
     - target: {fileID: 2707529728595846201, guid: 035b290fe6884fd46a233fbfbf060d4d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -17248,15 +17396,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: e1a1214f5cc04ad489982e46de098262, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -69.5
+      value: 8.23
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: e1a1214f5cc04ad489982e46de098262, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -17.9
+      value: -1.08
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: e1a1214f5cc04ad489982e46de098262, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 81.76
+      value: 8.04
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: e1a1214f5cc04ad489982e46de098262, type: 3}
       propertyPath: m_LocalRotation.w
@@ -17300,7 +17448,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6687692657458445719, guid: e1a1214f5cc04ad489982e46de098262, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 22.82
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -22604,6 +22752,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b1037004ea98e1ddbed9a84dfd281d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ContainerAnimator
+  _animationType: 0
+  _duration: 0.35
+  _staggerDelay: 0.04
+  _popUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.6
+      value: 1.1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8
+      value: 0.95
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _slideFrom: 1
+  _slideStartOffset: 300
+  _slideCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _enablePressShrink: 1
+  _pressScale: 0.85
+  _pressDuration: 0.08
 --- !u!1 &1322886781
 GameObject:
   m_ObjectHideFlags: 0
@@ -31572,6 +31794,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b1037004ea98e1ddbed9a84dfd281d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ContainerAnimator
+  _animationType: 0
+  _duration: 0.35
+  _staggerDelay: 0.04
+  _popUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.6
+      value: 1.1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8
+      value: 0.95
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _slideFrom: 1
+  _slideStartOffset: 300
+  _slideCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _enablePressShrink: 1
+  _pressScale: 0.85
+  _pressDuration: 0.08
 --- !u!1 &1798509433
 GameObject:
   m_ObjectHideFlags: 0
@@ -35065,15 +35361,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: 5c4ebd5b303d63343b7a58da93a56f73, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -48.1
+      value: 7.4
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: 5c4ebd5b303d63343b7a58da93a56f73, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -23.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: 5c4ebd5b303d63343b7a58da93a56f73, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 60
+      value: 33.2
       objectReference: {fileID: 0}
     - target: {fileID: 5500498477202951581, guid: 5c4ebd5b303d63343b7a58da93a56f73, type: 3}
       propertyPath: m_LocalRotation.w
@@ -35117,15 +35413,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6687692657458445719, guid: 5c4ebd5b303d63343b7a58da93a56f73, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 59.6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6687692657458445719, guid: 5c4ebd5b303d63343b7a58da93a56f73, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 34.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6687692657458445719, guid: 5c4ebd5b303d63343b7a58da93a56f73, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -28.1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -37286,6 +37582,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b1037004ea98e1ddbed9a84dfd281d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ContainerAnimator
+  _animationType: 0
+  _duration: 0.35
+  _staggerDelay: 0.04
+  _popUpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.6
+      value: 1.1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8
+      value: 0.95
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _slideFrom: 1
+  _slideStartOffset: 300
+  _slideCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _enablePressShrink: 1
+  _pressScale: 0.85
+  _pressDuration: 0.08
 --- !u!1 &2103194730
 GameObject:
   m_ObjectHideFlags: 0
