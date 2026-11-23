@@ -36,6 +36,12 @@ public class CameraEffectsManager : MonoBehaviour
             Instance = null;
     }
 
+    /// <summary>Called by SettingsData when the shake preference changes.</summary>
+    public void SetShakeEnabled(bool enabled)
+    {
+        _enableShake = enabled;
+    }
+    
     /// <summary>
     /// Triggers shake and freeze with the standard "entity took damage" settings.
     /// </summary>
