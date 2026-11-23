@@ -9,32 +9,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4056858586862665430, guid: a56ea8047a8294d428eb673434caaeb4, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4056858586862665430, guid: a56ea8047a8294d428eb673434caaeb4, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4056858586862665430, guid: a56ea8047a8294d428eb673434caaeb4, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4056858586862665430, guid: a56ea8047a8294d428eb673434caaeb4, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4056858586862665430, guid: a56ea8047a8294d428eb673434caaeb4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4056858586862665430, guid: a56ea8047a8294d428eb673434caaeb4, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4056858586862665430, guid: a56ea8047a8294d428eb673434caaeb4, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: -0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5187795148337687078, guid: a56ea8047a8294d428eb673434caaeb4, type: 3}
       propertyPath: m_LocalPosition.x
