@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BuildingPoolData_001
   m_EditorClassIdentifier: Assembly-CSharp::PoolDataSO
   poolId: {fileID: 11400000, guid: d66b91fa9498d774197853dfd1fab5ab, type: 2}
-  prefab: {fileID: 1076217737196249867, guid: 93085ed590fc25c4ca5ae4f8abfce7e9, type: 3}
+  prefab: {fileID: 1076217737196249867, guid: 0fbbcff3d010fae44a5278f95ce8bde9, type: 3}
   initialSize: 10
   isExpandable: 1
