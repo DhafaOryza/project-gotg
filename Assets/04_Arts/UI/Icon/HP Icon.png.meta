@@ -1,22 +1,16 @@
 fileFormatVersion: 2
-guid: 8c2fd8c454342654a822f469805cd167
+guid: 7cdfc994186aecf459ba83241df45999
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7826949717507848784
-    second: Chat_0
+      213: 8956044983153187035
+    second: HP Icon_0
   - first:
-      213: -7674388961201677345
-    second: Chat_1
+      213: -5524461633923349795
+    second: HP Icon_1
   - first:
-      213: 4542500388928331712
-    second: Chat_2
-  - first:
-      213: 2927967856364077654
-    second: Chat_3
-  - first:
-      213: 7046805864012115719
-    second: Chat_4
+      213: 5518875586104111570
+    second: HP Icon_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -108,17 +102,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Chat_0
+      name: HP Icon_0
       rect:
         serializedVersion: 2
-        x: 1180
-        y: 1474
-        width: 9
-        height: 26
+        x: 0
+        y: 178
+        width: 1902
+        height: 1563
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -127,20 +134,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 05a36e29c49ee9c60800000000000000
-      internalID: 7826949717507848784
+      spriteID: bd8d34506734a4c70800000000000000
+      internalID: 8956044983153187035
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Chat_1
+      name: HP Icon_1
       rect:
         serializedVersion: 2
-        x: 1190
-        y: 1448
-        width: 231
-        height: 429
+        x: 1895
+        y: 1252
+        width: 11
+        height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -149,20 +156,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fdb156386e71f7590800000000000000
-      internalID: -7674388961201677345
+      spriteID: dd289bee96b2553b0800000000000000
+      internalID: -5524461633923349795
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Chat_2
+      name: HP Icon_2
       rect:
         serializedVersion: 2
-        x: 1369
-        y: 1336
-        width: 357
-        height: 392
+        x: 1913
+        y: 1252
+        width: 7
+        height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -171,52 +178,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0cf952a59043a0f30800000000000000
-      internalID: 4542500388928331712
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Chat_3
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 42
-        width: 1822
-        height: 1383
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 652c758904b32a820800000000000000
-      internalID: 2927967856364077654
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Chat_4
-      rect:
-        serializedVersion: 2
-        x: 1530
-        y: 1160
-        width: 385
-        height: 301
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 70fe49509984bc160800000000000000
-      internalID: 7046805864012115719
+      spriteID: 2d1bf45fa1cf69c40800000000000000
+      internalID: 5518875586104111570
       vertices: []
       indices: 
       edges: []
@@ -235,11 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Chat_0: 7826949717507848784
-      Chat_1: -7674388961201677345
-      Chat_2: 4542500388928331712
-      Chat_3: 2927967856364077654
-      Chat_4: 7046805864012115719
+      HP Icon_0: 8956044983153187035
+      HP Icon_1: -5524461633923349795
+      HP Icon_2: 5518875586104111570
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

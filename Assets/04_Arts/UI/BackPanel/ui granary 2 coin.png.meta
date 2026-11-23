@@ -1,16 +1,10 @@
 fileFormatVersion: 2
-guid: 7cdfc994186aecf459ba83241df45999
+guid: 1bcb5f047df9c1846ae03ed0c50898be
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8956044983153187035
-    second: HP Icon_0
-  - first:
-      213: -5524461633923349795
-    second: HP Icon_1
-  - first:
-      213: 5518875586104111570
-    second: HP Icon_2
+      213: -8587405645346384688
+    second: ui granary 2 coin_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -102,17 +96,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HP Icon_0
+      name: ui granary 2 coin_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 178
-        width: 1902
-        height: 1563
+        x: 3
+        y: 2
+        width: 373
+        height: 389
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -121,52 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bd8d34506734a4c70800000000000000
-      internalID: 8956044983153187035
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HP Icon_1
-      rect:
-        serializedVersion: 2
-        x: 1895
-        y: 1252
-        width: 11
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: dd289bee96b2553b0800000000000000
-      internalID: -5524461633923349795
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HP Icon_2
-      rect:
-        serializedVersion: 2
-        x: 1913
-        y: 1252
-        width: 7
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2d1bf45fa1cf69c40800000000000000
-      internalID: 5518875586104111570
+      spriteID: 0d4d1f6401863d880800000000000000
+      internalID: -8587405645346384688
       vertices: []
       indices: 
       edges: []
@@ -175,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -185,9 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HP Icon_0: 8956044983153187035
-      HP Icon_1: -5524461633923349795
-      HP Icon_2: 5518875586104111570
+      ui granary 2 coin_0: -8587405645346384688
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
