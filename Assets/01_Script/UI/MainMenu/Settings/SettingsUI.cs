@@ -14,6 +14,10 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private Button _graphicsTabButton;
     [SerializeField] private Button _keybindTabButton;
 
+    [Header("Navigation")]
+    [SerializeField] private Button _backButton;
+    [SerializeField] private Selectable _firstSelected;
+
     [Header("Tab Panels")]
     [SerializeField] private GameObject _volumePanel;
     [SerializeField] private GameObject _graphicsPanel;
@@ -26,10 +30,6 @@ public class SettingsUI : MonoBehaviour
     [Header("Graphics Tab")]
     [SerializeField] private TMP_Dropdown _fullscreenDropdown;
     [SerializeField] private Toggle _shakeToggle;
-
-    [Header("Navigation")]
-    [SerializeField] private Button _backButton;
-    [SerializeField] private Selectable _firstSelected;
 
     private void Awake()
     {
