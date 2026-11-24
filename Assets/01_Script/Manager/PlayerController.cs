@@ -546,28 +546,53 @@ public class PlayerController : MonoBehaviour
 
     /// <summary>
     /// Applies custom keybind overrides from KeybindManager to the runtime input actions.
+    /// Uses the active binding group to determine which scheme's overrides to apply.
     /// </summary>
     private void ApplyKeybindOverrides()
     {
         if (KeybindManager.Instance == null || runtimeInputActions == null) return;
-
+    
+        // Determine scheme name from the active binding group
+        string schemeName = (activeBindingGroup == controllerBindingGroup)
+            ? "Controller"
+            : "Keyboard";
+    
         var overrides = KeybindManager.Instance.GetAllOverrides();
-
+    
         foreach (var kvp in overrides)
         {
-            string actionName = kvp.Key;
-            string bindingPath = kvp.Value;
-
-            // Cari action berdasarkan nama di instance runtime
+            string key = kvp.Key;           // e.g. "Skill 1_Keyboard"
+            string bindingPath = kvp.Value; // e.g. "<Keyboard>/k"
+    
+            // Only apply overrides that match the current scheme
+            if (!key.EndsWith($"_{schemeName}")) continue;
+    
+            // Extract action name (remove "_Keyboard" or "_Controller" suffix)
+            string actionName = key.Substring(0, key.LastIndexOf('_'));
+    
             var action = runtimeInputActions.FindAction(actionName, false);
-            
-            if (action != null)
-            {
-                // Terapkan override ke binding index ke-0 (binding utama)
-                action.ApplyBindingOverride(0, new InputBinding { overridePath = bindingPath });
-                Debug.Log($"[PlayerController] Keybind applied: {actionName} -> {bindingPath}");
-            }
+            if (action == null) continue;
+    
+            // Find the binding index for this scheme
+            int bindingIndex = FindBindingIndexForScheme(action, schemeName);
+            if (bindingIndex < 0) continue;
+    
+            action.ApplyBindingOverride(bindingIndex, new InputBinding { overridePath = bindingPath });
         }
+    }
+    
+    /// <summary>
+    /// Finds the binding index whose groups contain the given scheme name.
+    /// </summary>
+    private static int FindBindingIndexForScheme(InputAction action, string schemeName)
+    {
+        for (int i = 0; i < action.bindings.Count; i++)
+        {
+            var binding = action.bindings[i];
+            if (binding.isPartOfComposite || binding.isComposite) continue;
+            if (binding.groups.Contains(schemeName)) return i;
+        }
+        return -1;
     }
 
 #endregion

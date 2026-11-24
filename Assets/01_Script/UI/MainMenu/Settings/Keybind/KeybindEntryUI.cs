@@ -16,23 +16,24 @@ public class KeybindEntryUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _bindingText;
 
     [Header("Listening State")]
-    [SerializeField] private string _listeningLabel = "...";
+    [SerializeField] private string _listeningLabel = "Press any key...";
+    [SerializeField] private string _listeningLabelController = "Press any button...";
     [SerializeField] private Color _listeningColor = new Color(1f, 0.8f, 0f);
     [SerializeField] private Color _normalColor = Color.white;
 
     [Header("Text Truncation")]
-    [SerializeField] private int _maxDisplayLength = 12;
+    [SerializeField] private int _maxDisplayLength = 16;
 
     private InputActionAsset _asset;
     private InputAction _action;
     private int _bindingIndex;
+    private string _schemeName;
     private InputActionRebindingExtensions.RebindingOperation _rebindOp;
     private bool _isListening;
 
     /// <summary>
     /// Raised when a rebind finishes successfully.
     /// Parameters: the rebound action and the binding index that changed.
-    /// The parent (KeybindUI) uses this to persist via KeybindManager.
     /// </summary>
     public event Action<InputAction, int> OnRebindCompleted;
 
@@ -52,17 +53,20 @@ public class KeybindEntryUI : MonoBehaviour
     /// <summary>
     /// Called by KeybindUI after instantiation.
     /// </summary>
-    public void Initialize(InputActionAsset asset, InputAction action, int bindingIndex)
+    public void Initialize(InputActionAsset asset, InputAction action, int bindingIndex, string schemeName)
     {
         _asset        = asset;
         _action       = action;
         _bindingIndex = bindingIndex;
+        _schemeName   = schemeName;
 
         if (_actionNameText != null)
             _actionNameText.text = action.name;
 
         RefreshBindingDisplay();
     }
+
+    // ── Rebind ────────────────────────────────────────────────────────────
 
     private void StartRebind()
     {
@@ -73,15 +77,22 @@ public class KeybindEntryUI : MonoBehaviour
         _isListening = true;
         SetListeningVisual(true);
 
-        _rebindOp = _action
+        var operation = _action
             .PerformInteractiveRebinding(_bindingIndex)
             .WithControlsExcluding("<Mouse>/position")
             .WithControlsExcluding("<Mouse>/delta")
             .WithCancelingThrough("<Keyboard>/escape")
             .OnMatchWaitForAnother(0.1f)
             .OnComplete(op => FinishRebind(false))
-            .OnCancel(op  => FinishRebind(true))
-            .Start();
+            .OnCancel(op  => FinishRebind(true));
+
+        // Restrict rebind to controls that belong to the active scheme
+        if (_schemeName == "Controller")
+            operation.WithControlsHavingToMatchPath("<Gamepad>");
+        else
+            operation.WithControlsHavingToMatchPath("<Keyboard>|<Mouse>");
+
+        _rebindOp = operation.Start();
     }
 
     private void FinishRebind(bool cancelled)
@@ -93,10 +104,11 @@ public class KeybindEntryUI : MonoBehaviour
         SetListeningVisual(false);
         RefreshBindingDisplay();
 
-        // Pass action + binding index so the parent can persist the change
         if (!cancelled)
             OnRebindCompleted?.Invoke(_action, _bindingIndex);
     }
+
+    // ── Display ───────────────────────────────────────────────────────────
 
     public void RefreshBindingDisplay()
     {
@@ -117,7 +129,10 @@ public class KeybindEntryUI : MonoBehaviour
 
         if (listening)
         {
-            _bindingText.text  = _listeningLabel;
+            // Use scheme-appropriate prompt text
+            _bindingText.text = (_schemeName == "Controller")
+                ? _listeningLabelController
+                : _listeningLabel;
             _bindingText.color = _listeningColor;
         }
         else

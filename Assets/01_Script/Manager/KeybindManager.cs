@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// Persists custom keybind overrides across scenes via PlayerPrefs.
-/// Attach to the root Managers GameObject alongside AudioManager and SettingsData.
+/// Keys are scheme-specific (e.g. "Skill 1_Keyboard" vs "Skill 1_Controller")
+/// so keyboard and controller bindings don't overwrite each other.
 /// </summary>
 public class KeybindManager : MonoBehaviour
 {
@@ -35,35 +36,36 @@ public class KeybindManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Saves a custom binding for the given action and flushes to disk.
+    /// Saves a custom binding for the given key and flushes to disk.
+    /// Key should be formatted as "{actionName}_{schemeName}".
     /// </summary>
-    public void SetBinding(string actionName, string bindingPath)
+    public void SetBinding(string key, string bindingPath)
     {
-        if (string.IsNullOrEmpty(actionName)) return;
+        if (string.IsNullOrEmpty(key)) return;
 
-        _overrides[actionName] = bindingPath;
-        PlayerPrefs.SetString(KeyPrefix + actionName, bindingPath);
+        _overrides[key] = bindingPath;
+        PlayerPrefs.SetString(KeyPrefix + key, bindingPath);
         PlayerPrefs.Save();
     }
 
     /// <summary>
     /// Clears a custom binding, reverting to the asset default.
     /// </summary>
-    public void ClearBinding(string actionName)
+    public void ClearBinding(string key)
     {
-        if (string.IsNullOrEmpty(actionName)) return;
+        if (string.IsNullOrEmpty(key)) return;
 
-        _overrides.Remove(actionName);
-        PlayerPrefs.DeleteKey(KeyPrefix + actionName);
+        _overrides.Remove(key);
+        PlayerPrefs.DeleteKey(KeyPrefix + key);
         PlayerPrefs.Save();
     }
 
     /// <summary>
-    /// Returns the saved override path for an action, or null if none.
+    /// Returns the saved override path for a key, or null if none.
     /// </summary>
-    public string GetOverride(string actionName)
+    public string GetOverride(string key)
     {
-        return _overrides.TryGetValue(actionName, out var path) ? path : null;
+        return _overrides.TryGetValue(key, out var path) ? path : null;
     }
 
     /// <summary>
@@ -76,11 +78,10 @@ public class KeybindManager : MonoBehaviour
     /// </summary>
     public void ResetAllBindings()
     {
-        foreach (var actionName in _overrides.Keys)
-            PlayerPrefs.DeleteKey(KeyPrefix + actionName);
+        foreach (var key in _overrides.Keys)
+            PlayerPrefs.DeleteKey(KeyPrefix + key);
 
         _overrides.Clear();
-
         PlayerPrefs.Save();
     }
 
@@ -94,10 +95,14 @@ public class KeybindManager : MonoBehaviour
         {
             foreach (var action in actionMap.actions)
             {
-                var key = KeyPrefix + action.name;
-                if (PlayerPrefs.HasKey(key))
+                // Load both keyboard and controller overrides
+                foreach (var scheme in new[] { "Keyboard", "Controller" })
                 {
-                    _overrides[action.name] = PlayerPrefs.GetString(key);
+                    var key = $"{action.name}_{scheme}";
+                    if (PlayerPrefs.HasKey(KeyPrefix + key))
+                    {
+                        _overrides[key] = PlayerPrefs.GetString(KeyPrefix + key);
+                    }
                 }
             }
         }
