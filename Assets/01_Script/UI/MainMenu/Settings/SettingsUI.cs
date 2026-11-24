@@ -5,6 +5,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Drives the Settings screen: tab switching, control binding to SettingsData,
 /// and Save/Back button wiring.
+/// Attach to the root Settings panel GameObject.
 /// </summary>
 public class SettingsUI : MonoBehaviour
 {
@@ -12,10 +13,6 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private Button _volumeTabButton;
     [SerializeField] private Button _graphicsTabButton;
     [SerializeField] private Button _keybindTabButton;
-
-    [Header("Navigation")]
-    [SerializeField] private Button _backButton;
-    [SerializeField] private Selectable _firstSelected;
 
     [Header("Tab Panels")]
     [SerializeField] private GameObject _volumePanel;
@@ -30,6 +27,12 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private TMP_Dropdown _fullscreenDropdown;
     [SerializeField] private Toggle _shakeToggle;
 
+    [Header("Navigation")]
+    [SerializeField] private Button _backButton;
+    [SerializeField] private Selectable _firstSelected;
+
+    private KeybindSettingsUI _keybindUI;
+
     private void Awake()
     {
         _volumeTabButton?.onClick.AddListener(() => ShowTab(0));
@@ -42,6 +45,9 @@ public class SettingsUI : MonoBehaviour
         _shakeToggle?.onValueChanged.AddListener(OnShakeChanged);
 
         _backButton?.onClick.AddListener(OnBackClicked);
+
+        // Find sibling KeybindSettingsUI on the same GameObject
+        _keybindUI = GetComponent<KeybindSettingsUI>();
     }
 
     private void OnDestroy()
@@ -60,77 +66,58 @@ public class SettingsUI : MonoBehaviour
 
         if (_firstSelected != null)
         {
-            var eventSystem = UnityEngine.EventSystems.EventSystem.current;
-            eventSystem?.SetSelectedGameObject(_firstSelected.gameObject);
+            var es = UnityEngine.EventSystems.EventSystem.current;
+            es?.SetSelectedGameObject(_firstSelected.gameObject);
         }
     }
 
-    // ── Event Handlers (Auto-Save on Change) ──────────────────────────
+    // ── Controls → SettingsData ───────────────────────────────────────────
 
     private void OnMusicChanged(float value)
-    {
-        SettingsData.Instance?.SetMusicVolume(value);
-    }
+        => SettingsData.Instance?.SetMusicVolume(value);
 
     private void OnSFXChanged(float value)
-    {
-        SettingsData.Instance?.SetSFXVolume(value);
-    }
+        => SettingsData.Instance?.SetSFXVolume(value);
 
     private void OnFullscreenChanged(int index)
-    {
         // Dropdown: 0 = Full-Screen, 1 = Windowed
-        SettingsData.Instance?.SetFullscreen(index == 0);
-    }
+        => SettingsData.Instance?.SetFullscreen(index == 0);
 
     private void OnShakeChanged(bool value)
-    {
-        SettingsData.Instance?.SetShake(value);
-    }
+        => SettingsData.Instance?.SetShake(value);
 
     private void OnBackClicked()
     {
-        // Final save to ensure all values are persisted
-        PlayerPrefs.Save();
-
+        SettingsData.Instance?.SaveAllSettings();
         gameObject.SetActive(false);
         MainMenuUI.Instance?.OnSettingsClosed();
     }
 
-    // ── Tab Switching ─────────────────────────────────────────────────
+    // ── Tab switching ─────────────────────────────────────────────────────
 
     private void ShowTab(int index)
     {
-        if (_volumePanel != null) _volumePanel.SetActive(index == 0);
+        if (_volumePanel   != null) _volumePanel.SetActive(index == 0);
         if (_graphicsPanel != null) _graphicsPanel.SetActive(index == 1);
-        if (_keybindPanel != null) _keybindPanel.SetActive(index == 2);
+        if (_keybindPanel  != null) _keybindPanel.SetActive(index == 2);
+
+        // Refresh keybind labels only when the tab is opened
+        if (index == 2)
+            _keybindUI?.RefreshAllLabels();
     }
 
-    // ── Sync Controls to Saved State ──────────────────────────────────
+    // ── Sync controls to current saved state ─────────────────────────────
 
     private void RefreshFromData()
     {
         var data = SettingsData.Instance;
         if (data == null) return;
 
-        if (_musicSlider != null)
-        {
-            _musicSlider.SetValueWithoutNotify(data.MusicVolume);
-        }
-
-        if (_sfxSlider != null)
-        {
-            _sfxSlider.SetValueWithoutNotify(data.SFXVolume);
-        }
-
+        if (_musicSlider != null) _musicSlider.SetValueWithoutNotify(data.MusicVolume);
+        if (_sfxSlider   != null) _sfxSlider.SetValueWithoutNotify(data.SFXVolume);
         if (_fullscreenDropdown != null)
-        {
             _fullscreenDropdown.SetValueWithoutNotify(data.IsFullscreen ? 0 : 1);
-        }
-
         if (_shakeToggle != null)
-        {
             _shakeToggle.SetIsOnWithoutNotify(data.ShakeEnabled);
-        }
     }
 }

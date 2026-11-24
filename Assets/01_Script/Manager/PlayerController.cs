@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
     private readonly InputAction[] skillActions = new InputAction[SkillSlotCount];
     private readonly InputAction[] itemActions = new InputAction[SkillSlotCount];
 
+
     private PlayerBaseEntity playerEntity;
     private GameObject playerObject;
     private Rigidbody playerRb;
@@ -69,6 +70,7 @@ public class PlayerController : MonoBehaviour
     public bool IsAiming => isAiming;
     public Vector2 CurrentAimDirection => currentAimDirection;
     public InputAction VirtualCursorAction => virtualCursorAction;
+    public InputActionAsset RuntimeInputActions => runtimeInputActions;
     public bool IsUsingController => activeBindingGroup == controllerBindingGroup;
 
     private void OnEnable()
@@ -128,6 +130,9 @@ public class PlayerController : MonoBehaviour
         }
 
         runtimeInputActions = Instantiate(inputActions);
+
+        ApplyKeybindOverrides();
+
         playerActionMap = runtimeInputActions.FindActionMap(actionMapName, false);
 
         if (playerActionMap == null)
@@ -532,6 +537,36 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(currentGhost.gameObject);
             currentGhost = null;
+        }
+    }
+
+#endregion
+
+#region Keybind
+
+    /// <summary>
+    /// Applies custom keybind overrides from KeybindManager to the runtime input actions.
+    /// </summary>
+    private void ApplyKeybindOverrides()
+    {
+        if (KeybindManager.Instance == null || runtimeInputActions == null) return;
+
+        var overrides = KeybindManager.Instance.GetAllOverrides();
+
+        foreach (var kvp in overrides)
+        {
+            string actionName = kvp.Key;
+            string bindingPath = kvp.Value;
+
+            // Cari action berdasarkan nama di instance runtime
+            var action = runtimeInputActions.FindAction(actionName, false);
+            
+            if (action != null)
+            {
+                // Terapkan override ke binding index ke-0 (binding utama)
+                action.ApplyBindingOverride(0, new InputBinding { overridePath = bindingPath });
+                Debug.Log($"[PlayerController] Keybind applied: {actionName} -> {bindingPath}");
+            }
         }
     }
 

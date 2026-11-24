@@ -97,7 +97,7 @@ public class SettingsData : MonoBehaviour
     /// <summary>
     /// Saves all current settings to PlayerPrefs.
     /// </summary>
-    private void SaveAllSettings()
+    public void SaveAllSettings()
     {
         PlayerPrefs.SetFloat(KeyMusic, MusicVolume);
         PlayerPrefs.SetFloat(KeySFX, SFXVolume);
