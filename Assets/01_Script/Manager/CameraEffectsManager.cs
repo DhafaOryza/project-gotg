@@ -28,6 +28,11 @@ public class CameraEffectsManager : MonoBehaviour
         Instance = this;
         _shake = GetComponent<CameraShake>();
         _freeze = GetComponent<CameraFreeze>();
+
+        if (SettingsData.Instance != null)
+        {
+            SetShakeEnabled(SettingsData.Instance.ShakeEnabled);
+        }
     }
 
     private void OnDestroy()
@@ -40,6 +45,7 @@ public class CameraEffectsManager : MonoBehaviour
     public void SetShakeEnabled(bool enabled)
     {
         _enableShake = enabled;
+        _enableFreeze = enabled;
     }
     
     /// <summary>
