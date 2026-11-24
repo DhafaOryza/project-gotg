@@ -286,7 +286,7 @@ GameObject:
   m_Component:
   - component: {fileID: 676943307974740331}
   - component: {fileID: 5396677408311881210}
-  - component: {fileID: 4999213832855337469}
+  - component: {fileID: 3172506540519132517}
   m_Layer: 0
   m_Name: Keybind_Node
   m_TagString: Untagged
@@ -340,7 +340,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &4999213832855337469
+--- !u!114 &3172506540519132517
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

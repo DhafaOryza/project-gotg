@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,6 +8,7 @@ using UnityEngine.UI;
 /// One row in the keybind panel.
 /// Shows the action name on the left and a rebind button on the right.
 /// Clicking the button starts an interactive rebind; pressing Escape cancels.
+/// Persistence is delegated to the parent via the OnRebindCompleted event.
 /// </summary>
 public class KeybindEntryUI : MonoBehaviour
 {
@@ -27,8 +27,12 @@ public class KeybindEntryUI : MonoBehaviour
     private InputActionRebindingExtensions.RebindingOperation _rebindOp;
     private bool _isListening;
 
-    // Notifies KeybindUI that a rebind finished, so it can save.
-    public event Action OnRebindCompleted;
+    /// <summary>
+    /// Raised when a rebind finishes successfully.
+    /// Parameters: the rebound action and the binding index that changed.
+    /// The parent (KeybindUI) is responsible for persisting via KeybindManager.
+    /// </summary>
+    public event Action<InputAction, int> OnRebindCompleted;
 
     private void Awake()
     {
@@ -40,7 +44,6 @@ public class KeybindEntryUI : MonoBehaviour
     {
         if (_rebindButton != null)
             _rebindButton.onClick.RemoveListener(StartRebind);
-
         _rebindOp?.Dispose();
     }
 
@@ -91,14 +94,13 @@ public class KeybindEntryUI : MonoBehaviour
         _rebindOp?.Dispose();
         _rebindOp = null;
         _isListening = false;
-
         _asset?.Enable();
-
         SetListeningVisual(false);
         RefreshBindingDisplay();
 
+        // Pass action + binding index so the parent can persist the change.
         if (!cancelled)
-            OnRebindCompleted?.Invoke();
+            OnRebindCompleted?.Invoke(_action, _bindingIndex);
     }
 
     // ── Display ───────────────────────────────────────────────────────────
@@ -109,7 +111,6 @@ public class KeybindEntryUI : MonoBehaviour
 
         string display = _action.GetBindingDisplayString(_bindingIndex,
             InputBinding.DisplayStringOptions.DontIncludeInteractions);
-
         _bindingText.text = string.IsNullOrEmpty(display) ? "—" : display;
     }
 

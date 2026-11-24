@@ -19,6 +19,9 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private GameObject _graphicsPanel;
     [SerializeField] private GameObject _keybindPanel;
 
+    [Header("Keybind Tab")]
+    [SerializeField] private KeybindUI _keybindUI;
+
     [Header("Volume Tab")]
     [SerializeField] private Slider _musicSlider;
     [SerializeField] private Slider _sfxSlider;
@@ -30,8 +33,6 @@ public class SettingsUI : MonoBehaviour
     [Header("Navigation")]
     [SerializeField] private Button _backButton;
     [SerializeField] private Selectable _firstSelected;
-
-    private KeybindSettingsUI _keybindUI;
 
     private void Awake()
     {
@@ -45,9 +46,6 @@ public class SettingsUI : MonoBehaviour
         _shakeToggle?.onValueChanged.AddListener(OnShakeChanged);
 
         _backButton?.onClick.AddListener(OnBackClicked);
-
-        // Find sibling KeybindSettingsUI on the same GameObject
-        _keybindUI = GetComponent<KeybindSettingsUI>();
     }
 
     private void OnDestroy()
@@ -88,7 +86,9 @@ public class SettingsUI : MonoBehaviour
 
     private void OnBackClicked()
     {
+        // Flush all pending PlayerPrefs writes to disk
         SettingsData.Instance?.SaveAllSettings();
+        
         gameObject.SetActive(false);
         MainMenuUI.Instance?.OnSettingsClosed();
     }
@@ -101,9 +101,10 @@ public class SettingsUI : MonoBehaviour
         if (_graphicsPanel != null) _graphicsPanel.SetActive(index == 1);
         if (_keybindPanel  != null) _keybindPanel.SetActive(index == 2);
 
-        // Refresh keybind labels only when the tab is opened
+        // Rebuild keybind rows only when the tab is opened 
+        // to ensure latest overrides from KeybindManager are applied
         if (index == 2)
-            _keybindUI?.RefreshAllLabels();
+            _keybindUI?.RebuildRows();
     }
 
     // ── Sync controls to current saved state ─────────────────────────────
