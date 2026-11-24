@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0, g: 0.5981736, b: 1, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.015
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -36614,7 +36614,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 948683007}
-  - {fileID: 5883894966488795803}
+  - {fileID: 1199656589}
   - {fileID: 323865974}
   - {fileID: 1334856501}
   - {fileID: 1568672999}
@@ -78858,6 +78858,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1188034973}
   m_CullTransparentMesh: 1
+--- !u!4 &1199656589 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3186226530618951471, guid: c519a1cccb4b14a498d8be5ba4c4ac54, type: 3}
+  m_PrefabInstance: {fileID: 5883894966488795802}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1205652488
 GameObject:
   m_ObjectHideFlags: 0
@@ -155040,14 +155045,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4709556425443524789, guid: c519a1cccb4b14a498d8be5ba4c4ac54, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4709556425443524789, guid: c519a1cccb4b14a498d8be5ba4c4ac54, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4815735472971604835, guid: c519a1cccb4b14a498d8be5ba4c4ac54, type: 3}
       propertyPath: m_Name
       value: Building_002
@@ -155057,11 +155054,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c519a1cccb4b14a498d8be5ba4c4ac54, type: 3}
---- !u!4 &5883894966488795803 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3186226530618951471, guid: c519a1cccb4b14a498d8be5ba4c4ac54, type: 3}
-  m_PrefabInstance: {fileID: 5883894966488795802}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

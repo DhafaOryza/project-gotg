@@ -41,3 +41,4 @@ MonoBehaviour:
   NightWaves:
   - {fileID: 11400000, guid: 1fac8258389216c44b166d92b331063f, type: 2}
   - {fileID: 11400000, guid: dffb7780c46d52f48b82b42261dab4b8, type: 2}
+  - {fileID: 11400000, guid: 0b7af2d86900ec54b8b6cbc03954e9f8, type: 2}

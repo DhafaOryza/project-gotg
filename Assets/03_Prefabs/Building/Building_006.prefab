@@ -52,6 +52,14 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -5670579254196641059, guid: 14280265631622346980e5b00f831576, type: 3}
+    - target: {fileID: 4008748488674516152, guid: 93085ed590fc25c4ca5ae4f8abfce7e9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4008748488674516152, guid: 93085ed590fc25c4ca5ae4f8abfce7e9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.24
+      objectReference: {fileID: 0}
     - target: {fileID: 7827029992494588318, guid: 93085ed590fc25c4ca5ae4f8abfce7e9, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.4
@@ -69,7 +77,9 @@ PrefabInstance:
       value: Building_006
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2513792569445683594, guid: 93085ed590fc25c4ca5ae4f8abfce7e9, type: 3}
+    - {fileID: 2492945037686706993, guid: 93085ed590fc25c4ca5ae4f8abfce7e9, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93085ed590fc25c4ca5ae4f8abfce7e9, type: 3}
