@@ -25,6 +25,7 @@ public class KeybindUI : MonoBehaviour
 
     /// <summary>
     /// Destroys existing rows and regenerates one per action, applying saved overrides.
+    /// Skips composite bindings (e.g. 2DVector) since they cannot be rebound directly.
     /// </summary>
     public void RebuildRows()
     {
@@ -45,7 +46,12 @@ public class KeybindUI : MonoBehaviour
 
         foreach (var action in _actionMap.actions)
         {
+            // Skip PassThrough actions (used for composites like 2DVector)
             if (action.type == InputActionType.PassThrough) continue;
+
+            // Skip actions with composite bindings (cannot be rebound directly)
+            if (HasCompositeBinding(action)) continue;
+
             if (action.bindings.Count == 0) continue;
 
             // Apply saved override BEFORE creating the row so the label shows it.
@@ -56,6 +62,18 @@ public class KeybindUI : MonoBehaviour
             entry.OnRebindCompleted += HandleRebindCompleted;
             _entries.Add(entry);
         }
+    }
+
+    /// <summary>
+    /// Checks if the action uses any composite bindings (e.g. 2DVector, 1DComposite).
+    /// </summary>
+    private static bool HasCompositeBinding(InputAction action)
+    {
+        foreach (var binding in action.bindings)
+        {
+            if (binding.isComposite) return true;
+        }
+        return false;
     }
 
     /// <summary>

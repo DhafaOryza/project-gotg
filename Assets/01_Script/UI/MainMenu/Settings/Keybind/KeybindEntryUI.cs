@@ -8,7 +8,6 @@ using UnityEngine.UI;
 /// One row in the keybind panel.
 /// Shows the action name on the left and a rebind button on the right.
 /// Clicking the button starts an interactive rebind; pressing Escape cancels.
-/// Persistence is delegated to the parent via the OnRebindCompleted event.
 /// </summary>
 public class KeybindEntryUI : MonoBehaviour
 {
@@ -21,6 +20,9 @@ public class KeybindEntryUI : MonoBehaviour
     [SerializeField] private Color _listeningColor = new Color(1f, 0.8f, 0f);
     [SerializeField] private Color _normalColor = Color.white;
 
+    [Header("Text Truncation")]
+    [SerializeField] private int _maxDisplayLength = 12;
+
     private InputActionAsset _asset;
     private InputAction _action;
     private int _bindingIndex;
@@ -30,7 +32,7 @@ public class KeybindEntryUI : MonoBehaviour
     /// <summary>
     /// Raised when a rebind finishes successfully.
     /// Parameters: the rebound action and the binding index that changed.
-    /// The parent (KeybindUI) is responsible for persisting via KeybindManager.
+    /// The parent (KeybindUI) uses this to persist via KeybindManager.
     /// </summary>
     public event Action<InputAction, int> OnRebindCompleted;
 
@@ -47,8 +49,6 @@ public class KeybindEntryUI : MonoBehaviour
         _rebindOp?.Dispose();
     }
 
-    // ── Setup ─────────────────────────────────────────────────────────────
-
     /// <summary>
     /// Called by KeybindUI after instantiation.
     /// </summary>
@@ -64,17 +64,12 @@ public class KeybindEntryUI : MonoBehaviour
         RefreshBindingDisplay();
     }
 
-    // ── Rebind ────────────────────────────────────────────────────────────
-
     private void StartRebind()
     {
         if (_isListening) return;
         if (_action == null) return;
 
-        // Disable the entire asset so the action being rebound cannot fire
-        // and so other actions do not intercept the pressed key.
         _asset?.Disable();
-
         _isListening = true;
         SetListeningVisual(true);
 
@@ -98,12 +93,10 @@ public class KeybindEntryUI : MonoBehaviour
         SetListeningVisual(false);
         RefreshBindingDisplay();
 
-        // Pass action + binding index so the parent can persist the change.
+        // Pass action + binding index so the parent can persist the change
         if (!cancelled)
             OnRebindCompleted?.Invoke(_action, _bindingIndex);
     }
-
-    // ── Display ───────────────────────────────────────────────────────────
 
     public void RefreshBindingDisplay()
     {
@@ -111,6 +104,10 @@ public class KeybindEntryUI : MonoBehaviour
 
         string display = _action.GetBindingDisplayString(_bindingIndex,
             InputBinding.DisplayStringOptions.DontIncludeInteractions);
+
+        if (display.Length > _maxDisplayLength)
+            display = display.Substring(0, _maxDisplayLength) + "...";
+
         _bindingText.text = string.IsNullOrEmpty(display) ? "—" : display;
     }
 
