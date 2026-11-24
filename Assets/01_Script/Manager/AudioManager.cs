@@ -7,6 +7,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource _bgmSource;
+    [SerializeField] private AudioSource _sfxSource;
 
     [Header("BGM Playlists")]
     [SerializeField] private AudioClip[] _dayBgmClips;
@@ -35,84 +36,55 @@ public class AudioManager : MonoBehaviour
         PlayDayBGM();
     }
 
-    /// <summary>
-    /// Plays a random background music track from the day playlist with a smooth fade transition.
-    /// </summary>
+    // ═══════════════════════════════════════════════════════════════
+    // BGM Methods
+    // ═══════════════════════════════════════════════════════════════
     public void PlayDayBGM()
     {
         AudioClip newClip = GetRandomClip(_dayBgmClips);
-        if (newClip != null)
-        {
-            TransitionToClip(newClip);
-        }
+        if (newClip != null) TransitionToClip(newClip);
     }
 
-    /// <summary>
-    /// Plays a random background music track from the night playlist with a smooth fade transition.
-    /// </summary>
     public void PlayNightBGM()
     {
         AudioClip newClip = GetRandomClip(_nightBgmClips);
-        if (newClip != null)
-        {
-            TransitionToClip(newClip);
-        }
+        if (newClip != null) TransitionToClip(newClip);
     }
 
-    /// <summary>
-    /// Selects a random audio clip from the given array.
-    /// </summary>
     private AudioClip GetRandomClip(AudioClip[] clips)
     {
         if (clips == null || clips.Length == 0) return null;
-        int randomIndex = Random.Range(0, clips.Length);
-        return clips[randomIndex];
+        return clips[Random.Range(0, clips.Length)];
     }
 
-    /// <summary>
-    /// Manages the smooth fading transition between the current audio clip and a new audio clip.
-    /// </summary>
     private void TransitionToClip(AudioClip newClip)
     {
         if (_bgmSource == null) return;
-
-        if (_fadeCoroutine != null)
-        {
-            StopCoroutine(_fadeCoroutine);
-        }
-
+        if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
         _fadeCoroutine = StartCoroutine(FadeTrackRoutine(newClip));
     }
 
-    /// <summary>
-    /// Coroutine that fades out the current volume, swaps the clip, and fades in the new volume.
-    /// </summary>
     private IEnumerator FadeTrackRoutine(AudioClip newClip)
     {
         float targetVolume = 1f;
 
-        // 1. Fade Out (jika audio sedang berputar)
         if (_bgmSource.isPlaying)
         {
             float startVolume = _bgmSource.volume;
             float timer = 0f;
-
             while (timer < _fadeDuration)
             {
                 timer += Time.deltaTime;
                 _bgmSource.volume = Mathf.Lerp(startVolume, 0f, timer / _fadeDuration);
                 yield return null;
             }
-
             _bgmSource.Stop();
         }
 
-        // 2. Ganti AudioClip baru dan atur volumenya ke 0
         _bgmSource.clip = newClip;
         _bgmSource.loop = true;
         _bgmSource.Play();
 
-        // 3. Fade In
         float fadeTimer = 0f;
         while (fadeTimer < _fadeDuration)
         {
@@ -120,8 +92,52 @@ public class AudioManager : MonoBehaviour
             _bgmSource.volume = Mathf.Lerp(0f, targetVolume, fadeTimer / _fadeDuration);
             yield return null;
         }
-
         _bgmSource.volume = targetVolume;
         _fadeCoroutine = null;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // SFX Methods
+    // ═══════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Memutar SFX sekali (one-shot). Cocok untuk efek suara seperti klik, jump, hit, dll.
+    /// </summary>
+    public void PlaySFX(AudioClip clip)
+    {
+        if (_sfxSource == null || clip == null) return;
+        _sfxSource.PlayOneShot(clip);
+    }
+
+    /// <summary>
+    /// Memutar SFX dengan volume spesifik (0-1). 
+    /// Volume ini akan dikalikan dengan volume master SFX dari AudioMixer.
+    /// </summary>
+    public void PlaySFX(AudioClip clip, float volume)
+    {
+        if (_sfxSource == null || clip == null) return;
+        _sfxSource.PlayOneShot(clip, Mathf.Clamp01(volume));
+    }
+
+    /// <summary>
+    /// Memutar SFX dengan loop (misal: suara mesin, angin, api).
+    /// Panggil StopSFXLoop() untuk menghentikannya.
+    /// </summary>
+    public void PlaySFXLoop(AudioClip clip)
+    {
+        if (_sfxSource == null || clip == null) return;
+        if (_sfxSource.isPlaying) _sfxSource.Stop();
+        _sfxSource.clip = clip;
+        _sfxSource.loop = true;
+        _sfxSource.Play();
+    }
+
+    /// <summary>
+    /// Menghentikan SFX yang sedang loop.
+    /// </summary>
+    public void StopSFXLoop()
+    {
+        if (_sfxSource == null) return;
+        _sfxSource.Stop();
     }
 }
