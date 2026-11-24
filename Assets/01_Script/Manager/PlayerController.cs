@@ -76,12 +76,14 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         InputSystem.onDeviceChange += HandleDeviceChange;
+        KeybindManager.OnOverridesChanged += ApplyKeybindOverrides;
         InitializeInputActions();
     }
 
     private void OnDisable()
     {
         InputSystem.onDeviceChange -= HandleDeviceChange;
+        KeybindManager.OnOverridesChanged -= ApplyKeybindOverrides;
 
         CancelAiming();
 
@@ -185,6 +187,8 @@ public class PlayerController : MonoBehaviour
         }
 
         UpdateBindingGroupForConnectedDevices();
+        ApplyKeybindOverrides();
+
         playerActionMap.Enable();
         if (!gameplayInputEnabled)
             playerActionMap.Disable();
@@ -545,42 +549,100 @@ public class PlayerController : MonoBehaviour
 #region Keybind
 
     /// <summary>
-    /// Applies custom keybind overrides from KeybindManager to the runtime input actions.
-    /// Uses the active binding group to determine which scheme's overrides to apply.
+    /// Applies custom keybind overrides to the runtime input actions.
+    /// The player listens to a cloned asset, so overrides made on the UI asset
+    /// (or restored from PlayerPrefs) must be copied onto that clone.
+    /// Every scheme is applied; bindingMask decides which one is live.
     /// </summary>
     private void ApplyKeybindOverrides()
     {
-        if (KeybindManager.Instance == null || runtimeInputActions == null) return;
+        if (runtimeInputActions == null) return;
     
-        // Determine scheme name from the active binding group
-        string schemeName = (activeBindingGroup == controllerBindingGroup)
-            ? "Controller"
-            : "Keyboard";
+        var mapWasEnabled = playerActionMap != null && playerActionMap.enabled;
+        if (mapWasEnabled)
+            playerActionMap.Disable();
     
-        var overrides = KeybindManager.Instance.GetAllOverrides();
-    
-        foreach (var kvp in overrides)
+        foreach (var map in runtimeInputActions.actionMaps)
         {
-            string key = kvp.Key;           // e.g. "Skill 1_Keyboard"
-            string bindingPath = kvp.Value; // e.g. "<Keyboard>/k"
-    
-            // Only apply overrides that match the current scheme
-            if (!key.EndsWith($"_{schemeName}")) continue;
-    
-            // Extract action name (remove "_Keyboard" or "_Controller" suffix)
-            string actionName = key.Substring(0, key.LastIndexOf('_'));
-    
-            var action = runtimeInputActions.FindAction(actionName, false);
-            if (action == null) continue;
-    
-            // Find the binding index for this scheme
-            int bindingIndex = FindBindingIndexForScheme(action, schemeName);
-            if (bindingIndex < 0) continue;
-    
-            action.ApplyBindingOverride(bindingIndex, new InputBinding { overridePath = bindingPath });
+            foreach (var action in map.actions)
+                action.RemoveAllBindingOverrides();
         }
+    
+        CopyOverridesFrom(inputActions);
+    
+        var applied = 0;
+        if (KeybindManager.Instance != null)
+        {
+            foreach (var kvp in KeybindManager.Instance.GetAllOverrides())
+            {
+                var key = kvp.Key;
+                var bindingPath = kvp.Value;
+                if (string.IsNullOrEmpty(bindingPath)) continue;
+    
+                var split = key.LastIndexOf('_');
+                if (split <= 0) continue;
+    
+                var actionName = key.Substring(0, split);
+                var schemeName = key.Substring(split + 1);
+    
+                var action = runtimeInputActions.FindAction(actionName, false);
+                if (action == null)
+                {
+                    Debug.LogWarning($"[PlayerController] Override '{key}' tidak punya action '{actionName}'.", this);
+                    continue;
+                }
+    
+                var bindingIndex = FindBindingIndexForScheme(action, schemeName);
+                if (bindingIndex < 0)
+                {
+                    Debug.LogWarning($"[PlayerController] Action '{actionName}' tidak punya binding group '{schemeName}'.", this);
+                    continue;
+                }
+    
+                action.ApplyBindingOverride(bindingIndex, bindingPath);
+                applied++;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerController] KeybindManager tidak ada. Rebind hanya hidup di sesi ini dan tidak tersimpan.", this);
+        }
+    
+        if (mapWasEnabled)
+            playerActionMap.Enable();
+    
+        Debug.Log($"[PlayerController] Keybind override aktif: {applied}", this);
     }
     
+    /// <summary>
+    /// Copies runtime overrides from the source asset onto the gameplay clone.
+    /// Object.Instantiate does not copy overridePath.
+    /// </summary>
+    private void CopyOverridesFrom(InputActionAsset source)
+    {
+        if (source == null || source == runtimeInputActions) return;
+    
+        foreach (var sourceMap in source.actionMaps)
+        {
+            var destMap = runtimeInputActions.FindActionMap(sourceMap.name, false);
+            if (destMap == null) continue;
+    
+            foreach (var sourceAction in sourceMap.actions)
+            {
+                var destAction = destMap.FindAction(sourceAction.name, false);
+                if (destAction == null) continue;
+    
+                var count = Mathf.Min(sourceAction.bindings.Count, destAction.bindings.Count);
+                for (var i = 0; i < count; i++)
+                {
+                    var overridePath = sourceAction.bindings[i].overridePath;
+                    if (string.IsNullOrEmpty(overridePath)) continue;
+                    destAction.ApplyBindingOverride(i, overridePath);
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Finds the binding index whose groups contain the given scheme name.
     /// </summary>

@@ -24,9 +24,6 @@ public class KeybindUI : MonoBehaviour
     private readonly List<KeybindEntryUI> _entries = new();
     private InputActionMap _actionMap;
 
-    /// <summary>
-    /// The currently active scheme name ("Keyboard" or "Controller").
-    /// </summary>
     public string ActiveSchemeName { get; private set; }
 
     private void Awake()
@@ -44,10 +41,6 @@ public class KeybindUI : MonoBehaviour
     private void OnEnable() => RebuildRows();
     private void OnDisable() => ClearRows();
 
-    /// <summary>
-    /// Destroys existing rows and regenerates one per action,
-    /// filtered by the currently active control scheme.
-    /// </summary>
     public void RebuildRows()
     {
         ClearRows();
@@ -65,20 +58,16 @@ public class KeybindUI : MonoBehaviour
             return;
         }
 
-        // Refresh active scheme on every rebuild
         ActiveSchemeName = DetectActiveScheme();
 
         foreach (var action in _actionMap.actions)
         {
-            // Skip PassThrough actions (used internally for composites like 2DVector)
             if (action.type == InputActionType.PassThrough) continue;
             if (action.bindings.Count == 0) continue;
 
-            // Find the binding index that matches the active scheme
             int bindingIndex = FindBindingIndexForScheme(action, ActiveSchemeName);
-            if (bindingIndex < 0) continue; // No binding for this scheme → skip
+            if (bindingIndex < 0) continue;
 
-            // Apply saved override BEFORE creating the row so the label shows it
             ApplySavedOverride(action, bindingIndex);
 
             var entry = Instantiate(_rowPrefab, _rowContainer);
@@ -88,9 +77,6 @@ public class KeybindUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Resets every action back to its asset default binding.
-    /// </summary>
     public void ResetAllToDefault()
     {
         if (_actionMap == null) return;
@@ -98,18 +84,14 @@ public class KeybindUI : MonoBehaviour
         foreach (var action in _actionMap.actions)
         {
             action.RemoveAllBindingOverrides();
-            KeybindManager.Instance?.ClearBinding(action.name);
+            KeybindManager.Instance?.ClearBinding($"{action.name}_{_keyboardSchemeName}");
+            KeybindManager.Instance?.ClearBinding($"{action.name}_{_controllerSchemeName}");
         }
 
         foreach (var entry in _entries)
             entry.RefreshBindingDisplay();
     }
 
-    // ── Scheme Detection ──────────────────────────────────────────────────
-
-    /// <summary>
-    /// Returns the active scheme name based on connected devices.
-    /// </summary>
     private string DetectActiveScheme()
     {
         foreach (var gamepad in Gamepad.all)
@@ -120,9 +102,6 @@ public class KeybindUI : MonoBehaviour
         return _keyboardSchemeName;
     }
 
-    /// <summary>
-    /// Rebuilds rows when a gamepad is connected or disconnected.
-    /// </summary>
     private void HandleDeviceChange(InputDevice device, InputDeviceChange change)
     {
         if (device is not Gamepad) return;
@@ -139,25 +118,15 @@ public class KeybindUI : MonoBehaviour
         }
     }
 
-    // ── Binding Helpers ───────────────────────────────────────────────────
-
-    /// <summary>
-    /// Finds the binding index whose groups contain the given scheme name.
-    /// Returns -1 if no matching binding is found.
-    /// </summary>
     private static int FindBindingIndexForScheme(InputAction action, string schemeName)
     {
         for (int i = 0; i < action.bindings.Count; i++)
         {
             var binding = action.bindings[i];
-
-            // Skip composite parts (e.g. "up" part of a 2DVector composite)
             if (binding.isPartOfComposite) continue;
-
-            // Skip the composite root itself (we want the concrete bindings)
             if (binding.isComposite) continue;
 
-            if (binding.groups.Contains(schemeName))
+            if (!string.IsNullOrEmpty(binding.groups) && binding.groups.Contains(schemeName))
                 return i;
         }
         return -1;
@@ -168,7 +137,6 @@ public class KeybindUI : MonoBehaviour
         if (action == null) return;
 
         string effectivePath = action.bindings[bindingIndex].effectivePath;
-        // Store override keyed by action name + scheme so keyboard & controller don't clash
         string key = $"{action.name}_{ActiveSchemeName}";
         KeybindManager.Instance?.SetBinding(key, effectivePath);
     }
@@ -178,9 +146,7 @@ public class KeybindUI : MonoBehaviour
         string key = $"{action.name}_{ActiveSchemeName}";
         var saved = KeybindManager.Instance?.GetOverride(key);
         if (!string.IsNullOrEmpty(saved))
-        {
-            action.ApplyBindingOverride(bindingIndex, new InputBinding { overridePath = saved });
-        }
+            action.ApplyBindingOverride(bindingIndex, saved);
     }
 
     private void ClearRows()
