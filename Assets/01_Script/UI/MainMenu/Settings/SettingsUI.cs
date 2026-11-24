@@ -5,7 +5,6 @@ using UnityEngine.UI;
 /// <summary>
 /// Drives the Settings screen: tab switching, control binding to SettingsData,
 /// and Save/Back button wiring.
-/// Attach to the root Settings panel GameObject.
 /// </summary>
 public class SettingsUI : MonoBehaviour
 {
@@ -61,58 +60,77 @@ public class SettingsUI : MonoBehaviour
 
         if (_firstSelected != null)
         {
-            var es = UnityEngine.EventSystems.EventSystem.current;
-            es?.SetSelectedGameObject(_firstSelected.gameObject);
+            var eventSystem = UnityEngine.EventSystems.EventSystem.current;
+            eventSystem?.SetSelectedGameObject(_firstSelected.gameObject);
         }
     }
 
-    // ── Controls → SettingsData ───────────────────────────────────────────
+    // ── Event Handlers (Auto-Save on Change) ──────────────────────────
 
     private void OnMusicChanged(float value)
-        => SettingsData.Instance?.SetMusicVolume(value);
+    {
+        SettingsData.Instance?.SetMusicVolume(value);
+    }
 
     private void OnSFXChanged(float value)
-        => SettingsData.Instance?.SetSFXVolume(value);
+    {
+        SettingsData.Instance?.SetSFXVolume(value);
+    }
 
     private void OnFullscreenChanged(int index)
+    {
         // Dropdown: 0 = Full-Screen, 1 = Windowed
-        => SettingsData.Instance?.SetFullscreen(index == 0);
+        SettingsData.Instance?.SetFullscreen(index == 0);
+    }
 
     private void OnShakeChanged(bool value)
-        => SettingsData.Instance?.SetShake(value);
+    {
+        SettingsData.Instance?.SetShake(value);
+    }
 
     private void OnBackClicked()
     {
-        SettingsData.Instance?.Save();
-        gameObject.SetActive(false);
+        // Final save to ensure all values are persisted
+        PlayerPrefs.Save();
 
-        // Notify MainMenuUI to restore focus if present.
+        gameObject.SetActive(false);
         MainMenuUI.Instance?.OnSettingsClosed();
     }
 
-    // ── Tab switching ─────────────────────────────────────────────────────
+    // ── Tab Switching ─────────────────────────────────────────────────
 
     private void ShowTab(int index)
     {
-        if (_volumePanel   != null) _volumePanel.SetActive(index == 0);
+        if (_volumePanel != null) _volumePanel.SetActive(index == 0);
         if (_graphicsPanel != null) _graphicsPanel.SetActive(index == 1);
-        if (_keybindPanel  != null) _keybindPanel.SetActive(index == 2);
+        if (_keybindPanel != null) _keybindPanel.SetActive(index == 2);
     }
 
-    // ── Sync controls to current saved state ─────────────────────────────
+    // ── Sync Controls to Saved State ──────────────────────────────────
 
     private void RefreshFromData()
     {
         var data = SettingsData.Instance;
         if (data == null) return;
 
-        if (_musicSlider != null) _musicSlider.SetValueWithoutNotify(data.MusicVolume);
-        if (_sfxSlider   != null) _sfxSlider.SetValueWithoutNotify(data.SFXVolume);
+        if (_musicSlider != null)
+        {
+            _musicSlider.SetValueWithoutNotify(data.MusicVolume);
+        }
+
+        if (_sfxSlider != null)
+        {
+            _sfxSlider.SetValueWithoutNotify(data.SFXVolume);
+        }
 
         if (_fullscreenDropdown != null)
+        {
             _fullscreenDropdown.SetValueWithoutNotify(data.IsFullscreen ? 0 : 1);
+        }
 
         if (_shakeToggle != null)
+        {
             _shakeToggle.SetIsOnWithoutNotify(data.ShakeEnabled);
+        }
     }
 }

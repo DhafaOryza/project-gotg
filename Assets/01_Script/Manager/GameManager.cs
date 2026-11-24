@@ -211,7 +211,7 @@ public class GameManager : MonoBehaviour
         levelSpawnerManager.DespawnAllNPC();
         envController?.SwitchToNight();
 
-        AudioManager.Instance?.PlayNightBGM();
+        AudioManager.Instance?.PlayNightBgm();
     }
 
     #endregion
@@ -245,7 +245,7 @@ public class GameManager : MonoBehaviour
 
         envController?.SwitchToDay();
 
-        AudioManager.Instance?.PlayDayBGM();
+        AudioManager.Instance?.PlayDayBgm();
     }
 
     #endregion
@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviour
         playerController?.Stop();
         envController?.SwitchToDay();
 
-        AudioManager.Instance?.PlayDayBGM();
+        AudioManager.Instance?.PlayDayBgm();
     }
 
     #endregion
