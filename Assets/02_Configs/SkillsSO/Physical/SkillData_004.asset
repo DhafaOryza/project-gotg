@@ -26,7 +26,7 @@ MonoBehaviour:
   isProjectile: 1
   executionType: 0
   icon: {fileID: 0}
-  locked: 0
+  locked: 1
   targetType: 0
   cooldown: 3
   skillColor: {r: 0.02641511, g: 0.020748325, b: 0.003339268, a: 1}
@@ -35,3 +35,6 @@ MonoBehaviour:
   skillPrefab: {fileID: 8946592561061051195, guid: 54a0636354ee996469f397d139e27860, type: 3}
   ghostPreviewPrefab: {fileID: 7836781342000382809, guid: 923997bc754d85e49b531d20a8215065, type: 3}
   damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}
+  meleeVfxPrefab: {fileID: 0}
+  meleeVfxSpawnOffset: {x: 0, y: 0, z: 0}
+  meleeVfxForwardDistance: 0

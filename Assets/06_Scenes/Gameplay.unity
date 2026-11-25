@@ -37095,7 +37095,7 @@ MonoBehaviour:
     socketParent: {fileID: 1726923303}
     boundData: {fileID: 0}
     spawnedSlotUI: {fileID: 0}
-  slotPrefabsUI: {fileID: 0}
+  slotPrefabsUI: {fileID: 3611849345229153432, guid: 15117b953f2d24944bc19399a4004570, type: 3}
 --- !u!4 &481623612 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2088781133258964722, guid: ee8fe75605009894fb5f8db877cc1199, type: 3}
