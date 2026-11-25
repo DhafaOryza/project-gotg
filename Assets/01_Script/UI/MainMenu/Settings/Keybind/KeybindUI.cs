@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// Generates one KeybindEntryUI row per action in the target action map,
 /// filtered by the currently active control scheme (Keyboard or Controller).
-/// Wires rebind events to KeybindManager for persistence.
+/// Composite actions such as Move get one row per direction (Up/Down/Left/Right).
 /// </summary>
 public class KeybindUI : MonoBehaviour
 {
@@ -62,18 +62,25 @@ public class KeybindUI : MonoBehaviour
 
         foreach (var action in _actionMap.actions)
         {
-            if (action.type == InputActionType.PassThrough) continue;
             if (action.bindings.Count == 0) continue;
 
-            int bindingIndex = FindBindingIndexForScheme(action, ActiveSchemeName);
+            var addedPart = false;
+            for (int i = 0; i < action.bindings.Count; i++)
+            {
+                var binding = action.bindings[i];
+                if (!binding.isPartOfComposite) continue;
+                if (!MatchesScheme(action, i, ActiveSchemeName)) continue;
+
+                addedPart = true;
+                var partLabel = PrettyPartName(binding.name);
+                AddRow(action, i, $"{action.name} {partLabel}");
+            }
+
+            if (addedPart) continue;
+
+            int bindingIndex = FindSimpleBindingIndex(action, ActiveSchemeName);
             if (bindingIndex < 0) continue;
-
-            ApplySavedOverride(action, bindingIndex);
-
-            var entry = Instantiate(_rowPrefab, _rowContainer);
-            entry.Initialize(_asset, action, bindingIndex, ActiveSchemeName);
-            entry.OnRebindCompleted += HandleRebindCompleted;
-            _entries.Add(entry);
+            AddRow(action, bindingIndex, action.name);
         }
     }
 
@@ -84,8 +91,16 @@ public class KeybindUI : MonoBehaviour
         foreach (var action in _actionMap.actions)
         {
             action.RemoveAllBindingOverrides();
-            KeybindManager.Instance?.ClearBinding($"{action.name}_{_keyboardSchemeName}");
-            KeybindManager.Instance?.ClearBinding($"{action.name}_{_controllerSchemeName}");
+            KeybindManager.Instance?.ClearBinding(action.name);
+            KeybindManager.Instance?.ClearBinding(OverrideKey(action, -1, _keyboardSchemeName));
+            KeybindManager.Instance?.ClearBinding(OverrideKey(action, -1, _controllerSchemeName));
+
+            for (int i = 0; i < action.bindings.Count; i++)
+            {
+                if (!action.bindings[i].isPartOfComposite) continue;
+                KeybindManager.Instance?.ClearBinding(OverrideKey(action, i, _keyboardSchemeName));
+                KeybindManager.Instance?.ClearBinding(OverrideKey(action, i, _controllerSchemeName));
+            }
         }
 
         foreach (var entry in _entries)
@@ -118,18 +133,45 @@ public class KeybindUI : MonoBehaviour
         }
     }
 
-    private static int FindBindingIndexForScheme(InputAction action, string schemeName)
+    private void AddRow(InputAction action, int bindingIndex, string displayName)
+    {
+        ApplySavedOverride(action, bindingIndex);
+
+        var entry = Instantiate(_rowPrefab, _rowContainer);
+        entry.Initialize(_asset, action, bindingIndex, ActiveSchemeName, displayName);
+        entry.OnRebindCompleted += HandleRebindCompleted;
+        _entries.Add(entry);
+    }
+
+    private int FindSimpleBindingIndex(InputAction action, string schemeName)
     {
         for (int i = 0; i < action.bindings.Count; i++)
         {
             var binding = action.bindings[i];
-            if (binding.isPartOfComposite) continue;
-            if (binding.isComposite) continue;
-
-            if (!string.IsNullOrEmpty(binding.groups) && binding.groups.Contains(schemeName))
+            if (binding.isPartOfComposite || binding.isComposite) continue;
+            if (MatchesScheme(action, i, schemeName))
                 return i;
         }
         return -1;
+    }
+
+    /// <summary>
+    /// "Skill 1_Keyboard" for a normal binding.
+    /// "Move|up_Keyboard" for one direction of a 2D Vector composite.
+    /// </summary>
+    public static string OverrideKey(InputAction action, int bindingIndex, string schemeName)
+    {
+        if (bindingIndex >= 0 && bindingIndex < action.bindings.Count)
+        {
+            var binding = action.bindings[bindingIndex];
+            if (binding.isPartOfComposite)
+            {
+                var part = string.IsNullOrEmpty(binding.name) ? bindingIndex.ToString() : binding.name;
+                return $"{action.name}|{part}_{schemeName}";
+            }
+        }
+
+        return $"{action.name}_{schemeName}";
     }
 
     private void HandleRebindCompleted(InputAction action, int bindingIndex)
@@ -137,16 +179,48 @@ public class KeybindUI : MonoBehaviour
         if (action == null) return;
 
         string effectivePath = action.bindings[bindingIndex].effectivePath;
-        string key = $"{action.name}_{ActiveSchemeName}";
+        string key = OverrideKey(action, bindingIndex, ActiveSchemeName);
         KeybindManager.Instance?.SetBinding(key, effectivePath);
     }
 
     private void ApplySavedOverride(InputAction action, int bindingIndex)
     {
-        string key = $"{action.name}_{ActiveSchemeName}";
+        string key = OverrideKey(action, bindingIndex, ActiveSchemeName);
         var saved = KeybindManager.Instance?.GetOverride(key);
         if (!string.IsNullOrEmpty(saved))
             action.ApplyBindingOverride(bindingIndex, saved);
+    }
+
+    private bool MatchesScheme(InputAction action, int bindingIndex, string schemeName)
+    {
+        var groups = GroupsOf(action, bindingIndex);
+        if (string.IsNullOrEmpty(groups)) return false;
+        if (groups.Contains(schemeName)) return true;
+
+        // Stick bindings in the asset are grouped as "Gamepad", the UI scheme is "Controller".
+        if (schemeName == _controllerSchemeName && groups.Contains("Gamepad")) return true;
+        if (schemeName == _keyboardSchemeName && groups.Contains("Keyboard")) return true;
+        return false;
+    }
+
+    private static string GroupsOf(InputAction action, int bindingIndex)
+    {
+        var groups = action.bindings[bindingIndex].groups;
+        if (!string.IsNullOrEmpty(groups)) return groups;
+
+        for (int i = bindingIndex; i >= 0; i--)
+        {
+            if (!action.bindings[i].isComposite) continue;
+            return action.bindings[i].groups ?? string.Empty;
+        }
+
+        return string.Empty;
+    }
+
+    private static string PrettyPartName(string part)
+    {
+        if (string.IsNullOrEmpty(part)) return "Binding";
+        return char.ToUpper(part[0]) + part.Substring(1);
     }
 
     private void ClearRows()

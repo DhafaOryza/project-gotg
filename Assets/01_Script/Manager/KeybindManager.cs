@@ -4,19 +4,9 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Persists custom keybind overrides across scenes via PlayerPrefs.
-/// Keys are scheme-specific (e.g. "Skill 1_Keyboard" vs "Skill 1_Controller")
-/// so keyboard and controller bindings don't overwrite each other.
-/// </summary>
 public class KeybindManager : MonoBehaviour
 {
     public static KeybindManager Instance { get; private set; }
-
-    /// <summary>
-    /// Fired after any override is saved, cleared, or reset.
-    /// PlayerController listens so its runtime InputActionAsset clone stays in sync.
-    /// </summary>
     public static event Action OnOverridesChanged;
 
     [SerializeField] private InputActionAsset _inputActionAsset;
@@ -114,6 +104,15 @@ public class KeybindManager : MonoBehaviour
                     var key = $"{action.name}_{scheme}";
                     if (PlayerPrefs.HasKey(KeyPrefix + key))
                         _overrides[key] = PlayerPrefs.GetString(KeyPrefix + key);
+
+                    for (int i = 0; i < action.bindings.Count; i++)
+                    {
+                        var binding = action.bindings[i];
+                        if (!binding.isPartOfComposite || string.IsNullOrEmpty(binding.name)) continue;
+                        var partKey = $"{action.name}|{binding.name}_{scheme}";
+                        if (PlayerPrefs.HasKey(KeyPrefix + partKey))
+                            _overrides[partKey] = PlayerPrefs.GetString(KeyPrefix + partKey);
+                    }
                 }
             }
         }

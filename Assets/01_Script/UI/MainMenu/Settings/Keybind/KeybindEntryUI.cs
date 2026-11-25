@@ -53,16 +53,16 @@ public class KeybindEntryUI : MonoBehaviour
     /// <summary>
     /// Called by KeybindUI after instantiation.
     /// </summary>
-    public void Initialize(InputActionAsset asset, InputAction action, int bindingIndex, string schemeName)
+    public void Initialize(InputActionAsset asset, InputAction action, int bindingIndex, string schemeName, string displayName = null)
     {
         _asset        = asset;
         _action       = action;
         _bindingIndex = bindingIndex;
         _schemeName   = schemeName;
-
+    
         if (_actionNameText != null)
-            _actionNameText.text = action.name;
-
+            _actionNameText.text = string.IsNullOrEmpty(displayName) ? action.name : displayName;
+    
         RefreshBindingDisplay();
     }
 

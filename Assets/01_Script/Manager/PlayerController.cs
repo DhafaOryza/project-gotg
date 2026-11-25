@@ -132,9 +132,6 @@ public class PlayerController : MonoBehaviour
         }
 
         runtimeInputActions = Instantiate(inputActions);
-
-        ApplyKeybindOverrides();
-
         playerActionMap = runtimeInputActions.FindActionMap(actionMapName, false);
 
         if (playerActionMap == null)
@@ -548,12 +545,6 @@ public class PlayerController : MonoBehaviour
 
 #region Keybind
 
-    /// <summary>
-    /// Applies custom keybind overrides to the runtime input actions.
-    /// The player listens to a cloned asset, so overrides made on the UI asset
-    /// (or restored from PlayerPrefs) must be copied onto that clone.
-    /// Every scheme is applied; bindingMask decides which one is live.
-    /// </summary>
     private void ApplyKeybindOverrides()
     {
         if (runtimeInputActions == null) return;
@@ -575,37 +566,19 @@ public class PlayerController : MonoBehaviour
         {
             foreach (var kvp in KeybindManager.Instance.GetAllOverrides())
             {
-                var key = kvp.Key;
-                var bindingPath = kvp.Value;
-                if (string.IsNullOrEmpty(bindingPath)) continue;
-    
-                var split = key.LastIndexOf('_');
-                if (split <= 0) continue;
-    
-                var actionName = key.Substring(0, split);
-                var schemeName = key.Substring(split + 1);
+                if (!TryParseOverrideKey(kvp.Key, out var actionName, out var partName, out var schemeName))
+                    continue;
+                if (string.IsNullOrEmpty(kvp.Value)) continue;
     
                 var action = runtimeInputActions.FindAction(actionName, false);
-                if (action == null)
-                {
-                    Debug.LogWarning($"[PlayerController] Override '{key}' tidak punya action '{actionName}'.", this);
-                    continue;
-                }
+                if (action == null) continue;
     
-                var bindingIndex = FindBindingIndexForScheme(action, schemeName);
-                if (bindingIndex < 0)
-                {
-                    Debug.LogWarning($"[PlayerController] Action '{actionName}' tidak punya binding group '{schemeName}'.", this);
-                    continue;
-                }
+                var bindingIndex = FindOverrideBindingIndex(action, schemeName, partName);
+                if (bindingIndex < 0) continue;
     
-                action.ApplyBindingOverride(bindingIndex, bindingPath);
+                action.ApplyBindingOverride(bindingIndex, kvp.Value);
                 applied++;
             }
-        }
-        else
-        {
-            Debug.LogWarning("[PlayerController] KeybindManager tidak ada. Rebind hanya hidup di sesi ini dan tidak tersimpan.", this);
         }
     
         if (mapWasEnabled)
@@ -614,10 +587,6 @@ public class PlayerController : MonoBehaviour
         Debug.Log($"[PlayerController] Keybind override aktif: {applied}", this);
     }
     
-    /// <summary>
-    /// Copies runtime overrides from the source asset onto the gameplay clone.
-    /// Object.Instantiate does not copy overridePath.
-    /// </summary>
     private void CopyOverridesFrom(InputActionAsset source)
     {
         if (source == null || source == runtimeInputActions) return;
@@ -642,21 +611,76 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-    /// <summary>
-    /// Finds the binding index whose groups contain the given scheme name.
-    /// </summary>
-    private static int FindBindingIndexForScheme(InputAction action, string schemeName)
+    
+    private static bool TryParseOverrideKey(string key, out string actionName, out string partName, out string schemeName)
+    {
+        actionName = null;
+        partName = null;
+        schemeName = null;
+        if (string.IsNullOrEmpty(key)) return false;
+    
+        var schemeSplit = key.LastIndexOf('_');
+        if (schemeSplit <= 0 || schemeSplit >= key.Length - 1) return false;
+    
+        schemeName = key.Substring(schemeSplit + 1);
+        var body = key.Substring(0, schemeSplit);
+        var partSplit = body.IndexOf('|');
+        if (partSplit >= 0)
+        {
+            actionName = body.Substring(0, partSplit);
+            partName = body.Substring(partSplit + 1);
+        }
+        else
+        {
+            actionName = body;
+        }
+    
+        return !string.IsNullOrEmpty(actionName);
+    }
+    
+    private int FindOverrideBindingIndex(InputAction action, string schemeName, string partName)
     {
         for (int i = 0; i < action.bindings.Count; i++)
         {
             var binding = action.bindings[i];
-            if (binding.isPartOfComposite || binding.isComposite) continue;
-            if (binding.groups.Contains(schemeName)) return i;
+            if (binding.isComposite) continue;
+    
+            if (string.IsNullOrEmpty(partName))
+            {
+                if (binding.isPartOfComposite) continue;
+            }
+            else if (!binding.isPartOfComposite || binding.name != partName)
+            {
+                continue;
+            }
+    
+            if (BindingMatchesScheme(action, i, schemeName))
+                return i;
         }
+    
         return -1;
     }
-
+    
+    private bool BindingMatchesScheme(InputAction action, int bindingIndex, string schemeName)
+    {
+        var groups = action.bindings[bindingIndex].groups;
+        if (string.IsNullOrEmpty(groups))
+        {
+            for (int i = bindingIndex; i >= 0; i--)
+            {
+                if (!action.bindings[i].isComposite) continue;
+                groups = action.bindings[i].groups;
+                break;
+            }
+        }
+    
+        if (string.IsNullOrEmpty(groups)) return false;
+        if (groups.Contains(schemeName)) return true;
+        if (schemeName == controllerBindingGroup && groups.Contains("Gamepad")) return true;
+        if (schemeName == keyboardBindingGroup && groups.Contains("Keyboard")) return true;
+        return false;
+    }
+    
 #endregion
 
     private void ResetTimeScale()
