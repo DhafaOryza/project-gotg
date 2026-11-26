@@ -42,26 +42,81 @@ public class ItemCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     }
 
     /// <summary>
-    /// Fills the card with the icon and name of one item.
+    /// Initializes the card with item data. Used by Loadout (default stack 0).
     /// </summary>
-    public void Initialize(ItemDataSO data)
+    public void InitializeLoadut(ItemDataSO data)
+    {
+        InitializeShop(data, 0);
+    }
+
+    /// <summary>
+    /// Initializes the card with item data and a specific stock count. Used by Shop.
+    /// </summary>
+    public void InitializeShop(ItemDataSO data, int currentStock)
     {
         _data = data;
-
         if (_icon != null)
         {
             _icon.sprite = data != null ? data.icon : null;
             _icon.enabled = _icon.sprite != null;
         }
-
         if (_nameText != null)
             _nameText.text = data != null ? data.displayName : string.Empty;
+
+        UpdateStock(currentStock);
     }
+
+    // /// <summary>
+    // /// Fills the card with the icon and name of one item.
+    // /// </summary>
+    // public void Initialize(ItemDataSO data, int initialStock)
+    // {
+    //     _data = data;
+
+    //     if (_icon != null)
+    //     {
+    //         _icon.sprite = data != null ? data.icon : null;
+    //         _icon.enabled = _icon.sprite != null;
+    //     }
+
+    //     if (_nameText != null)
+    //         _nameText.text = data != null ? data.displayName : string.Empty;
+
+    //     UpdateStock(initialStock);
+
+    //     // if (_stackText != null && data != null)
+    //     // {
+    //     //     _stackText.text = $"Stack : {data.maxStack}";
+    //     // }
+    // }
 
     private void HandleSelectButton()
     {
         OnSelected?.Invoke(this);
     }
+
+    /// <summary>
+    /// Updates the stock display text.
+    /// </summary>
+    public void UpdateStock(int currentStock)
+    {
+        if (_stackText != null)
+        {
+            _stackText.text = $"Stock: {currentStock}";
+            
+            // Opsional: Ubah warna atau disable button jika stok habis
+            if (currentStock <= 0)
+            {
+                _stackText.color = Color.red;
+                if (_selectButton != null) _selectButton.interactable = false;
+            }
+            else
+            {
+                _stackText.color = Color.white;
+            }
+        }
+    }
+
 
     public void OnBeginDrag(PointerEventData eventData)
     {
