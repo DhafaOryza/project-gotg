@@ -1,9 +1,6 @@
 {
   "dependencies": {
-<<<<<<< Updated upstream
-=======
     "com.coplaydev.unity-mcp": "file:C:/Users/lenovo/unity-mcp/MCPForUnity",
->>>>>>> Stashed changes
     "com.unity.2d.animation": "13.0.2",
     "com.unity.2d.aseprite": "3.0.1",
     "com.unity.2d.psdimporter": "12.0.1",

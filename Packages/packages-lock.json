@@ -7,8 +7,6 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-<<<<<<< Updated upstream
-=======
     "com.coplaydev.unity-mcp": {
       "version": "file:C:/Users/lenovo/unity-mcp/MCPForUnity",
       "depth": 0,
@@ -25,7 +23,6 @@
         "com.unity.test-framework": "1.1.31"
       }
     },
->>>>>>> Stashed changes
     "com.unity.2d.animation": {
       "version": "13.0.2",
       "depth": 0,
@@ -245,6 +242,13 @@
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.6",
       "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.2",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
