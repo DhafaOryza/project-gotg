@@ -65,6 +65,7 @@ public class PlayerController : MonoBehaviour
     private bool isAiming = false;
     private int activeAimSlot = -1;
     private Vector2 currentAimDirection = Vector2.right;
+    private Vector2 _mouseWorldPosition;
 
     public bool IsMoving => hasTarget;
     public bool IsAiming => isAiming;
@@ -431,51 +432,98 @@ public class PlayerController : MonoBehaviour
     }
 
 #region  Aiming System
+
     private void StartAiming(int slotIndex)
     {
         Stop();
-        currentAimDirection = GetFacingAimDirection();
+        
         isAiming = true;
         activeAimSlot = slotIndex;
-
+        
         Time.timeScale = slowMoScale;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
 
-        var skilldata = playerEntity.GetEquippedSkillData(slotIndex);
-        if (skilldata != null)
-            SpawnGhost(skilldata);
+        // Hitung arah awal langsung menggunakan raycast mouse
+        CalculateAimDirection();
+        
+        var skillData = playerEntity.GetEquippedSkillData(slotIndex);
+        if (skillData != null)
+            SpawnGhost(skillData);
     }
 
     private void CalculateAimDirection()
     {
-        if (moveAction == null || playerEntity == null || playerRb == null) return;
+        if (playerEntity == null || playerRb == null) return;
 
-        Vector2 stickDirection = moveAction.ReadValue<Vector2>();
-        if (stickDirection.sqrMagnitude < movementDeadzone * movementDeadzone) return;
-
-        SkillDataSO skillData = playerEntity.GetEquippedSkillData(activeAimSlot);
-        if (skillData == null) return;
-
-        currentAimDirection = stickDirection.normalized;
-        SetFacingDirection(stickDirection.x);
-        if (attackPoint != null && attackPoint != playerObject.transform)
-        {
-            Vector3 localpos = attackPoint.localPosition;
-            float absX = Mathf.Abs(localpos.x);
-            float scaleDirection = Mathf.Sign(playerObject.transform.lossyScale.x);
-
-            localpos.x = facingDirection * scaleDirection >= 0f ? absX : -absX;
-            attackPoint.localPosition = localpos;
-        }
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null) return;
 
         Vector3 origin = attackPoint != null ? attackPoint.position : playerRb.position;
+
+        // Ambil posisi mouse di layar
+        Vector2 screenMousePos = Vector2.zero;
+        if (UnityEngine.InputSystem.Mouse.current != null)
+            screenMousePos = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
+        else
+            screenMousePos = Input.mousePosition;
+
+        // Proyeksikan ke world plane Z karakter
+        Plane playerPlane = new Plane(Vector3.forward, new Vector3(0, 0, origin.z));
+        Ray ray = mainCamera.ScreenPointToRay(screenMousePos);
+
+        if (playerPlane.Raycast(ray, out float enter))
+        {
+            _mouseWorldPosition = ray.GetPoint(enter);
+        }
+        else
+        {
+            float distanceToPlane = Mathf.Abs(mainCamera.transform.position.z - origin.z);
+            Vector3 mouseWithZ = new Vector3(screenMousePos.x, screenMousePos.y, distanceToPlane);
+            _mouseWorldPosition = mainCamera.ScreenToWorldPoint(mouseWithZ);
+        }
+        
+        // Ambil titik batas bawah (misal posisi kaki / pivot playerRb)
+        float groundLimitY = playerRb.position.y; 
+
+        // OPSI A: Jika mouse berada di bawah karakter, kunci Y-nya agar minimal horizontal (0)
+        Vector2 rawDirection = (Vector2)_mouseWorldPosition - (Vector2)origin;
+        
+        // Jika arah mengarah ke bawah, paksa Y tidak boleh negatif
+        if (rawDirection.y < 0f)
+        {
+            rawDirection.y = 0f; 
+        }
+
+        Vector2 directionToMouse = rawDirection.normalized;
+
+        // Jika mouse tepat di tengah sehingga arahnya Vector2.zero, gunakan arah hadap
+        if (directionToMouse.sqrMagnitude < 0.001f)
+        {
+            directionToMouse = GetFacingAimDirection();
+        }
+
+        currentAimDirection = directionToMouse;
+        SetFacingDirection(currentAimDirection.x);
+
+        // Update posisi AttackPoint (X flip)
+        if (attackPoint != null && attackPoint != playerObject.transform)
+        {
+            Vector3 localPos = attackPoint.localPosition;
+            float absX = Mathf.Abs(localPos.x);
+            float scaleDirection = Mathf.Sign(playerObject.transform.lossyScale.x);
+            localPos.x = facingDirection * scaleDirection >= 0f ? absX : -absX;
+            attackPoint.localPosition = localPos;
+        }
+
+        // Hitung sudut rotasi Ghost Preview (karena Y sudah dikunci >= 0, angle akan antara 0° s/d 180°)
         float angle = Mathf.Atan2(currentAimDirection.y, currentAimDirection.x) * Mathf.Rad2Deg;
 
         if (currentGhost != null)
         {
-            Vector3 ghostPosition = origin + (Vector3)currentAimDirection;
+            float ghostDistance = 1.5f;
+            Vector3 ghostPosition = origin + (Vector3)(currentAimDirection * ghostDistance);
+            ghostPosition.z = origin.z;
             Quaternion ghostRotation = Quaternion.Euler(0f, 0f, angle);
-
             currentGhost.SetPositionandRotation(ghostPosition, ghostRotation);
         }
     }
