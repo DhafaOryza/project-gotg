@@ -36,6 +36,7 @@ public class ItemDataSO : ScriptableObject
     public int price = 100;
     public int stack;
     public int baseValue;
+    
     [Header("VFX")]
     [Tooltip("Di-spawn di atas user saat item RECOVERY dipakai (auto-hilang setelah 2.5 detik).")]
     public GameObject healVfxPrefab;

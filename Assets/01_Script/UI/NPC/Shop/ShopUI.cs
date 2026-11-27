@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class ShopUI : MonoBehaviour
 {
@@ -30,9 +31,11 @@ public class ShopUI : MonoBehaviour
 
     private CurrencyManager _currencyManager;
     private ItemManager _itemManager;
+    private ItemCardUI _selectedCard;
+
     private readonly List<ItemCardUI> _cards = new List<ItemCardUI>();
     private readonly List<GameObject> _emptySlots = new List<GameObject>();
-    private ItemCardUI _selectedCard;
+    private Dictionary<ItemDataSO, int> _shopStock = new();
 
     private void Awake()
     {
@@ -121,8 +124,9 @@ public class ShopUI : MonoBehaviour
     {
         // Clear first, otherwise the cards are duplicated every time the shop opens.
         ClearCards();
-
         if (_contentContainer == null) return;
+
+        _shopStock.Clear();
 
         GameSessionData sessionData = GameSessionData.GetOrCreate();
         List<ItemDataSO> shopItems = sessionData != null && sessionData.items != null
@@ -138,8 +142,11 @@ public class ShopUI : MonoBehaviour
                 if (item == null) continue;
                 if (generatedCount >= MaxCards) break;
 
+                int initialStock = item.stack;
+                _shopStock[item] = initialStock;
+
                 ItemCardUI card = Instantiate(_cardPrefab, _contentContainer);
-                card.Initialize(item);
+                card.InitializeShop(item, initialStock);
                 card.OnSelected += HandleCardSelected;
                 _cards.Add(card);
                 generatedCount++;
@@ -227,6 +234,8 @@ public class ShopUI : MonoBehaviour
 
         ItemDataSO item = _selectedCard.Data;
 
+        if (!_shopStock.TryGetValue(item, out int currentStock) || currentStock <= 0) return;
+
         if (!_itemManager.CanAddItem(item))
         {
             RefreshDetail();
@@ -241,7 +250,20 @@ public class ShopUI : MonoBehaviour
         }
 
         if (!_itemManager.TryAddItem(item))
+        {
             _currencyManager.AddMoney(price);
+            return;
+        }
+
+        currentStock--;
+        _shopStock[item] = currentStock;
+
+        var card = _cards.FirstOrDefault(c => c.Data == item);
+        if (card != null)
+        {
+            card.UpdateStock(currentStock);
+        }
+
 
         RefreshDetail();
 

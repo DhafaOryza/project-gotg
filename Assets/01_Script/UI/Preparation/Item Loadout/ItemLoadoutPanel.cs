@@ -56,14 +56,14 @@ public class ItemLoadoutPanel : MonoBehaviour
             if (owned == null || owned.data == null || !owned.HasStock) 
                 continue;
 
-            // Sembunyikan kartu jika sudah terpasang di loadout
             if (itemManager.IsEquipped(owned.data)) 
                 continue;
 
             ItemCardUI card = Instantiate(itemCardPrefab, itemContainer);
-            card.Initialize(owned.data);
-            card.SetDraggable(true);
+            
+            card.InitializeShop(owned.data, owned.currentStack);
 
+            card.SetDraggable(true);
             card.OnSelected += HandleCardClicked;
             _spawnedCards.Add(card);
         }

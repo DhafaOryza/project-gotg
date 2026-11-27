@@ -28,8 +28,10 @@ public class KeybindEntryUI : MonoBehaviour
     private InputAction _action;
     private int _bindingIndex;
     private string _schemeName;
-    private InputActionRebindingExtensions.RebindingOperation _rebindOp;
+    private string _previousOverridePath;
     private bool _isListening;
+
+    private InputActionRebindingExtensions.RebindingOperation _rebindOp;
 
     /// <summary>
     /// Raised when a rebind finishes successfully.
@@ -70,6 +72,8 @@ public class KeybindEntryUI : MonoBehaviour
 
     private void StartRebind()
     {
+        _previousOverridePath = _action.bindings[_bindingIndex].overridePath;
+
         if (_isListening) return;
         if (_action == null) return;
 
@@ -101,11 +105,87 @@ public class KeybindEntryUI : MonoBehaviour
         _rebindOp = null;
         _isListening = false;
         _asset?.Enable();
+    
+        var reverted = false;
+        if (!cancelled)
+        {
+            string newPath = _action.bindings[_bindingIndex].effectivePath;
+            if (IsUsedByAnotherBinding(newPath))
+            {
+                RestorePreviousBinding();
+                reverted = true;
+                Debug.Log($"[Keybind] '{newPath}' sudah dipakai binding lain. Dikembalikan ke tombol sebelumnya.");
+            }
+        }
+    
         SetListeningVisual(false);
         RefreshBindingDisplay();
-
-        if (!cancelled)
+    
+        if (!cancelled && !reverted)
             OnRebindCompleted?.Invoke(_action, _bindingIndex);
+    }
+    
+    private bool IsUsedByAnotherBinding(string path)
+    {
+        if (string.IsNullOrEmpty(path) || _action?.actionMap == null) return false;
+    
+        foreach (var action in _action.actionMap.actions)
+        {
+            for (int i = 0; i < action.bindings.Count; i++)
+            {
+                if (action == _action && i == _bindingIndex) continue;
+    
+                var binding = action.bindings[i];
+                if (binding.isComposite) continue;
+                if (!BelongsToActiveScheme(action, i)) continue;
+                if (PathsMatch(binding.effectivePath, path))
+                    return true;
+            }
+        }
+    
+        return false;
+    }
+    
+    private void RestorePreviousBinding()
+    {
+        if (string.IsNullOrEmpty(_previousOverridePath))
+            _action.RemoveBindingOverride(_bindingIndex);
+        else
+            _action.ApplyBindingOverride(_bindingIndex, _previousOverridePath);
+    }
+    
+    private bool BelongsToActiveScheme(InputAction action, int bindingIndex)
+    {
+        var groups = action.bindings[bindingIndex].groups;
+        if (string.IsNullOrEmpty(groups))
+        {
+            for (int i = bindingIndex; i >= 0; i--)
+            {
+                if (!action.bindings[i].isComposite) continue;
+                groups = action.bindings[i].groups;
+                break;
+            }
+        }
+    
+        if (!string.IsNullOrEmpty(groups))
+        {
+            if (groups.Contains(_schemeName)) return true;
+            if (_schemeName == "Controller" && groups.Contains("Gamepad")) return true;
+            if (_schemeName == "Keyboard" && groups.Contains("Keyboard")) return true;
+            return false;
+        }
+    
+        var path = action.bindings[bindingIndex].effectivePath ?? string.Empty;
+        if (_schemeName == "Controller")
+            return path.Contains("Gamepad") || path.Contains("Joystick");
+    
+        return path.Contains("Keyboard") || path.Contains("Mouse");
+    }
+    
+    private static bool PathsMatch(string a, string b)
+    {
+        if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b)) return false;
+        return string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
     }
 
     // ── Display ───────────────────────────────────────────────────────────
