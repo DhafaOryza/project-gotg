@@ -156,7 +156,7 @@ public class SkillNodeUI : MonoBehaviour
 
         for (int tier = 1; tier <= 4; tier++)
         {
-            var skillsInTier = sessionData.skills.FindAll(s => s != null && s.tier == tier);
+            var skillsInTier = sessionData.skills.FindAll(s => s != null && s.tier == tier && !s.locked);
             if (skillsInTier.Count == 0) continue;
 
             if (_tierHeaderPrefab != null)

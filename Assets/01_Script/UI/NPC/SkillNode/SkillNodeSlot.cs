@@ -9,14 +9,12 @@ public class SkillNodeSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _descriptionText;
     [SerializeField] private TextMeshProUGUI _costText;
     [SerializeField] private Button _slotButton;
-    [SerializeField] private GameObject _lockOverlayObject;
     [SerializeField] private GameObject _purchasedOverlayObject;
 
     private SkillDataSO _skillData;
     private System.Action<SkillDataSO, SkillNodeSlot> _onSelectedCallback;
 
     public SkillDataSO SkillData => _skillData;
-    public GameObject LockOverlayObject => _lockOverlayObject;
 
     /// <summary>
     /// Sets up the skill slot UI components and visual state.
@@ -38,7 +36,6 @@ public class SkillNodeSlot : MonoBehaviour
         if (_costText != null)
             _costText.text = $"{skillData.price}";
 
-        UpdateLockVisual(skillData.locked);
         UpdatePurchasedVisual(skillData.isPurchased);
         RefreshButtonState();
 
@@ -57,23 +54,16 @@ public class SkillNodeSlot : MonoBehaviour
     {
         if (_skillData == null) return;
 
-        UpdateLockVisual(_skillData.locked);
+        // UpdateLockVisual(_skillData.locked);
         UpdatePurchasedVisual(_skillData.isPurchased);
         RefreshButtonState();
-    }
-
-    /// <summary>Updates the lock overlay based on lock status.</summary>
-    public void UpdateLockVisual(bool isLocked)
-    {
-        if (_lockOverlayObject != null)
-            _lockOverlayObject.SetActive(isLocked);
     }
 
     /// <summary>Shows or hides the purchased overlay.</summary>
     public void UpdatePurchasedVisual(bool isPurchased)
     {
         if (_purchasedOverlayObject != null)
-            _purchasedOverlayObject.SetActive(isPurchased);
+            _purchasedOverlayObject.SetActive(!isPurchased);
     }
 
     /// <summary>
