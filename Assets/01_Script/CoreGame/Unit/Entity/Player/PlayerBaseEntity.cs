@@ -318,6 +318,12 @@ public class PlayerBaseEntity : BaseEntity
     {
         if (pendingSkillSlot < 0) return;
 
+        var gm = GameManager.Instance;
+        if (gm == null || gm.gameState != GameState.Combat || gm.IsTransitioning)
+        {
+            ClearPendingSkill();
+            return;
+        }
         int slot = pendingSkillSlot;
         Transform attackOrigin = pendingAttackPoint;
         Vector2 direction = pendingSkillDirection;
@@ -325,6 +331,12 @@ public class PlayerBaseEntity : BaseEntity
 
         if (CanAct)
             TryUseSkill(slot, attackOrigin, direction);
+    }
+
+    /// <summary>Batalkan skill yang menunggu animation event (misal saat transisi malam -> siang).</summary>
+    public void CancelPendingSkill()
+    {
+        ClearPendingSkill();
     }
 
     private void ClearPendingSkill()

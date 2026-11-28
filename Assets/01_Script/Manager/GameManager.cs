@@ -133,6 +133,11 @@ public class GameManager : MonoBehaviour
 
         var previous = currentState;
         currentState = next;
+
+        // Batalkan cast skill yang sedang berjalan saat keluar dari malam (Combat).
+        if (previous == GameState.Combat && next != GameState.Combat)
+            playerController?.CancelSkillCast();
+
         Debug.Log($"[GameManager] State: {previous} -> {next}");
         OnGameStateChanged?.Invoke(next);
 

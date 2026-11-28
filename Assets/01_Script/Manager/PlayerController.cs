@@ -378,6 +378,7 @@ public class PlayerController : MonoBehaviour
     private void HandleSkillStarted(InputAction.CallbackContext context)
     {
         if (playerEntity == null || !playerEntity.CanAct || playerEntity.HasPendingSkill) return;
+        if (!IsNightCombatActive()) return;
 
         int slot = GetActionSlot(context.action.name, "Skill ");
         if (slot < 0 || slot >= SkillSlotCount) return;
@@ -399,6 +400,12 @@ public class PlayerController : MonoBehaviour
 
     private void HandleSkillCanceled(InputAction.CallbackContext context)
     {
+        if (!IsNightCombatActive())
+        {
+            CancelAiming();
+            return;
+        }
+
         if (!isAiming || playerEntity == null ||
             activeAimSlot != GetActionSlot(context.action.name, "Skill ") || playerEntity.HasPendingSkill)
             return;
@@ -570,6 +577,19 @@ public class PlayerController : MonoBehaviour
         ResetTimeScale();
         isAiming = false;
         activeAimSlot = -1;
+    }
+
+    /// <summary>Batalkan cast skill yang sedang berjalan (aiming / pending animation).</summary>
+    public void CancelSkillCast()
+    {
+        CancelAiming();
+        playerEntity?.CancelPendingSkill();
+    }
+
+    private static bool IsNightCombatActive()
+    {
+        var gameManager = GameManager.Instance;
+        return gameManager != null && gameManager.gameState == GameState.Combat && !gameManager.IsTransitioning;
     }
 
     private void SpawnGhost(SkillDataSO data)
