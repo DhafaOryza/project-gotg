@@ -78,7 +78,7 @@ public class SkillLoadoutPanel : MonoBehaviour
 
         foreach (var skill in skills)
         {
-            if (skill == null || skill.IsLocked) continue;
+            if (skill == null || skill.locked) continue;
             if (chosenSkills != null && chosenSkills.Contains(skill)) continue;
 
             SkillCardUI skillCard = Instantiate(skillCardPrefab, skillContainer);

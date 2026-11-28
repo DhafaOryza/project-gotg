@@ -65,7 +65,9 @@ public class SkillDataSO : ScriptableObject
     [Tooltip("Jarak dorong tambahan ke depan (mengikuti arah hadap/aim horizontal) agar efek tidak terlalu menempel ke player.")]
     public float meleeVfxForwardDistance = 0f;
 
-    public bool IsLocked => locked;
+    [Header("Purchase")]
+    public int price = 100;
+    public bool isPurchased = false;
 
     /// <summary>
     /// Fungsi untuk menaikkan level skill saat tombol Upgrade ditekan di UI.

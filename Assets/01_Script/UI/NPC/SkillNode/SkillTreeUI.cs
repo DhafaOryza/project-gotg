@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class SkillTreeUI : MonoBehaviour
 {
@@ -24,6 +24,9 @@ public class SkillTreeUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _detailNextStatText;
     [SerializeField] private TextMeshProUGUI _upgradeButtonCostText;
 
+    [Header("Currency Display")]
+    [SerializeField] private TextMeshProUGUI _currencyText;
+
     [Header("UI Controls")]
     [SerializeField] private Button _exitButton;
     [SerializeField] private Button _upgradeButton;
@@ -33,42 +36,80 @@ public class SkillTreeUI : MonoBehaviour
 
     public Selectable FirstSelectedButton => firstSelectedButton;
 
-    private List<GameObject> _spawnedUIElements = new List<GameObject>();
+    private readonly List<GameObject> _spawnedUIElements = new List<GameObject>();
+    private readonly List<SkillNodeSlot> _spawnedSlots = new List<SkillNodeSlot>();
+
     private SkillDataSO _selectedSkillData;
     private SkillNodeSlot _selectedSlot;
     private NPCDataSO _npcData;
+    private CurrencyManager _currencyManager;
 
     public GameObject SkillTreeMainPanel => _skillTreeMainPanel;
-    public Image PortraitImage => _portraitImage;
-    public SkillDataSO SelectedSkillData => _selectedSkillData;
-    public Button ExitButton => _exitButton;
 
     /// <summary>
-    /// Initializes the UI components without parameters and retrieves data from GameSessionData.
+    /// Initializes the UI. Called by PlayerUI when the NPC panel opens.
     /// </summary>
     public void Initialize(NPCDataSO npcData)
     {
         _npcData = npcData;
 
         if (_skillTreeMainPanel != null)
-        {
             _skillTreeMainPanel.SetActive(true);
-        }
+
+        // Subscribe to currency changes so all slot buttons update in real time.
+        UnsubscribeCurrency();
+        _currencyManager = GameManager.Instance?.currencyManager;
+        if (_currencyManager != null)
+            _currencyManager.OnChange += HandleCurrencyChanged;
 
         SetupButtons();
         GenerateSkillsByTier();
+        RefreshCurrencyText();
 
         if (_npcData != null)
-        {
             SetupProfile(_npcData.NpcPortrait);
-        }
 
         PlayerUI.Instance?.SetSelectedObject(firstSelectedButton);
     }
 
-    /// <summary>
-    /// Sets up the character portrait image and name text dynamically.
-    /// </summary>
+    private void OnDisable()
+    {
+        UnsubscribeCurrency();
+    }
+
+    private void UnsubscribeCurrency()
+    {
+        if (_currencyManager != null)
+            _currencyManager.OnChange -= HandleCurrencyChanged;
+    }
+
+    // Runs every time the player's money changes (purchase, reward, etc.).
+    private void HandleCurrencyChanged()
+    {
+        RefreshCurrencyText();
+        RefreshAllSlots();
+    }
+
+    private void RefreshCurrencyText()
+    {
+        if (_currencyText == null) return;
+
+        int money = _currencyManager != null ? _currencyManager.Money : 0;
+        _currencyText.text = $"{money}";
+    }
+
+    // ── Slot refresh ─────────────────────────────────────────────────────
+
+    private void RefreshAllSlots()
+    {
+        foreach (var slot in _spawnedSlots)
+        {
+            if (slot != null) slot.Refresh();
+        }
+    }
+
+    // ── Profile ───────────────────────────────────────────────────────────
+
     private void SetupProfile(Sprite portrait)
     {
         if (_portraitImage != null)
@@ -78,9 +119,8 @@ public class SkillTreeUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Sets up click listeners for UI buttons.
-    /// </summary>
+    // ── Buttons ───────────────────────────────────────────────────────────
+
     private void SetupButtons()
     {
         if (_upgradeButton != null)
@@ -96,8 +136,10 @@ public class SkillTreeUI : MonoBehaviour
         }
     }
 
+    // ── Generation ────────────────────────────────────────────────────────
+
     /// <summary>
-    /// Generates tier headers and skill nodes sequentially from Tier 1 to Tier 4 based on GameSessionData.
+    /// Generates tier headers and skill nodes from GameSessionData.
     /// </summary>
     public void GenerateSkillsByTier()
     {
@@ -112,22 +154,16 @@ public class SkillTreeUI : MonoBehaviour
 
         bool isFirstSkillSelected = false;
 
-        for (int currentTier = 1; currentTier <= 4; currentTier++)
+        for (int tier = 1; tier <= 4; tier++)
         {
-            List<SkillDataSO> skillsInTier = sessionData.skills.FindAll(s => s != null && s.tier == currentTier);
-
+            var skillsInTier = sessionData.skills.FindAll(s => s != null && s.tier == tier);
             if (skillsInTier.Count == 0) continue;
 
             if (_tierHeaderPrefab != null)
             {
                 GameObject headerObj = Instantiate(_tierHeaderPrefab, _skillListContentContainer);
-
-                TextMeshProUGUI headerText = headerObj.GetComponentInChildren<TextMeshProUGUI>();
-                if (headerText != null)
-                {
-                    headerText.text = $"Tier - {currentTier}";
-                }
-
+                var headerText = headerObj.GetComponentInChildren<TextMeshProUGUI>();
+                if (headerText != null) headerText.text = $"Tier - {tier}";
                 _spawnedUIElements.Add(headerObj);
             }
 
@@ -136,6 +172,7 @@ public class SkillTreeUI : MonoBehaviour
                 SkillNodeSlot newSlot = Instantiate(_skillSlotPrefab, _skillListContentContainer);
                 newSlot.SetupSlot(skillData, OnSkillSelected);
                 _spawnedUIElements.Add(newSlot.gameObject);
+                _spawnedSlots.Add(newSlot);
 
                 if (!isFirstSkillSelected)
                 {
@@ -146,23 +183,19 @@ public class SkillTreeUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Handles skill selection event and updates UI highlighting and details.
-    /// </summary>
+    // ── Selection ─────────────────────────────────────────────────────────
+
     private void OnSkillSelected(SkillDataSO skillData, SkillNodeSlot slot)
     {
         _selectedSlot = slot;
+        _selectedSkillData = skillData;
         UpdateDetailPanel(skillData);
+        RefreshUpgradeButton();
 
         if (_skillListContentContainer != null)
-        {
             LayoutRebuilder.ForceRebuildLayoutImmediate(_skillListContentContainer as RectTransform);
-        }
     }
 
-    /// <summary>
-    /// Updates the right-side detail panel with the selected skill information.
-    /// </summary>
     private void UpdateDetailPanel(SkillDataSO skill)
     {
         if (skill == null) return;
@@ -183,56 +216,80 @@ public class SkillTreeUI : MonoBehaviour
             _detailNextStatText.text = $"Tier: {skill.tier}";
 
         if (_upgradeButtonCostText != null)
-            _upgradeButtonCostText.text = skill.baseValue.ToString();
+            _upgradeButtonCostText.text = skill.isPurchased ? "PURCHASED" : skill.price.ToString();
     }
 
-    /// <summary>
-    /// Handles the upgrade button action and processes player economy transactions.
-    /// </summary>
+    private void RefreshUpgradeButton()
+    {
+        if (_upgradeButton == null || _selectedSkillData == null) return;
+
+        bool canAfford = _currencyManager != null
+                         && _currencyManager.Money >= _selectedSkillData.price;
+
+        _upgradeButton.interactable = !_selectedSkillData.isPurchased
+                                      && !_selectedSkillData.locked
+                                      && canAfford;
+    }
+
+    // ── Purchase ──────────────────────────────────────────────────────────
+
     private void OnUpgradeClicked()
     {
-        _selectedSkillData = _selectedSlot != null ? _selectedSlot.SkillData : null;
-        if (_selectedSkillData == null) return;
+        if (_selectedSkillData == null || _currencyManager == null) return;
 
-        var currencyManager = GameManager.Instance?.currencyManager;
-
-        if (currencyManager.Money >= _selectedSkillData.baseValue)
+        if (_selectedSkillData.isPurchased)
         {
-            currencyManager.SpendMoney(_selectedSkillData.baseValue);
-            Debug.Log($"[SkillTreeUI] Successfully upgraded skill: {_selectedSkillData.displayName}");
+            Debug.Log($"[SkillTreeUI] {_selectedSkillData.displayName} sudah dibeli.");
+            return;
+        }
 
-            UpdateDetailPanel(_selectedSkillData);
-        }
-        else
+        if (!_currencyManager.SpendMoney(_selectedSkillData.price))
         {
-            Debug.Log("[SkillTreeUI] Insufficient player coins!");
+            Debug.Log("[SkillTreeUI] Uang tidak cukup.");
+            return;
         }
+
+        // Mark as purchased.
+        _selectedSkillData.isPurchased = true;
+
+        Debug.Log($"[SkillTreeUI] Berhasil membeli: {_selectedSkillData.displayName}");
+
+        // Unlock the skill so it can be equipped in the preparation panel.
+        _selectedSkillData.locked = false;
+
+        UpdateDetailPanel(_selectedSkillData);
+        RefreshUpgradeButton();
+
+        // Refresh the slot that was just purchased.
+        if (_selectedSlot != null)
+        {
+            _selectedSlot.UpdatePurchasedVisual(true);
+            _selectedSlot.Refresh();
+        }
+
+        // Currency change triggers HandleCurrencyChanged, which refreshes all other slots.
     }
 
-    /// <summary>
-    /// Clears all instantiated UI elements (headers and slots) from the container.
-    /// </summary>
+    // ── Cleanup ───────────────────────────────────────────────────────────
+
     private void ClearList()
     {
         foreach (var obj in _spawnedUIElements)
         {
             if (obj != null) Destroy(obj);
         }
+
         _spawnedUIElements.Clear();
+        _spawnedSlots.Clear();
+        _selectedSlot = null;
+        _selectedSkillData = null;
     }
 
-    /// <summary>
-    /// Closes the skill tree panel UI through PlayerUI to ensure active NPC resumes wandering.
-    /// </summary>
     private void CloseUI()
     {
         if (PlayerUI.Instance != null)
-        {
             PlayerUI.Instance.CloseAllRolePanels();
-        }
         else
-        {
             gameObject.SetActive(false);
-        }
     }
 }

@@ -1,7 +1,6 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using Unity.VisualScripting;
 
 public class SkillNodeSlot : MonoBehaviour
 {
@@ -11,36 +10,37 @@ public class SkillNodeSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _costText;
     [SerializeField] private Button _slotButton;
     [SerializeField] private GameObject _lockOverlayObject;
+    [SerializeField] private GameObject _purchasedOverlayObject;
 
     private SkillDataSO _skillData;
     private System.Action<SkillDataSO, SkillNodeSlot> _onSelectedCallback;
 
-    // Public properties using lambda syntax
     public SkillDataSO SkillData => _skillData;
     public GameObject LockOverlayObject => _lockOverlayObject;
 
     /// <summary>
-    /// Sets up the skill slot UI components and lock visual state.
+    /// Sets up the skill slot UI components and visual state.
     /// </summary>
     public void SetupSlot(SkillDataSO skillData, System.Action<SkillDataSO, SkillNodeSlot> onSelected)
     {
         _skillData = skillData;
         _onSelectedCallback = onSelected;
 
-        if (_iconImage != null) 
+        if (_iconImage != null)
             _iconImage.sprite = skillData.icon;
 
-        if (_nameText != null) 
+        if (_nameText != null)
             _nameText.text = skillData.displayName;
 
-        if (_nameText != null) 
-            _nameText.text = skillData.description;
+        if (_descriptionText != null)
+            _descriptionText.text = skillData.description;
 
-        if (_costText != null) 
-            _costText.text = skillData.baseValue.ToString();
+        if (_costText != null)
+            _costText.text = $"{skillData.price}";
 
-        // Update lock visual overlay
         UpdateLockVisual(skillData.locked);
+        UpdatePurchasedVisual(skillData.isPurchased);
+        RefreshButtonState();
 
         if (_slotButton != null)
         {
@@ -50,13 +50,44 @@ public class SkillNodeSlot : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates the visibility of the lock overlay based on lock status.
+    /// Refreshes the button interactability and purchased overlay based on current state.
+    /// Call this after a purchase or currency change.
     /// </summary>
+    public void Refresh()
+    {
+        if (_skillData == null) return;
+
+        UpdateLockVisual(_skillData.locked);
+        UpdatePurchasedVisual(_skillData.isPurchased);
+        RefreshButtonState();
+    }
+
+    /// <summary>Updates the lock overlay based on lock status.</summary>
     public void UpdateLockVisual(bool isLocked)
     {
         if (_lockOverlayObject != null)
-        {
             _lockOverlayObject.SetActive(isLocked);
-        }
+    }
+
+    /// <summary>Shows or hides the purchased overlay.</summary>
+    public void UpdatePurchasedVisual(bool isPurchased)
+    {
+        if (_purchasedOverlayObject != null)
+            _purchasedOverlayObject.SetActive(isPurchased);
+    }
+
+    /// <summary>
+    /// Disables the button when the skill is already purchased, locked, or the player cannot afford it.
+    /// </summary>
+    private void RefreshButtonState()
+    {
+        if (_slotButton == null || _skillData == null) return;
+
+        var currency = GameManager.Instance?.currencyManager;
+        bool canAfford = currency != null && currency.Money >= _skillData.price;
+
+        _slotButton.interactable = !_skillData.isPurchased
+                                   && !_skillData.locked
+                                   && canAfford;
     }
 }
