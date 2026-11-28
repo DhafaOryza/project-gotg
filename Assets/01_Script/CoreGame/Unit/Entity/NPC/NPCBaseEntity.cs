@@ -20,6 +20,9 @@ public class NPCBaseEntity : BaseEntity, IInteractable
     private bool signVisible;
     private bool signSuppressed;
 
+    private Vector3 _interactSignBaseScale;
+    private bool _hasInteractSignBaseScale;
+
     public event System.Action OnInteract;
 
     void OnEnable()
@@ -68,6 +71,21 @@ public class NPCBaseEntity : BaseEntity, IInteractable
         SetName(shouldShow);
     }
 
+
+    public void KeepInteractSignStatic(float parentScaleX)
+    {
+        if (_interactSign == null) return;
+
+        if (!_hasInteractSignBaseScale)
+        {
+            _interactSignBaseScale = _interactSign.transform.localScale;
+            _hasInteractSignBaseScale = true;
+        }
+
+        Vector3 s = _interactSignBaseScale;
+        s.x += Mathf.Sign(parentScaleX);
+        _interactSign.transform.localScale = s;
+    }
     #region Interact Detection
 
     private bool IsPlayerInRange()

@@ -195,6 +195,7 @@ MonoBehaviour:
   entityData: {fileID: 0}
   bonusMaxHP: 0
   currentHealth: 0
+  defaultKnockbackDuration: 0.2
   _interactSign: {fileID: 2230371896159965724}
   _txtSign: {fileID: 8186775359267636082}
   _txtCharacterName: {fileID: 1639951566001853969}
@@ -217,6 +218,7 @@ MonoBehaviour:
   _wanderRadius: 5
   _minWaitTime: 2
   _maxWaitTime: 5
+  _visualRoot: {fileID: 8035026994464003912}
 --- !u!1 &4064142618447476158
 GameObject:
   m_ObjectHideFlags: 0

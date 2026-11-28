@@ -8,6 +8,7 @@ public class NPCMovement : MonoBehaviour, IPoolable
     [SerializeField] private float _wanderRadius = 5f;
     [SerializeField] private float _minWaitTime = 2f;
     [SerializeField] private float _maxWaitTime = 5f;
+    [SerializeField] private Transform _visualRoot;
 
     private Vector3 _startPosition;
     private Vector3 _targetPosition;
@@ -28,6 +29,11 @@ public class NPCMovement : MonoBehaviour, IPoolable
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+
+        // Hanya child "Visual" yang di-flip. Interact Sign beserta child TMP-nya
+        // sengaja tidak disentuh supaya tetap statis saat NPC berbalik arah.
+        if (_visualRoot == null)
+            _visualRoot = transform.Find("Visual");
     }
 
     private void Start()
@@ -170,9 +176,9 @@ public class NPCMovement : MonoBehaviour, IPoolable
     /// </summary>
     private void FlipDirection(float directionX)
     {
-        if (Mathf.Abs(directionX) > 0.01f)
+        if (Mathf.Abs(directionX) > 0.01f && _visualRoot != null)
         {
-            Vector3 localScale = transform.localScale;
+            Vector3 localScale = _visualRoot.localScale;
             if (directionX > 0)
             {
                 localScale.x = -Mathf.Abs(localScale.x);
@@ -181,7 +187,8 @@ public class NPCMovement : MonoBehaviour, IPoolable
             {
                 localScale.x = Mathf.Abs(localScale.x);
             }
-            transform.localScale = localScale;
+
+            _visualRoot.localScale = localScale;
         }
     }
 }
