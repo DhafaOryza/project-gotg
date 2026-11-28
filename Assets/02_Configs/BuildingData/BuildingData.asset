@@ -15,7 +15,7 @@ MonoBehaviour:
   nameBuilding: Granary
   baseVitality: 10
   baseDefend: 5
-  hpPerVitality: 170
+  hpPerVitality: 120
   additionalStats:
   - {fileID: 11400000, guid: 7032810837fe68b4c834a196fc1793b6, type: 2}
   - {fileID: 11400000, guid: 112fbe1b149bc7d479f18b1b20752254, type: 2}
