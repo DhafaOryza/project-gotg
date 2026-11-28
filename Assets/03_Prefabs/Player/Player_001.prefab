@@ -297,6 +297,7 @@ MonoBehaviour:
   interactLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  _safeZoneRadius: 10
 --- !u!1 &5180262458530048171
 GameObject:
   m_ObjectHideFlags: 0

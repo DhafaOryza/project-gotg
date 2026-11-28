@@ -35,3 +35,8 @@ MonoBehaviour:
   skillPrefab: {fileID: 8946592561061051195, guid: ed171b276cf00cf40a891b7942e49a23, type: 3}
   ghostPreviewPrefab: {fileID: 7836781342000382809, guid: 923997bc754d85e49b531d20a8215065, type: 3}
   damageTextPrefab: {fileID: 8646505233883929273, guid: dc73de2b050e0fc439ff4a7d651a424e, type: 3}
+  meleeVfxPrefab: {fileID: 0}
+  meleeVfxSpawnOffset: {x: 0, y: 0, z: 0}
+  meleeVfxForwardDistance: 0
+  price: 100
+  isPurchased: 1

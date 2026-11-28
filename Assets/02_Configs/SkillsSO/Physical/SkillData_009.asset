@@ -38,3 +38,5 @@ MonoBehaviour:
   meleeVfxPrefab: {fileID: 5608127324126302073, guid: a1a7710649e623e418023da1848c7be6, type: 3}
   meleeVfxSpawnOffset: {x: 0, y: 0, z: 0}
   meleeVfxForwardDistance: 0
+  price: 100
+  isPurchased: 0
