@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-127754758332195491
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  version: 10
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: mat_VFX_Slash
+  m_Shader: {fileID: -6465566751694194690, guid: 4b390525f4866af418ae8559fcd186eb, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _CoreSoftness: 0.15
+    - _CoreWidth: 0.25
+    - _EdgeSoftness: 0.35
+    - _EndFade: 0.1
+    - _FlipU: 0
+    - _HeadSoftness: 0.06
+    - _Intensity: 1
+    - _NoiseScaleU: 4
+    - _NoiseScaleV: 8
+    - _NoiseSpeed: 1.5
+    - _NoiseStrength: 0.35
+    - _Opacity: 1
+    - _Progress: 0.8
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _SupportContrast: 4
+    - _SupportScaleU: 2.5
+    - _SupportScaleV: 14
+    - _SupportThreshold: 0.5
+    - _TailFadePower: 1.4
+    - _TailLength: 0.6
+    - _TaperPower: 0.8
+    - _VCenter: 0.5
+    - _VHalfWidth: 0.357
+    m_Colors:
+    - _SlashBaseColor: {r: 10.741862, g: 12.5800905, b: 14.692096, a: 1}
+    - _SlashHighlightColor: {r: 2.5, g: 2.7, b: 3, a: 1}
+    - _SlashSupportColor: {r: 22.52803, g: 25.082775, b: 27.92949, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
