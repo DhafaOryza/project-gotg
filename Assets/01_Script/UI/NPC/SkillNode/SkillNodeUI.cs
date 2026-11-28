@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkillTreeUI : MonoBehaviour
+public class SkillNodeUI : MonoBehaviour
 {
     [Header("Main Panel Reference")]
     [SerializeField] private GameObject _skillTreeMainPanel;

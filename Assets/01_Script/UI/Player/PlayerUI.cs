@@ -19,7 +19,7 @@ public class PlayerUI : MonoBehaviour
 
     [Header("NPC")]
     [SerializeField] private ShopUI shopUI;
-    [SerializeField] private SkillTreeUI skillNodeUI;
+    [SerializeField] private SkillNodeUI skillNodeUI;
     [SerializeField] private BuilderPanelUI BuilderUI;
     [SerializeField] private LevelAndStatsUI LevelNodeUI;
 
